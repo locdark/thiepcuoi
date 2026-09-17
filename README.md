@@ -2,7 +2,7 @@
 
 Trang web thiệp cưới tương tác trực tuyến, phân quyền khách mời & quản trị viên.
 
-- **Tên miền:** `thiepcuoi.online`
+- **Tên miền:** `ngaycuoi.online`
 - **Tài khoản Quản Trị (Admin):** `admin` / `admin123`
 - **Tính năng:**
   - Cá nhân hóa thiệp mời theo từng khách (kèm xưng hô / prefix riêng).
