@@ -318,8 +318,8 @@
             class="bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 text-slate-950 font-bold px-3 py-1 rounded-full border border-amber-300 text-[11px] flex items-center gap-1 transition-all shadow-sm">
             <i class="fa-solid fa-download"></i> Tải Ảnh Thiệp
           </button>
-          <label for="couplePhotoInput"
-            class="cursor-pointer bg-wedding-red hover:bg-wedding-darkred text-amber-100 hover:text-white px-3 py-1 rounded-full border border-amber-300/50 text-[11px] flex items-center gap-1.5 transition-all shadow-sm">
+          <label for="couplePhotoInput" id="cardChangePhotoBtn"
+            class="cursor-pointer bg-wedding-red hover:bg-wedding-darkred text-amber-100 hover:text-white px-3 py-1 rounded-full border border-amber-300/50 text-[11px] items-center gap-1.5 transition-all shadow-sm hidden">
             <i class="fa-solid fa-camera"></i> Đổi Ảnh
           </label>
           <input type="file" id="couplePhotoInput" accept="image/*" class="hidden"
@@ -348,8 +348,7 @@
 
             <!-- Couple Photo Container (Embedded image_219ef5.jpg) -->
             <div id="coupleDropZone"
-              class="relative w-full max-w-[320px] sm:max-w-[360px] mx-auto py-1 group transition-all duration-300 rounded-2xl cursor-pointer"
-              title="Nhấp hoặc kéo thả ảnh để đổi ảnh nếu muốn">
+              class="relative w-full max-w-[320px] sm:max-w-[360px] mx-auto py-1 group transition-all duration-300 rounded-2xl">
 
               <!-- Direct Image Display of couple_chibi_illustration.jpg -->
               <div id="coupleCustomImgWrapper" class="w-full flex flex-col justify-center items-center py-1">
@@ -626,8 +625,8 @@
                 </svg>
               </div>
 
-              <!-- Quick Action Bar -->
-              <div class="flex items-center justify-center gap-2 mt-2">
+              <!-- Quick Action Bar (Hidden for guests) -->
+              <div id="cardPhotoAdminBar" class="items-center justify-center gap-2 mt-2 hidden">
                 <button id="resetPhotoBtn" onclick="resetCouplePhoto(event)"
                   class="hidden bg-black/50 hover:bg-black/70 text-amber-200 text-[10px] px-2.5 py-1 rounded-full border border-amber-300/40 shadow-sm items-center gap-1 transition-all">
                   <i class="fa-solid fa-rotate-left"></i> Dùng ảnh vẽ chibi
