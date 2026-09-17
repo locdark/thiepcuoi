@@ -2773,12 +2773,28 @@
 
       // Parse URL parameters for customized guest name & salutation
       const urlParams = new URLSearchParams(window.location.search);
-      const guestFromUrl = urlParams.get('to') || urlParams.get('guest') || urlParams.get('khach');
-      const salutFromUrl = urlParams.get('salutation') || urlParams.get('sung') || urlParams.get('prefix');
+      let guestFromUrl = urlParams.get('to') || urlParams.get('guest') || urlParams.get('khach') || urlParams.get('n');
+      let salutFromUrl = urlParams.get('salutation') || urlParams.get('sung') || urlParams.get('prefix') || urlParams.get('s');
+      let guestIdFromUrl = urlParams.get('id');
+
+      const b64 = urlParams.get('b');
+      if (b64) {
+        try {
+          let base64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+          while (base64.length % 4) base64 += '=';
+          const decoded = decodeURIComponent(escape(atob(base64)));
+          const parts = decoded.split('|');
+          if (parts.length >= 2) {
+            salutFromUrl = parts[0];
+            guestFromUrl = parts[1];
+            if (parts[2]) guestIdFromUrl = parts[2];
+          }
+        } catch (e) { }
+      }
 
       if (guestFromUrl && guestFromUrl.trim() !== '') {
-        const decodedName = decodeURIComponent(guestFromUrl.trim());
-        const decodedSalut = salutFromUrl ? decodeURIComponent(salutFromUrl.trim()) : 'Kính mời';
+        const decodedName = guestFromUrl.trim();
+        const decodedSalut = salutFromUrl ? salutFromUrl.trim() : 'Kính mời';
         updateGuestName(decodedName, decodedSalut);
       } else {
         updateGuestName('Quý Khách & Gia Đình', 'Kính mời');
@@ -2796,12 +2812,50 @@
       renderWishesListOnCard();
     });
 
+    function buildCleanShareUrl(salut, name, id) {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const url = new URL(baseUrl);
+
+      const cleanSalut = (salut || 'Kính mời').trim();
+      const cleanName = (name || 'Quý Khách & Gia Đình').trim();
+      const cleanId = (id || '').trim();
+
+      try {
+        const payload = `${cleanSalut}|${cleanName}|${cleanId}`;
+        const b64 = btoa(unescape(encodeURIComponent(payload)))
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+        url.searchParams.set('b', b64);
+        return url.toString();
+      } catch (e) {
+        url.searchParams.set('to', cleanName);
+        url.searchParams.set('salutation', cleanSalut);
+        if (cleanId) url.searchParams.set('id', cleanId);
+        return url.toString();
+      }
+    }
+
     function checkInitialAccessMode() {
       const urlParams = new URLSearchParams(window.location.search);
-      const guestFromUrl = urlParams.get('to') || urlParams.get('guest') || urlParams.get('khach');
-      const guestIdFromUrl = urlParams.get('id');
+      let guestFromUrl = urlParams.get('to') || urlParams.get('guest') || urlParams.get('khach') || urlParams.get('n');
+      let guestIdFromUrl = urlParams.get('id');
+      const b64 = urlParams.get('b');
 
-      if (guestFromUrl || guestIdFromUrl) {
+      if (b64) {
+        try {
+          let base64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+          while (base64.length % 4) base64 += '=';
+          const decoded = decodeURIComponent(escape(atob(base64)));
+          const parts = decoded.split('|');
+          if (parts.length >= 2) {
+            guestFromUrl = parts[1];
+            if (parts[2]) guestIdFromUrl = parts[2];
+          }
+        } catch (e) { }
+      }
+
+      if (guestFromUrl || guestIdFromUrl || b64) {
         // GUEST MODE: Visitor accessed with custom invitation link
         isGuestMode = true;
 
@@ -3323,14 +3377,12 @@
     }
 
     function updateShareUrl() {
-      const currentUrl = new URL(window.location.href);
       const name = (customGuestInput ? customGuestInput.value : '').trim() || 'Quý Khách & Gia Đình';
       const modalSalutSelect = document.getElementById('modalSalutationInput');
       const salutation = modalSalutSelect ? modalSalutSelect.value : 'Kính mời';
 
-      currentUrl.searchParams.set('to', name);
-      currentUrl.searchParams.set('salutation', salutation);
-      if (generatedShareUrl) generatedShareUrl.value = currentUrl.toString();
+      const url = buildCleanShareUrl(salutation, name);
+      if (generatedShareUrl) generatedShareUrl.value = url;
     }
 
     function applyPersonalizedName() {
@@ -3617,13 +3669,9 @@
       }
 
       updateGuestName(name, salut);
-      const baseUrl = window.location.origin + window.location.pathname;
-      const url = new URL(baseUrl);
-      url.searchParams.set('to', name);
-      url.searchParams.set('salutation', salut);
-      url.searchParams.set('id', matched.id);
+      const url = buildCleanShareUrl(salut, name, matched.id);
 
-      copyText(url.toString(), `Đã sao chép link online riêng cho "${name}"!`);
+      copyText(url, `Đã sao chép link online riêng cho "${name}"!`);
       renderGuestTable();
     }
 
@@ -3779,13 +3827,9 @@
 
     function copyGuestLinkFromList(name, salut, id) {
       updateGuestName(name, salut);
-      const baseUrl = window.location.origin + window.location.pathname;
-      const url = new URL(baseUrl);
-      url.searchParams.set('to', name);
-      url.searchParams.set('salutation', salut || 'Kính mời');
-      if (id) url.searchParams.set('id', id);
+      const url = buildCleanShareUrl(salut || 'Kính mời', name, id);
 
-      copyText(url.toString(), `Đã sao chép link thiệp cho "${name}"!`);
+      copyText(url, `Đã sao chép link thiệp cho "${name}"!`);
     }
 
     function exportGuestCardFromList(name, salut) {
