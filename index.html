@@ -2126,11 +2126,11 @@
     let isGuestMode = false;
 
     // Cloud REST Online Database (Shared across all devices with real-time sync)
-    const DEFAULT_CLOUD_DB_URL = "https://wedding-hoai-phuoc-dieu-hong.firebaseio.com/wedding.json";
+    const DEFAULT_CLOUD_DB_URL = "https://thiepcuoi-63076-default-rtdb.asia-southeast1.firebasedatabase.app/wedding.json";
 
     const OnlineDB = {
       getDbUrl() {
-        let url = (localStorage.getItem('weddingCloudDbUrl') || '').trim();
+        let url = (localStorage.getItem('weddingCloudDbUrl') || DEFAULT_CLOUD_DB_URL).trim();
         if (!url) return '';
         if ((url.includes('.firebaseio.com') || url.includes('.firebasedatabase.app')) && !url.endsWith('.json')) {
           url = url.replace(/\/+$/, '') + '/wedding.json';
