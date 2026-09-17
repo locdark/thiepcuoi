@@ -739,6 +739,14 @@
               <p class="text-[11px] sm:text-xs text-wedding-subtext italic">
                 (Nhằm ngày 11 tháng 09 năm Bính Ngọ)
               </p>
+
+              <!-- Map Button for Groom House / Lễ Tân Hôn -->
+              <div class="pt-2">
+                <a id="cardGroomMapBtn" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-wedding-red/10 text-wedding-red hover:bg-wedding-red hover:text-white border border-wedding-red/30 transition-all shadow-sm">
+                  <i class="fa-solid fa-location-dot"></i> Bản đồ Google Maps chỉ đường đến Nhà Trai
+                </a>
+              </div>
             </div>
           </div>
 
@@ -1121,7 +1129,7 @@
             <p class="text-amber-100/80 text-xs mt-1">Ấp Hai Đông, Xã Bàu Lâm, TP. HCM</p>
             <p class="text-amber-300 text-xs font-semibold mt-1">11:00 • Chủ Nhật, 25/10/2026</p>
           </div>
-          <a href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6"
+          <a id="modalPartyMapBtn" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6"
             target="_blank"
             class="wedding-venue-map-link w-full text-center bg-wedding-red hover:bg-wedding-darkred text-white py-2.5 rounded-xl font-medium transition-all active:scale-95 flex items-center justify-center gap-1.5 border border-wedding-gold/30">
             <i class="fa-solid fa-diamond-turn-right text-amber-300"></i> Mở Google Maps Chỉ Đường
@@ -1137,7 +1145,7 @@
             <p class="text-amber-100/80 text-xs mt-1">Ấp Hai Đông, Xã Bàu Lâm, TP. HCM</p>
             <p class="text-amber-300 text-xs font-semibold mt-1">09:00 • Thứ Ba, 20/10/2026</p>
           </div>
-          <a href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
+          <a id="modalGroomMapBtn" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
             class="wedding-venue-map-link w-full text-center bg-wedding-red hover:bg-wedding-darkred text-white py-2.5 rounded-xl font-medium transition-all active:scale-95 flex items-center justify-center gap-1.5 border border-wedding-gold/30">
             <i class="fa-solid fa-location-dot text-amber-300"></i> Mở Google Maps Chỉ Đường Đến Nhà Trai
           </a>
@@ -1810,8 +1818,13 @@
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
                   </div>
                   <div>
-                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Link Google Maps:</label>
-                    <input type="url" id="adminMapUrl" placeholder="https://maps.google.com/..."
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Link Google Maps (Tiệc Cưới - Thanh Phụng):</label>
+                    <input type="url" id="adminMapUrl" placeholder="https://maps.app.goo.gl/..."
+                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
+                  </div>
+                  <div>
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Link Google Maps (Tư Gia Nhà Trai):</label>
+                    <input type="url" id="adminGroomMapUrl" placeholder="https://maps.app.goo.gl/..."
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
                   </div>
                 </div>
@@ -2715,7 +2728,8 @@
       partyTime: '11:00 • Chủ Nhật, 25/10/2026',
       partyVenue: 'Trung Tâm Tiệc Cưới THANH PHỤNG, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM',
       ceremonyTime: '09:00 • Thứ Ba, 20/10/2026',
-      mapUrl: 'https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6'
+      mapUrl: 'https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6',
+      groomMapUrl: 'https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6'
     };
 
     // State management
@@ -2929,9 +2943,28 @@
       }
 
       // 6. Map Links in Modals & Page
+      const cardGroomMapBtn = document.getElementById('cardGroomMapBtn');
+      if (cardGroomMapBtn) {
+        cardGroomMapBtn.href = eventConfig.groomMapUrl || eventConfig.mapUrl || '#';
+      }
+
+      const modalPartyMapBtn = document.getElementById('modalPartyMapBtn');
+      if (modalPartyMapBtn) {
+        modalPartyMapBtn.href = eventConfig.mapUrl || '#';
+      }
+
+      const modalGroomMapBtn = document.getElementById('modalGroomMapBtn');
+      if (modalGroomMapBtn) {
+        modalGroomMapBtn.href = eventConfig.groomMapUrl || eventConfig.mapUrl || '#';
+      }
+
       const mapLinks = document.querySelectorAll('.wedding-venue-map-link');
       mapLinks.forEach(link => {
-        if (eventConfig.mapUrl) link.href = eventConfig.mapUrl;
+        if (link.id === 'modalGroomMapBtn') {
+          if (eventConfig.groomMapUrl) link.href = eventConfig.groomMapUrl;
+        } else {
+          if (eventConfig.mapUrl) link.href = eventConfig.mapUrl;
+        }
       });
 
       // 7. Dedicated Export Card
@@ -3878,7 +3911,9 @@
       document.getElementById('adminPartyTime').value = eventConfig.partyTime;
       document.getElementById('adminPartyVenue').value = eventConfig.partyVenue;
       document.getElementById('adminCeremonyTime').value = eventConfig.ceremonyTime;
-      document.getElementById('adminMapUrl').value = eventConfig.mapUrl;
+      document.getElementById('adminMapUrl').value = eventConfig.mapUrl || '';
+      const groomMapInput = document.getElementById('adminGroomMapUrl');
+      if (groomMapInput) groomMapInput.value = eventConfig.groomMapUrl || '';
 
       renderGuestTable();
       renderAdminWishesTable();
@@ -3949,6 +3984,8 @@
       eventConfig.partyVenue = document.getElementById('adminPartyVenue').value.trim();
       eventConfig.ceremonyTime = document.getElementById('adminCeremonyTime').value.trim();
       eventConfig.mapUrl = document.getElementById('adminMapUrl').value.trim();
+      const groomMapInput = document.getElementById('adminGroomMapUrl');
+      if (groomMapInput) eventConfig.groomMapUrl = groomMapInput.value.trim();
 
       await OnlineDB.saveConfig({ eventConfig });
       updateEventUI();
