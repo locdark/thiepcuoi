@@ -2003,44 +2003,11 @@
                 </div>
                 <div class="flex items-start gap-2">
                   <span class="w-5 h-5 rounded-full bg-amber-400/20 text-amber-300 font-bold flex items-center justify-center flex-shrink-0 text-[11px]">3</span>
-                  <p>Ở menu trái, chọn <strong>Build</strong> &gt; <strong>Realtime Database</strong> &gt; Bấm <strong>Tạo cơ sở dữ liệu</strong>. Chọn vị trí (Singapore/Mỹ) và chọn chế độ <strong>Test mode (Thử nghiệm)</strong>.</p>
-                </div>
-                <div class="flex items-start gap-2">
-                  <span class="w-5 h-5 rounded-full bg-amber-400/20 text-amber-300 font-bold flex items-center justify-center flex-shrink-0 text-[11px]">4</span>
-                  <p>Sao chép đường link ở đầu trang (dạng <code>https://...firebasedatabase.app</code>), dán vào ô <strong>URL Database</strong> ở trên và bấm <strong>"Lưu URL"</strong>!</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Backup & Restore JSON -->
-            <div class="bg-white/5 border border-wedding-gold/20 rounded-2xl p-4 sm:p-5 space-y-3">
-              <h4 class="font-serif text-sm sm:text-base font-bold text-amber-300 flex items-center gap-2">
-                <i class="fa-solid fa-shield-halved text-amber-400"></i> Sao Lưu & Phục Hồi Dữ Liệu Dự Phòng (JSON)
-              </h4>
-              <p class="text-xs text-amber-200/80">
-                Tải về toàn bộ danh sách khách mời, lịch sử đọc thiệp, lời chúc mừng và cấu hình STK / Lễ cưới về máy để lưu trữ hoặc chuyển đổi giữa các thiết bị dễ dàng.
-              </p>
-              <div class="flex flex-wrap gap-2.5 pt-1">
-                <button type="button" onclick="handleExportBackup()"
-                  class="bg-white/10 hover:bg-white/20 text-amber-200 border border-white/20 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all active:scale-95">
-                  <i class="fa-solid fa-download text-amber-300"></i> Xuất File Sao Lưu (.json)
-                </button>
-                <label class="bg-white/10 hover:bg-white/20 text-amber-200 border border-white/20 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition-all active:scale-95">
-                  <i class="fa-solid fa-upload text-amber-300"></i> Nhập File Sao Lưu (.json)
-                  <input type="file" id="cloudBackupFileInput" accept=".json" class="hidden" onchange="handleImportBackup(event)">
-                </label>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-  <!-- DEDICATED FULL-SCREEN WEDDING CARD EXPORT TEMPLATE (Royal 9:16 Invitation Card) -->
+                  <p>Ở menu trái, chọn <strong>Build</strong> &gt; <strong>Realtime Database</strong> &gt; Bấm <strong>Tạo cơ sở dữ liệu</strong>. Chọn vị trí (Singapore/Mỹ) và chọn chế độ <strong>Test mode (Thử nghiệm)</strong>.  <!-- DEDICATED FULL-SCREEN WEDDING CARD EXPORT TEMPLATE (Royal 9:16 Invitation Card) -->
   <div id="dedicatedExportCardContainer" style="position: fixed; left: -9999px; top: 0; z-index: -100; pointer-events: none;">
-    <div id="dedicatedExportCard" style="width: 520px; min-height: 820px; background: linear-gradient(145deg, #700E19 0%, #891322 45%, #4A0810 100%); padding: 18px; box-sizing: border-box; font-family: 'Playfair Display', serif; color: #3D3430;">
+    <div id="dedicatedExportCard" style="width: 540px; min-height: 920px; background: linear-gradient(145deg, #700E19 0%, #891322 45%, #4A0810 100%); padding: 18px; box-sizing: border-box; font-family: 'Playfair Display', serif; color: #3D3430;">
       <!-- Gold Foil Ornate Outer Border -->
-      <div style="border: 2px solid #D4AF37; outline: 1px solid rgba(212, 175, 55, 0.45); outline-offset: 4px; border-radius: 24px; padding: 22px; background: #FAF7F2; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.25); text-align: center;">
+      <div style="border: 2px solid #D4AF37; outline: 1px solid rgba(212, 175, 55, 0.45); outline-offset: 4px; border-radius: 24px; padding: 20px 18px; background: #FAF7F2; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.25); text-align: center;">
         
         <!-- Corner Ornaments -->
         <div style="position: absolute; top: 8px; left: 8px; font-size: 16px; color: #C99E5C;">✤</div>
@@ -2052,49 +2019,99 @@
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 4px; color: #9E7432; text-transform: uppercase; font-weight: 600; margin-bottom: 2px;">
           SAVE THE DATE
         </div>
-        <h2 style="font-family: 'Alex Brush', cursive; font-size: 42px; line-height: 1.1; color: #891322; margin: 0 0 6px 0; font-weight: normal;">
+        <h2 style="font-family: 'Alex Brush', cursive; font-size: 40px; line-height: 1.1; color: #891322; margin: 0 0 4px 0; font-weight: normal;">
           Thiệp Mời Thành Hôn
         </h2>
 
-        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;">
           <span style="width: 40px; height: 1px; background: #C99E5C;"></span>
           <span style="font-size: 10px; color: #C99E5C;">❦</span>
           <span style="width: 40px; height: 1px; background: #C99E5C;"></span>
         </div>
 
-        <!-- Couple Photo In Arched Royal Frame (Never stretched, fits perfectly) -->
-        <div style="margin: 0 auto 16px auto; width: 220px; height: 260px; border-radius: 110px 110px 18px 18px; border: 3px solid #C99E5C; padding: 4px; background: #FFFFFF; box-shadow: 0 6px 16px rgba(0,0,0,0.12); overflow: hidden; display: flex; align-items: center; justify-content: center;">
-          <img id="exportCardCoupleImg" src="couple_chibi_illustration.jpg" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; border-radius: 106px 106px 14px 14px; display: block;" alt="Cô dâu Chú rể" />
+        <!-- Couple Photo In Arched Royal Frame -->
+        <div style="margin: 0 auto 12px auto; width: 190px; height: 220px; border-radius: 95px 95px 16px 16px; border: 3px solid #C99E5C; padding: 3px; background: #FFFFFF; box-shadow: 0 6px 16px rgba(0,0,0,0.12); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+          <img id="exportCardCoupleImg" src="couple_chibi_illustration.jpg" style="width: 100%; height: 100%; object-fit: cover; object-position: top center; border-radius: 91px 91px 12px 12px; display: block;" alt="Cô dâu Chú rể" />
+        </div>
+
+        <!-- Two Families (Phụ Huynh Hai Nhà) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; font-size: 11px; text-align: center; border-bottom: 1px dashed rgba(201, 158, 92, 0.4); padding-bottom: 8px;">
+          <div id="exportCardGroomParents">
+            <!-- Rendered dynamically -->
+          </div>
+          <div id="exportCardBrideParents">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Groom & Bride Names -->
+        <div style="margin-bottom: 10px;">
+          <div style="font-size: 10px; letter-spacing: 2px; color: #891322; font-weight: bold; text-transform: uppercase; font-family: 'Cinzel', serif;">TRÂN TRỌNG BÁO TIN LỄ TÂN HÔN</div>
+          <div id="exportCardCoupleNames" style="font-family: 'Great Vibes', cursive; font-size: 34px; color: #891322; line-height: 1.2; margin-top: 2px;">
+            Lê Hoài Phước <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> Nguyễn Diệu Hồng
+          </div>
+        </div>
+
+        <!-- Ceremony Info (Hôn Lễ) -->
+        <div style="background: rgba(137, 19, 34, 0.04); border: 1px solid rgba(201, 158, 92, 0.3); border-radius: 10px; padding: 6px 10px; margin: 0 auto 10px auto; font-size: 11px;">
+          <div style="font-weight: bold; color: #891322; font-size: 10.5px; text-transform: uppercase;">HÔN LỄ ĐƯỢC CỬ HÀNH TẠI: TƯ GIA NHÀ TRAI</div>
+          <div id="exportCardCeremonyTime" style="color: #3D3430; font-weight: 600; margin-top: 1px; font-size: 11px;">VÀO LÚC: 09 GIỜ 00 • THỨ BA, 20/10/2026</div>
         </div>
 
         <!-- Salutation & Guest Name -->
-        <div style="margin-bottom: 12px; padding: 0 10px;">
-          <p id="exportCardSalutationText" style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 13px; color: #685D58; margin: 0 0 2px 0;">
+        <div style="margin-bottom: 10px; padding: 0 10px;">
+          <p id="exportCardSalutationText" style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 12.5px; color: #685D58; margin: 0 0 2px 0;">
             Trân trọng kính mời:
           </p>
-          <div id="exportCardGuestNameText" style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: bold; color: #891322; letter-spacing: 0.5px; border-bottom: 1.5px solid rgba(137, 19, 34, 0.25); display: inline-block; padding: 0 14px 4px 14px; min-width: 180px;">
+          <div id="exportCardGuestNameText" style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: bold; color: #891322; letter-spacing: 0.5px; border-bottom: 1.5px solid rgba(137, 19, 34, 0.25); display: inline-block; padding: 0 14px 2px 14px; min-width: 180px;">
             Quý Khách & Gia Đình
           </div>
-          <p style="font-size: 11.5px; color: #685D58; font-style: italic; margin: 6px 0 0 0;">
+          <p style="font-size: 11px; color: #685D58; font-style: italic; margin: 4px 0 0 0;">
             Đến dự buổi tiệc chung vui cùng gia đình chúng tôi tại
           </p>
         </div>
 
         <!-- Venue -->
-        <div style="background: rgba(201, 158, 92, 0.1); border: 1px solid rgba(201, 158, 92, 0.35); border-radius: 12px; padding: 10px 12px; margin: 0 auto 14px auto; max-width: 440px;">
-          <div style="font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: bold; letter-spacing: 2.5px; color: #3D3430; text-transform: uppercase;">
+        <div style="background: rgba(201, 158, 92, 0.1); border: 1px solid rgba(201, 158, 92, 0.35); border-radius: 12px; padding: 8px 12px; margin: 0 auto 10px auto; max-width: 440px;">
+          <div style="font-family: 'Montserrat', sans-serif; font-size: 9.5px; font-weight: bold; letter-spacing: 2px; color: #3D3430; text-transform: uppercase;">
             TRUNG TÂM SỰ KIỆN VÀ TIỆC CƯỚI
           </div>
-          <div id="exportCardVenue" style="font-family: 'Cinzel', serif; font-size: 22px; font-weight: bold; color: #891322; letter-spacing: 1px; margin: 2px 0;">
+          <div id="exportCardVenueName" style="font-family: 'Cinzel', serif; font-size: 20px; font-weight: bold; color: #891322; letter-spacing: 1px; margin: 2px 0;">
             THANH PHỤNG
           </div>
-          <div style="font-family: 'Montserrat', sans-serif; font-size: 11.5px; color: #3D3430; font-weight: 500;">
+          <div id="exportCardVenueAddress" style="font-family: 'Montserrat', sans-serif; font-size: 11px; color: #3D3430; font-weight: 500;">
             Ấp Hai Đông, Xã Bàu Lâm, TP. HCM
           </div>
         </div>
 
         <!-- Date and Time -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; font-family: 'Montserrat', sans-serif;">
+        <div style="display: flex; items-center; justify-content: center; gap: 10px; margin-bottom: 10px; font-family: 'Montserrat', sans-serif;">
+          <div style="border-top: 1px solid #C99E5C; border-bottom: 1px solid #C99E5C; padding: 5px 12px; text-align: center;">
+            <div style="font-size: 9.5px; color: #891322; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">VÀO LÚC</div>
+            <div id="exportCardEventTime" style="font-size: 16px; font-weight: bold; color: #891322; font-family: 'Cinzel', serif;">11:00</div>
+          </div>
+          <div style="border: 2px solid #891322; background: #891322; color: #FAF7F2; border-radius: 10px; padding: 5px 14px; text-align: center;">
+            <div style="font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">CHỦ NHẬT</div>
+            <div style="font-size: 20px; font-weight: bold; font-family: 'Cinzel', serif; line-height: 1;">25.10</div>
+            <div style="font-size: 9.5px; font-weight: 600;">2026</div>
+          </div>
+          <div style="border-top: 1px solid #C99E5C; border-bottom: 1px solid #C99E5C; padding: 5px 12px; text-align: center;">
+            <div style="font-size: 9.5px; color: #891322; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">AL: 16.09</div>
+            <div style="font-size: 11px; font-weight: 600; color: #685D58;">Bính Ngọ</div>
+          </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div style="border-top: 1px dashed rgba(201, 158, 92, 0.5); padding-top: 8px; display: flex; items-center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-heart" style="color: #891322; font-size: 10px;"></i>
+          <span style="font-family: 'Montserrat', sans-serif; font-size: 10.5px; color: #685D58; font-style: italic;">
+            Rất hân hạnh được đón tiếp quý khách! • ngaycuoi.online
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>tyle="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; font-family: 'Montserrat', sans-serif;">
           <div style="border-top: 1px solid #C99E5C; border-bottom: 1px solid #C99E5C; padding: 6px 14px; text-align: center;">
             <div style="font-size: 10px; color: #891322; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">VÀO LÚC</div>
             <div id="exportCardEventTime" style="font-size: 18px; font-weight: bold; color: #891322; font-family: 'Cinzel', serif;">11:00</div>
@@ -2967,18 +2984,41 @@
         }
       });
 
-      // 7. Dedicated Export Card
+      // 7. Dedicated Export Card Updates
       const exportCouple = document.getElementById('exportCardCoupleNames');
       if (exportCouple) {
-        exportCouple.innerHTML = `${escapeHTML(eventConfig.groomName || 'Hoài Phước')} <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> ${escapeHTML(eventConfig.brideName || 'Diệu Hồng')}`;
+        exportCouple.innerHTML = `${escapeHTML(eventConfig.groomName || 'Lê Hoài Phước')} <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> ${escapeHTML(eventConfig.brideName || 'Nguyễn Diệu Hồng')}`;
       }
+
+      const exportGroomParents = document.getElementById('exportCardGroomParents');
+      if (exportGroomParents && eventConfig.groomParents) {
+        exportGroomParents.innerHTML = formatParentsHTML('Nhà Trai', eventConfig.groomParents);
+      }
+
+      const exportBrideParents = document.getElementById('exportCardBrideParents');
+      if (exportBrideParents && eventConfig.brideParents) {
+        exportBrideParents.innerHTML = formatParentsHTML('Nhà Gái', eventConfig.brideParents);
+      }
+
+      const exportCeremonyTime = document.getElementById('exportCardCeremonyTime');
+      if (exportCeremonyTime && eventConfig.ceremonyTime) {
+        exportCeremonyTime.textContent = `VÀO LÚC: ${eventConfig.ceremonyTime.toUpperCase()}`;
+      }
+
+      const exportVenueName = document.getElementById('exportCardVenueName');
+      const exportVenueAddress = document.getElementById('exportCardVenueAddress');
+      if (eventConfig.partyVenue) {
+        const parts = eventConfig.partyVenue.split(',');
+        if (exportVenueName) exportVenueName.textContent = parts[0].trim();
+        if (exportVenueAddress && parts.length > 1) {
+          exportVenueAddress.textContent = parts.slice(1).join(',').trim();
+        }
+      }
+
       const exportTime = document.getElementById('exportCardEventTime');
       if (exportTime && eventConfig.partyTime) {
-        exportTime.textContent = eventConfig.partyTime;
-      }
-      const exportVenue = document.getElementById('exportCardVenue');
-      if (exportVenue && eventConfig.partyVenue) {
-        exportVenue.textContent = eventConfig.partyVenue;
+        const timeMatch = eventConfig.partyTime.match(/\d{1,2}:\d{2}/);
+        exportTime.textContent = timeMatch ? timeMatch[0] : '11:00';
       }
     }
 
