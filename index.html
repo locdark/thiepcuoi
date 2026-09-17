@@ -2886,13 +2886,23 @@
       if (cardBride) cardBride.textContent = eventConfig.brideName || 'Nguyễn Diệu Hồng';
 
       // 3. Parents
+      function formatParentsHTML(title, rawText) {
+        if (!rawText) return '';
+        const lines = rawText.split(/\s*[-–—]\s*|\n|<br\s*\/?>/gi).map(s => s.trim()).filter(Boolean);
+        let html = `<p class="font-serif font-bold text-wedding-text tracking-wide uppercase text-[11px] sm:text-xs mb-1">${title}</p>`;
+        lines.forEach(line => {
+          html += `<p class="font-medium text-wedding-text text-[11px] sm:text-xs leading-snug">${escapeHTML(line)}</p>`;
+        });
+        return html;
+      }
+
       const cardGroomParents = document.getElementById('cardGroomParentsDisplay');
       if (cardGroomParents && eventConfig.groomParents) {
-        cardGroomParents.textContent = eventConfig.groomParents;
+        cardGroomParents.innerHTML = formatParentsHTML('Nhà Trai', eventConfig.groomParents);
       }
       const cardBrideParents = document.getElementById('cardBrideParentsDisplay');
       if (cardBrideParents && eventConfig.brideParents) {
-        cardBrideParents.textContent = eventConfig.brideParents;
+        cardBrideParents.innerHTML = formatParentsHTML('Nhà Gái', eventConfig.brideParents);
       }
 
       // 4. Ceremony Time
