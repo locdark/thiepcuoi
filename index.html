@@ -844,18 +844,23 @@
                 </p>
 
                 <!-- Venue Info -->
-                <div class="space-y-0.5 pt-1">
-                  <p class="text-[11px] font-sans font-bold text-wedding-text uppercase tracking-widest">
+                <div class="space-y-1 pt-1">
+                  <p class="text-[10px] sm:text-[11px] font-sans font-bold text-wedding-subtext uppercase tracking-widest">
                     TRUNG TÂM SỰ KIỆN VÀ TIỆC CƯỚI
                   </p>
                   <h3 id="cardPartyVenueTitle" class="font-serif text-xl sm:text-2xl font-bold text-wedding-red tracking-wide uppercase">
                     THANH PHỤNG
                   </h3>
-                  <a id="cardVenueAddress" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
-                    class="text-xs text-wedding-red hover:text-wedding-darkred font-semibold inline-flex items-center gap-1 mt-0.5 cursor-pointer bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1 rounded-full border border-wedding-gold/30 transition-all"
-                    title="Bấm để mở bản đồ Google Maps chỉ đường">
-                    <i class="fa-solid fa-location-dot text-wedding-red"></i> Ấp Hai Đông, Xã Bàu Lâm, TP. HCM (Bấm xem bản đồ)
-                  </a>
+                  <p id="cardPartyVenueAddress" class="text-xs text-wedding-text font-medium">
+                    Ấp Hai Đông, Xã Bàu Lâm, TP. HCM
+                  </p>
+                  <div class="pt-1">
+                    <a id="cardVenueAddress" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
+                      class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-wedding-red/10 text-wedding-red hover:bg-wedding-red hover:text-white border border-wedding-red/30 transition-all shadow-sm"
+                      title="Bấm để mở bản đồ Google Maps chỉ đường">
+                      <i class="fa-solid fa-location-dot"></i> Bản đồ Google Maps chỉ đường
+                    </a>
+                  </div>
                 </div>
 
                 <!-- Reception Date & Time -->
@@ -1914,8 +1919,11 @@
                         <label class="block mb-1 text-amber-200/90 font-medium">Chọn bài nhạc có sẵn:</label>
                         <select id="adminMusicSelect" onchange="handleSelectPresetMusic(this.value)"
                           class="w-full bg-[#2A080C] border border-wedding-gold/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-300">
-                          <option value="wedding_music.mp3" selected>🎹 Bản Dương Cầm Cưới Lãng Mạn (Wedding Piano)
-                          </option>
+                          <option value="ngay_dau_tien.m4a" selected>🎤 Ngày Đầu Tiên (Đức Phúc)</option>
+                          <option value="hon_ca_yeu.m4a">💖 Hơn Cả Yêu (Đức Phúc)</option>
+                          <option value="cuoi_nhau_di.m4a">💒 Cưới Nhau Đi - Yes I Do (Bùi Anh Tuấn & Hiền Hồ)</option>
+                          <option value="ta_la_cua_nhau.m4a">👩‍❤️‍👨 Ta Là Của Nhau (Đông Nhi & Ông Cao Thắng)</option>
+                          <option value="wedding_music.mp3">🎹 Bản Dương Cầm Cưới Lãng Mạn (Wedding Piano)</option>
                           <option value="wedding_music_2.mp3">🎻 Giai Điệu Tình Yêu (Wedding Story Acoustic)</option>
                           <option value="custom">🎵 Dán link nhạc MP3 tùy chọn...</option>
                         </select>
@@ -2829,7 +2837,7 @@
     // State management
     let isEnvelopeOpen = false;
     let isMusicPlaying = false;
-    let currentMusicSrc = 'wedding_music.mp3';
+    let currentMusicSrc = 'ngay_dau_tien.m4a';
 
     // Target wedding dates
     const weddingDate = new Date("2026-10-25T11:00:00+07:00").getTime();
@@ -3075,13 +3083,25 @@
 
       // 5. Party Venue & Time
       const cardVenueTitle = document.getElementById('cardPartyVenueTitle');
-      if (cardVenueTitle && eventConfig.partyVenue) {
-        cardVenueTitle.textContent = eventConfig.partyVenue.toUpperCase();
+      const cardVenueAddrText = document.getElementById('cardPartyVenueAddress');
+      const cardVenueAddr = document.getElementById('cardVenueAddress');
+
+      if (eventConfig.partyVenue) {
+        const parts = eventConfig.partyVenue.split(',').map(s => s.trim());
+        let venueName = parts[0];
+        const cleanedName = venueName.replace(/^(Trung\s+Tâm\s+Tiệc\s+Cưới|TT\s+Tiệc\s+Cưới)\s*/i, '').trim();
+
+        if (cardVenueTitle) {
+          cardVenueTitle.textContent = (cleanedName || venueName).toUpperCase();
+        }
+
+        if (cardVenueAddrText) {
+          cardVenueAddrText.textContent = parts.length > 1 ? parts.slice(1).join(', ') : '';
+        }
       }
 
-      const cardVenueAddr = document.getElementById('cardVenueAddress');
       if (cardVenueAddr) {
-        if (eventConfig.partyVenue) cardVenueAddr.innerHTML = `<i class="fa-solid fa-location-dot text-wedding-red mr-1"></i> ${escapeHTML(eventConfig.partyVenue)} (Bấm xem bản đồ)`;
+        cardVenueAddr.innerHTML = `<i class="fa-solid fa-location-dot"></i> Bản đồ Google Maps chỉ đường`;
         if (eventConfig.mapUrl) cardVenueAddr.href = eventConfig.mapUrl;
       }
 
@@ -3139,10 +3159,12 @@
       const exportVenueName = document.getElementById('exportCardVenueName');
       const exportVenueAddress = document.getElementById('exportCardVenueAddress');
       if (eventConfig.partyVenue) {
-        const parts = eventConfig.partyVenue.split(',');
-        if (exportVenueName) exportVenueName.textContent = parts[0].trim();
+        const parts = eventConfig.partyVenue.split(',').map(s => s.trim());
+        let venueName = parts[0];
+        const cleanedName = venueName.replace(/^(Trung\s+Tâm\s+Tiệc\s+Cưới|TT\s+Tiệc\s+Cưới)\s*/i, '').trim();
+        if (exportVenueName) exportVenueName.textContent = (cleanedName || venueName).toUpperCase();
         if (exportVenueAddress && parts.length > 1) {
-          exportVenueAddress.textContent = parts.slice(1).join(',').trim();
+          exportVenueAddress.textContent = parts.slice(1).join(', ');
         }
       }
 
@@ -4402,6 +4424,10 @@
       OnlineDB.saveConfig({ weddingMusicSrc: val });
 
       const nameMap = {
+        'ngay_dau_tien.m4a': 'Ngày Đầu Tiên (Đức Phúc)',
+        'hon_ca_yeu.m4a': 'Hơn Cả Yêu (Đức Phúc)',
+        'cuoi_nhau_di.m4a': 'Cưới Nhau Đi - Yes I Do (Bùi Anh Tuấn & Hiền Hồ)',
+        'ta_la_cua_nhau.m4a': 'Ta Là Của Nhau (Đông Nhi & Ông Cao Thắng)',
         'wedding_music.mp3': 'Bản Dương Cầm Cưới Lãng Mạn (Wedding Piano)',
         'wedding_music_2.mp3': 'Giai Điệu Tình Yêu (Wedding Story Acoustic)'
       };
