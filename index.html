@@ -688,7 +688,7 @@
           <div class="px-4 sm:px-8 py-6 text-center border-b border-[#e9ded0]">
 
             <!-- Two Families (Nhà Trai & Nhà Gái) -->
-            <div class="grid grid-cols-2 gap-3 sm:gap-6 text-xs sm:text-sm mb-6">
+            <div id="cardParentsContainer" class="grid grid-cols-2 gap-3 sm:gap-6 text-xs sm:text-sm mb-6">
               <!-- Nhà Trai -->
               <div id="cardGroomParentsDisplay" class="space-y-0.5">
                 <p class="font-serif font-bold text-wedding-text tracking-wide uppercase text-[11px] sm:text-xs">Nhà
@@ -886,12 +886,21 @@
                   <p id="cardPartyVenueAddress" class="text-xs text-wedding-text font-medium">
                     Ấp Hai Đông, Xã Bàu Lâm, TP. HCM
                   </p>
-                  <div class="pt-1">
-                    <a id="cardVenueAddress" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
-                      class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-wedding-red/10 text-wedding-red hover:bg-wedding-red hover:text-white border border-wedding-red/30 transition-all shadow-sm"
-                      title="Bấm để mở bản đồ Google Maps chỉ đường">
-                      <i class="fa-solid fa-location-dot"></i> Bản đồ Google Maps chỉ đường
-                    </a>
+                  <div class="pt-1.5 flex items-center justify-center md:justify-start">
+                    <div class="relative group inline-flex">
+                      <a id="cardVenueAddress" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-amber-50 to-amber-100/90 text-wedding-red hover:bg-wedding-red hover:text-white border border-wedding-gold/60 hover:border-wedding-red transition-all duration-300 shadow-sm hover:shadow-md hover:scale-110 active:scale-95 cursor-pointer"
+                        aria-label="Bản đồ Google Maps chỉ đường đến nhà hàng">
+                        <i class="fa-solid fa-location-dot text-sm text-wedding-red group-hover:text-white transition-colors"></i>
+                      </a>
+                      <!-- Tooltip tinh tế khi rê chuột -->
+                      <div id="cardVenueMapTooltip"
+                        class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-lg bg-[#240508]/95 text-amber-200 text-xs font-serif whitespace-nowrap opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 shadow-xl border border-wedding-gold/50 z-30 flex items-center gap-1.5">
+                        <i class="fa-solid fa-diamond-turn-right text-wedding-gold text-[10px]"></i>
+                        <span id="cardVenueMapTooltipText">Bản đồ chỉ đường đến nhà hàng</span>
+                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-4 border-transparent border-t-[#240508]/95"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -1488,7 +1497,7 @@
                 class="absolute inset-y-0 left-0 pl-3 flex items-center text-amber-300/70 text-sm pointer-events-none">
                 <i class="fa-solid fa-user"></i>
               </span>
-              <input type="text" id="adminUsernameInputLogin" required placeholder="admin (Nhà Trai) hoặc admin2 (Nhà Gái)..."
+              <input type="text" id="adminUsernameInputLogin" required placeholder="Nhập tài khoản quản trị..."
                 autocomplete="username"
                 class="w-full bg-white/10 border border-wedding-gold/40 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300 font-medium">
             </div>
@@ -1501,7 +1510,7 @@
                 class="absolute inset-y-0 left-0 pl-3 flex items-center text-amber-300/70 text-sm pointer-events-none">
                 <i class="fa-solid fa-key"></i>
               </span>
-              <input type="password" id="adminPasswordInputLogin" required placeholder="Nhập mật khẩu quản trị (admin123)..."
+              <input type="password" id="adminPasswordInputLogin" required placeholder="Nhập mật khẩu quản trị..."
                 autocomplete="current-password"
                 class="w-full bg-white/10 border border-wedding-gold/40 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300 font-medium">
             </div>
@@ -1517,10 +1526,6 @@
             <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập Quản Trị
           </button>
         </form>
-
-        <p class="text-[11px] text-amber-200/60 italic pt-1 border-t border-white/5 w-full text-center">
-          * Tài khoản: <strong>admin</strong> (Nhà Trai) | <strong>admin2</strong> (Nhà Gái) • Mật khẩu: <strong>admin123</strong>
-        </p>
       </div>
 
       <!-- MAIN ADMIN PANEL VIEW (Unlocked after admin login) -->
@@ -1580,9 +1585,17 @@
                 <h4 class="font-serif text-base font-bold text-amber-300 flex items-center gap-2">
                   <i class="fa-solid fa-user-plus text-amber-400"></i> Nhập Thông Tin Người Được Mời
                 </h4>
-                <span id="tab1ActiveRoleBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                  👰 Link tạo cho khách: <strong>NHÀ GÁI (17/10)</strong>
-                </span>
+                <div class="flex items-center gap-1.5 p-1 bg-black/40 rounded-xl border border-wedding-gold/30">
+                  <span class="text-[11px] text-amber-200/70 pl-2 pr-1 font-medium">Bên mời:</span>
+                  <button type="button" id="tab1SideBtnNhatrai" onclick="setTab1CreateSide('nhatrai')"
+                    class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow border border-amber-300">
+                    🤵 Nhà Trai (25/10)
+                  </button>
+                  <button type="button" id="tab1SideBtnNhagai" onclick="setTab1CreateSide('nhagai')"
+                    class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 text-amber-200/80 hover:text-white">
+                    👰 Nhà Gái (17/10)
+                  </button>
+                </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
@@ -1635,7 +1648,7 @@
                 <div class="pt-2 mt-2 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">
                   <div class="flex items-center gap-1.5 min-w-0 flex-1">
                     <span class="text-amber-300 font-semibold whitespace-nowrap inline-flex items-center gap-1 text-[11px]">
-                      <i class="fa-solid fa-link text-amber-400"></i> Link tạo:
+                      <i class="fa-solid fa-link text-amber-400"></i> Link tạo (<span id="adminPreviewLinkSideBadge" class="text-amber-300 font-semibold">Nhà Trai (25/10)</span>):
                     </span>
                     <a id="adminPreviewLinkUrl" href="#" target="_blank" class="font-mono text-amber-200 hover:text-white underline truncate text-[11px]" title="Bấm để mở xem thử thiệp">https://ngaycuoi.online/Hoailoc</a>
                   </div>
@@ -2366,7 +2379,7 @@
         </div>
 
         <!-- Two Families (Phụ Huynh Hai Nhà) -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; font-size: 11px; text-align: center; border-bottom: 1px dashed rgba(201, 158, 92, 0.4); padding-bottom: 8px;">
+        <div id="exportCardParentsContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; font-size: 11px; text-align: center; border-bottom: 1px dashed rgba(201, 158, 92, 0.4); padding-bottom: 8px;">
           <div id="exportCardGroomParents">
             <!-- Rendered dynamically -->
           </div>
@@ -2574,16 +2587,16 @@
         } catch (e) { }
 
         let list = JSON.parse(localStorage.getItem('weddingGuestList') || '[]');
-        const idx = list.findIndex(g => g.id === guest.id || (g.name && guest.name && g.name.trim().toLowerCase() === guest.name.trim().toLowerCase()));
-        if (idx >= 0) list[idx] = guest;
+        const idx = list.findIndex(g => g.id === guest.id || (g.name && guest.name && g.name.trim().toLowerCase() === guest.name.trim().toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === guestSlug);
+        if (idx >= 0) list[idx] = Object.assign({}, list[idx], guest);
         else list.unshift(guest);
         localStorage.setItem('weddingGuestList', JSON.stringify(list));
 
         try {
           let cloudData = await this.fetchCloudData() || { guests: [], wishes: [] };
           cloudData.guests = cloudData.guests || [];
-          const cIdx = cloudData.guests.findIndex(g => g.id === guest.id || (g.name && guest.name && g.name.trim().toLowerCase() === guest.name.trim().toLowerCase()));
-          if (cIdx >= 0) cloudData.guests[cIdx] = guest;
+          const cIdx = cloudData.guests.findIndex(g => g.id === guest.id || (g.name && guest.name && g.name.trim().toLowerCase() === guest.name.trim().toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === guestSlug);
+          if (cIdx >= 0) cloudData.guests[cIdx] = Object.assign({}, cloudData.guests[cIdx], guest);
           else cloudData.guests.unshift(guest);
           await this.saveCloudData(cloudData);
         } catch (e) {
@@ -3210,10 +3223,7 @@
           try { localGuests = JSON.parse(localStorage.getItem('weddingGuestList') || '[]'); } catch (e) {}
           const cleanSlug = pathClean.toLowerCase().replace(/^(?:phuochongmoi|moi)/i, '');
 
-          let matched = localGuests.find(g => {
-            const gSlug = makeGuestSlug(g.name || '').toLowerCase();
-            return gSlug === pathClean.toLowerCase() || gSlug.replace(/^(?:phuochongmoi|moi)/i, '') === cleanSlug;
-          });
+          let matched = findBestGuestMatch(localGuests, cleanSlug, pathClean.toLowerCase());
 
           if (matched) {
             guestFromUrl = matched.name;
@@ -3223,21 +3233,20 @@
           } else {
             const rawSlug = pathClean.replace(/^(?:Phuochongmoi|phuochongmoi|moi)/i, '');
             guestFromUrl = rawSlug.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([a-zA-Z])([0-9])/g, '$1 $2').replace(/Va/g, ' & ').trim();
-            OnlineDB.getGuests().then(cloudGuests => {
-              if (!cloudGuests || !cloudGuests.length) return;
-              const cloudMatched = cloudGuests.find(g => {
-                const gSlug = makeGuestSlug(g.name || '').toLowerCase();
-                return gSlug === pathClean.toLowerCase() || gSlug.replace(/^(?:phuochongmoi|moi)/i, '') === cleanSlug;
-              });
-              if (cloudMatched) {
-                updateGuestName(cloudMatched.name, cloudMatched.salut || 'Kính mời');
-                if (cloudMatched.side && cloudMatched.side !== currentWeddingVersion) {
-                  switchWeddingVersion(cloudMatched.side, true, true);
-                }
-                OnlineDB.trackRead(cloudMatched.id, cloudMatched.name);
-              }
-            }).catch(() => {});
           }
+
+          // Always query cloud guests to ensure freshest accented name and side!
+          OnlineDB.getGuests().then(cloudGuests => {
+            if (!cloudGuests || !cloudGuests.length) return;
+            const cloudMatched = findBestGuestMatch(cloudGuests, cleanSlug, pathClean.toLowerCase());
+            if (cloudMatched) {
+              updateGuestName(cloudMatched.name, cloudMatched.salut || 'Kính mời');
+              if (cloudMatched.side && cloudMatched.side !== currentWeddingVersion) {
+                switchWeddingVersion(cloudMatched.side, true, true);
+              }
+              OnlineDB.trackRead(cloudMatched.id, cloudMatched.name);
+            }
+          }).catch(() => {});
         }
       }
 
@@ -3375,6 +3384,23 @@
       return first + rest;
     }
 
+    function hasVietnameseDiacritics(str) {
+      return /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđĐ]/i.test(str || '');
+    }
+
+    function findBestGuestMatch(guestsList, cleanSlug, pathLower) {
+      if (!Array.isArray(guestsList) || guestsList.length === 0) return null;
+      const candidates = guestsList.filter(g => {
+        if (!g || !g.name) return false;
+        const gSlug = makeGuestSlug(g.name).toLowerCase();
+        return gSlug === pathLower || gSlug.replace(/^(?:phuochongmoi|moi)/i, '') === cleanSlug;
+      });
+      if (candidates.length === 0) return null;
+      const withAccents = candidates.find(g => hasVietnameseDiacritics(g.name));
+      if (withAccents) return withAccents;
+      return candidates[0];
+    }
+
     function getShareBaseDomain() {
       if (window.location.protocol === 'file:') return 'https://ngaycuoi.online';
       if (window.location.hostname.includes('ngaycuoi.online')) return 'https://ngaycuoi.online';
@@ -3417,6 +3443,16 @@
       if (guestFromUrl || guestIdFromUrl || b64 || isCustomSlug) {
         // GUEST MODE: Visitor accessed with custom invitation link
         isGuestMode = true;
+
+        if (isCustomSlug) {
+          let localGuests = [];
+          try { localGuests = JSON.parse(localStorage.getItem('weddingGuestList') || '[]'); } catch (e) {}
+          const cleanSlug = pathClean.toLowerCase().replace(/^(?:phuochongmoi|moi)/i, '');
+          const matched = findBestGuestMatch(localGuests, cleanSlug, pathClean.toLowerCase());
+          if (matched && matched.side) {
+            currentWeddingVersion = matched.side;
+          }
+        }
 
         // Strictly enforce version from URL/b64 for guest
         switchWeddingVersion(currentWeddingVersion, false, true);
@@ -3496,7 +3532,7 @@
     function checkAdminPermission() {
       if (isAdminLoggedIn) return true;
       openAdminModal();
-      showToast('⚠️ Vui lòng đăng nhập Admin (tk: admin / admin2, mk: admin123) để thực hiện!');
+      showToast('⚠️ Vui lòng đăng nhập Admin để thực hiện!');
       return false;
     }
 
@@ -3508,9 +3544,16 @@
           currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
         }
 
-        const storedVer = localStorage.getItem('weddingCurrentVersion');
-        if (storedVer === 'nhagai' || storedVer === 'nhatrai') {
-          currentWeddingVersion = storedVer;
+        const pathClean = decodeURIComponent(window.location.pathname || '').replace(/^\/+/, '').replace(/\.html$/i, '').trim();
+        const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
+        const hasGuestSlug = pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/');
+        const hasParams = window.location.search.includes('to=') || window.location.search.includes('guest=') || window.location.search.includes('b=');
+
+        if (!hasGuestSlug && !hasParams) {
+          const storedVer = localStorage.getItem('weddingCurrentVersion');
+          if (storedVer === 'nhagai' || storedVer === 'nhatrai') {
+            currentWeddingVersion = storedVer;
+          }
         }
 
         const storedBank = localStorage.getItem('weddingBankConfig');
@@ -3537,6 +3580,24 @@
         if (storedNhatrai) weddingConfigs.nhatrai = Object.assign({}, DEFAULT_CONFIG_NHATRAI, JSON.parse(storedNhatrai));
         const storedNhagai = localStorage.getItem('weddingEventConfig_nhagai');
         if (storedNhagai) weddingConfigs.nhagai = Object.assign({}, DEFAULT_CONFIG_NHAGAI, JSON.parse(storedNhagai));
+
+        // SANITIZER / AUTO-HEAL: Ensure Nhà Trai is NEVER polluted with Nhà Gái venue/dates, and vice versa
+        if (weddingConfigs.nhatrai) {
+          const v = (weddingConfigs.nhatrai.partyVenue || '').toUpperCase();
+          const l = (weddingConfigs.nhatrai.ceremonyLocation || '').toUpperCase();
+          if (v.includes('CÔNG ĐOÀN') || l.includes('NHÀ GÁI') || weddingConfigs.nhatrai.ceremonyDay === '17' || weddingConfigs.nhatrai.ceremonyType === 'LỄ VU QUY') {
+            weddingConfigs.nhatrai = Object.assign({}, DEFAULT_CONFIG_NHATRAI);
+            localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai));
+          }
+        }
+        if (weddingConfigs.nhagai) {
+          const v = (weddingConfigs.nhagai.partyVenue || '').toUpperCase();
+          const l = (weddingConfigs.nhagai.ceremonyLocation || '').toUpperCase();
+          if (v.includes('THANH PHỤNG') || l.includes('NHÀ TRAI') || weddingConfigs.nhagai.ceremonyDay === '20' || weddingConfigs.nhagai.ceremonyType === 'LỄ TÂN HÔN') {
+            weddingConfigs.nhagai = Object.assign({}, DEFAULT_CONFIG_NHAGAI);
+            localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai));
+          }
+        }
 
         eventConfig = Object.assign({}, weddingConfigs[currentWeddingVersion] || weddingConfigs.nhatrai);
         targetWeddingTimestamp = eventConfig.targetTimestamp || (currentWeddingVersion === 'nhagai' ? DEFAULT_CONFIG_NHAGAI.targetTimestamp : DEFAULT_CONFIG_NHATRAI.targetTimestamp);
@@ -3580,6 +3641,7 @@
         return html;
       }
 
+      const parentsContainer = document.getElementById('cardParentsContainer');
       const cardGroomParents = document.getElementById('cardGroomParentsDisplay');
       if (cardGroomParents && eventConfig.groomParents) {
         cardGroomParents.innerHTML = formatParentsHTML('Nhà Trai', eventConfig.groomParents);
@@ -3587,6 +3649,18 @@
       const cardBrideParents = document.getElementById('cardBrideParentsDisplay');
       if (cardBrideParents && eventConfig.brideParents) {
         cardBrideParents.innerHTML = formatParentsHTML('Nhà Gái', eventConfig.brideParents);
+      }
+      if (parentsContainer && cardGroomParents && cardBrideParents) {
+        parentsContainer.innerHTML = '';
+        if (isNhagai) {
+          // Phong tục Lễ Vu Quy: Nhà Gái bên trái (trước), Nhà Trai bên phải (sau)
+          parentsContainer.appendChild(cardBrideParents);
+          parentsContainer.appendChild(cardGroomParents);
+        } else {
+          // Phong tục Lễ Tân Hôn: Nhà Trai bên trái (trước), Nhà Gái bên phải (sau)
+          parentsContainer.appendChild(cardGroomParents);
+          parentsContainer.appendChild(cardBrideParents);
+        }
       }
 
       // Ceremony Type Heading
@@ -3718,8 +3792,12 @@
       }
 
       if (cardVenueAddr) {
-        cardVenueAddr.innerHTML = `<i class="fa-solid fa-location-dot"></i> Bản đồ Google Maps chỉ đường`;
         if (eventConfig.mapUrl) cardVenueAddr.href = eventConfig.mapUrl;
+        const tooltipText = document.getElementById('cardVenueMapTooltipText');
+        if (tooltipText) {
+          const venueShort = (cardVenueTitle ? cardVenueTitle.textContent : '').trim();
+          tooltipText.textContent = venueShort ? `Bản đồ chỉ đường đến ${venueShort}` : (isNhagai ? 'Bản đồ chỉ đường đến Nhà Hàng CÔNG ĐOÀN' : 'Bản đồ chỉ đường đến TT Tiệc Cưới THANH PHỤNG');
+        }
       }
 
       const cardPartyTime = document.getElementById('cardPartyTimeDisplay');
@@ -3804,6 +3882,7 @@
           exportCouple.innerHTML = `${escapeHTML(eventConfig.groomName || 'Lê Hoài Phước')} <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> ${escapeHTML(eventConfig.brideName || 'Nguyễn Diệu Hồng')}`;
         }
       }
+      const exportParentsContainer = document.getElementById('exportCardParentsContainer');
       const exportGroomParents = document.getElementById('exportCardGroomParents');
       if (exportGroomParents && eventConfig.groomParents) {
         exportGroomParents.innerHTML = formatParentsHTML('Nhà Trai', eventConfig.groomParents);
@@ -3811,6 +3890,16 @@
       const exportBrideParents = document.getElementById('exportCardBrideParents');
       if (exportBrideParents && eventConfig.brideParents) {
         exportBrideParents.innerHTML = formatParentsHTML('Nhà Gái', eventConfig.brideParents);
+      }
+      if (exportParentsContainer && exportGroomParents && exportBrideParents) {
+        exportParentsContainer.innerHTML = '';
+        if (isNhagai) {
+          exportParentsContainer.appendChild(exportBrideParents);
+          exportParentsContainer.appendChild(exportGroomParents);
+        } else {
+          exportParentsContainer.appendChild(exportGroomParents);
+          exportParentsContainer.appendChild(exportBrideParents);
+        }
       }
       const exportCeremonyTime = document.getElementById('exportCardCeremonyTime');
       if (exportCeremonyTime && eventConfig.ceremonyTime) {
@@ -3856,6 +3945,20 @@
           const c = cloudData.config;
           let changed = false;
           if (c.weddingConfigs) {
+            if (c.weddingConfigs.nhatrai) {
+              const v = (c.weddingConfigs.nhatrai.partyVenue || '').toUpperCase();
+              const l = (c.weddingConfigs.nhatrai.ceremonyLocation || '').toUpperCase();
+              if (v.includes('CÔNG ĐOÀN') || l.includes('NHÀ GÁI') || c.weddingConfigs.nhatrai.ceremonyDay === '17' || c.weddingConfigs.nhatrai.ceremonyType === 'LỄ VU QUY') {
+                c.weddingConfigs.nhatrai = Object.assign({}, DEFAULT_CONFIG_NHATRAI);
+              }
+            }
+            if (c.weddingConfigs.nhagai) {
+              const v = (c.weddingConfigs.nhagai.partyVenue || '').toUpperCase();
+              const l = (c.weddingConfigs.nhagai.ceremonyLocation || '').toUpperCase();
+              if (v.includes('THANH PHỤNG') || l.includes('NHÀ TRAI') || c.weddingConfigs.nhagai.ceremonyDay === '20' || c.weddingConfigs.nhagai.ceremonyType === 'LỄ TÂN HÔN') {
+                c.weddingConfigs.nhagai = Object.assign({}, DEFAULT_CONFIG_NHAGAI);
+              }
+            }
             weddingConfigs = Object.assign({}, weddingConfigs, c.weddingConfigs);
             localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai));
             localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai));
@@ -4429,6 +4532,7 @@
         if (logoutBtn) logoutBtn.classList.remove('hidden');
         if (closeBtn) closeBtn.classList.remove('hidden');
         if (viewCardBtn) viewCardBtn.classList.remove('hidden');
+        setTab1CreateSide(currentAdminRole === 'admin2' ? 'nhagai' : 'nhatrai');
         populateAdminForm();
         updateAdminPreview();
       } else {
@@ -4486,7 +4590,7 @@
       } else {
         const loginError = document.getElementById('adminLoginError');
         if (loginError) loginError.classList.remove('hidden');
-        showToast('❌ Sai tài khoản hoặc mật khẩu! (admin hoặc admin2, mk: admin123)');
+        showToast('❌ Sai tài khoản hoặc mật khẩu!');
       }
     }
 
@@ -4537,6 +4641,28 @@
       if (tabIndex === 1) renderGuestTable();
       if (tabIndex === 2) renderAdminWishesTable();
       if (tabIndex === 5) renderCloudDbTab();
+    }
+
+    let tab1SelectedSide = 'nhatrai';
+
+    function setTab1CreateSide(side) {
+      tab1SelectedSide = (side === 'nhagai') ? 'nhagai' : 'nhatrai';
+      const btnTrai = document.getElementById('tab1SideBtnNhatrai');
+      const btnGai = document.getElementById('tab1SideBtnNhagai');
+      if (btnTrai && btnGai) {
+        if (tab1SelectedSide === 'nhagai') {
+          btnTrai.className = 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 text-amber-200/80 hover:text-white';
+          btnGai.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white shadow border border-rose-400/40';
+        } else {
+          btnTrai.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow border border-amber-300';
+          btnGai.className = 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 text-amber-200/80 hover:text-white';
+        }
+      }
+      updateAdminPreview();
+    }
+
+    function getActiveTab1CreateSide() {
+      return tab1SelectedSide || (currentAdminRole === 'admin2' ? 'nhagai' : 'nhatrai');
     }
 
     function toggleCustomPrefixInput() {
@@ -4612,6 +4738,8 @@
       const salut = getActiveAdminSalutation();
       const rawName = nameEl.value.trim();
       const name = rawName || 'Quý Khách & Gia Đình';
+      const targetSide = getActiveTab1CreateSide();
+      const sideName = targetSide === 'nhagai' ? 'Nhà Gái (17/10)' : 'Nhà Trai (25/10)';
 
       const prevEnv = document.getElementById('adminPreviewEnvelope');
       const prevCard = document.getElementById('adminPreviewCard');
@@ -4624,11 +4752,15 @@
       if (prevEnv) prevEnv.textContent = envText;
       if (prevCard) prevCard.textContent = salut + ': ' + name;
 
-      // CẬP NHẬT XEM TRƯỚC LINK TẠO KHI NHẬP TÊN TRỰC TIẾP
+      // CẬP NHẬT XEM TRƯỚC LINK TẠO TRỰC TIẾP
       const linkUrlEl = document.getElementById('adminPreviewLinkUrl');
       const linkOpenBtn = document.getElementById('adminPreviewLinkOpenBtn');
+      const linkSideBadge = document.getElementById('adminPreviewLinkSideBadge');
+      if (linkSideBadge) {
+        linkSideBadge.textContent = sideName;
+        linkSideBadge.className = targetSide === 'nhagai' ? 'text-rose-300 font-semibold' : 'text-amber-300 font-semibold';
+      }
       if (linkUrlEl) {
-        const targetSide = currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion);
         const liveUrl = buildCleanShareUrl(salut, name, '', targetSide);
         linkUrlEl.textContent = liveUrl;
         linkUrlEl.href = liveUrl;
@@ -4640,10 +4772,11 @@
       const name = (document.getElementById('adminGuestNameInput')?.value || '').trim() || 'Quý Khách & Gia Đình';
       const salut = getActiveAdminSalutation();
       const guestId = 'guest_' + Date.now();
-      const targetSide = currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion);
+      const targetSide = getActiveTab1CreateSide();
 
       const guests = await OnlineDB.getGuests();
-      let matched = guests.find(g => g.name.toLowerCase() === name.toLowerCase() || makeGuestSlug(g.name).toLowerCase() === makeGuestSlug(name).toLowerCase());
+      const inputSlug = makeGuestSlug(name).toLowerCase();
+      let matched = guests.find(g => (g.name && g.name.toLowerCase() === name.toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === inputSlug);
       if (!matched) {
         matched = {
           id: guestId,
@@ -4660,15 +4793,15 @@
         };
         await OnlineDB.saveGuest(matched);
       } else {
-        let dirty = false;
-        if (matched.salut !== salut) { matched.salut = salut; dirty = true; }
-        if (!matched.side) { matched.side = targetSide; dirty = true; }
-        if (dirty) await OnlineDB.saveGuest(matched);
+        matched.name = name;
+        matched.salut = salut;
+        matched.side = targetSide;
+        await OnlineDB.saveGuest(matched);
       }
 
       updateGuestName(name, salut);
-      const url = buildCleanShareUrl(salut, name, matched.id, matched.side || targetSide);
-      const sideName = (matched.side || targetSide) === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      const url = buildCleanShareUrl(salut, name, matched.id, targetSide);
+      const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
       copyText(url, `Đã sao chép link gọn (${sideName}) cho "${name}"!`);
       renderGuestTable();
     }
@@ -4677,10 +4810,11 @@
       const name = document.getElementById('adminGuestNameInput').value.trim() || 'Quý Khách & Gia Đình';
       const salut = getActiveAdminSalutation();
       const guestId = 'guest_' + Date.now();
-      const targetSide = currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion);
+      const targetSide = getActiveTab1CreateSide();
 
       const guests = await OnlineDB.getGuests();
-      let matched = guests.find(g => g.name.toLowerCase() === name.toLowerCase());
+      const inputSlug = makeGuestSlug(name).toLowerCase();
+      let matched = guests.find(g => (g.name && g.name.toLowerCase() === name.toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === inputSlug);
       if (!matched) {
         matched = {
           id: guestId,
@@ -4697,16 +4831,16 @@
         };
         await OnlineDB.saveGuest(matched);
       } else {
-        let dirty = false;
-        if (matched.salut !== salut) { matched.salut = salut; dirty = true; }
-        if (!matched.side) { matched.side = targetSide; dirty = true; }
-        if (dirty) await OnlineDB.saveGuest(matched);
+        matched.name = name;
+        matched.salut = salut;
+        matched.side = targetSide;
+        await OnlineDB.saveGuest(matched);
       }
 
       updateGuestName(name, salut);
-      const url = buildCleanShareUrl(salut, name, matched.id, matched.side || targetSide);
+      const url = buildCleanShareUrl(salut, name, matched.id, targetSide);
 
-      const sideName = (matched.side || targetSide) === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
       copyText(url, `Đã sao chép link online (${sideName}) cho "${name}"!`);
       renderGuestTable();
     }
@@ -4715,27 +4849,38 @@
       const salut = getActiveAdminSalutation();
       const name = document.getElementById('adminGuestNameInput').value.trim() || 'Quý Khách & Gia Đình';
       const guestId = 'guest_' + Date.now();
-      const targetSide = currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion);
+      const targetSide = getActiveTab1CreateSide();
 
-      const newGuest = {
-        id: guestId,
-        name: name,
-        salut: salut,
-        side: targetSide,
-        date: new Date().toLocaleDateString('vi-VN'),
-        isRead: false,
-        readCount: 0,
-        firstReadAt: '',
-        lastReadAt: '',
-        rsvp: 'pending',
-        rsvpCount: 1
-      };
+      const guests = await OnlineDB.getGuests();
+      const inputSlug = makeGuestSlug(name).toLowerCase();
+      let matched = guests.find(g => (g.name && g.name.toLowerCase() === name.toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === inputSlug);
 
-      await OnlineDB.saveGuest(newGuest);
+      if (matched) {
+        matched.name = name;
+        matched.salut = salut;
+        matched.side = targetSide;
+        await OnlineDB.saveGuest(matched);
+      } else {
+        matched = {
+          id: guestId,
+          name: name,
+          salut: salut,
+          side: targetSide,
+          date: new Date().toLocaleDateString('vi-VN'),
+          isRead: false,
+          readCount: 0,
+          firstReadAt: '',
+          lastReadAt: '',
+          rsvp: 'pending',
+          rsvpCount: 1
+        };
+        await OnlineDB.saveGuest(matched);
+      }
+
       renderGuestTable();
       const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
       showToast(`Đã lưu "${name}" (${sideName}) vào danh sách thiệp!`);
-      return newGuest;
+      return matched;
     }
 
     function handleTimePresetChange() {
