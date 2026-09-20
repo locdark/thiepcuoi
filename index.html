@@ -3460,11 +3460,11 @@
         }
       }
 
-      if (updateUi) {
-        updateEventUI();
-        renderGiftModal();
-        if (isAdminLoggedIn) populateAdminForm();
-        updateShareUrl();
+      updateEventUI();
+      renderGiftModal();
+      if (isAdminLoggedIn && !isGuestMode) populateAdminForm();
+      updateShareUrl();
+      if (updateUi && isAdminLoggedIn && !isGuestMode) {
         showToast(ver === 'nhagai' ? '👰 Đã chuyển sang bản thiệp NHÀ GÁI (17/10/2026)' : '🤵 Đã chuyển sang bản thiệp NHÀ TRAI (25/10/2026)');
       }
     }
@@ -4698,13 +4698,15 @@
       const modalSalutSelect = document.getElementById('modalSalutationInput');
       if (modalSalutSelect) modalSalutSelect.value = finalSalut;
 
-      const adminGuestInput = document.getElementById('adminGuestNameInput');
-      if (adminGuestInput) adminGuestInput.value = finalName;
-      const adminSalutSelect = document.getElementById('adminSalutationInput');
-      if (adminSalutSelect) adminSalutSelect.value = finalSalut;
+      if (isAdminLoggedIn && !isGuestMode) {
+        const adminGuestInput = document.getElementById('adminGuestNameInput');
+        if (adminGuestInput) adminGuestInput.value = finalName;
+        const adminSalutSelect = document.getElementById('adminSalutationInput');
+        if (adminSalutSelect) adminSalutSelect.value = finalSalut;
+        updateAdminPreview();
+      }
 
       updateShareUrl();
-      updateAdminPreview();
       renderGiftModal();
     }
 
@@ -5068,6 +5070,7 @@
     }
 
     function updateAdminPreview() {
+      if (!isAdminLoggedIn || isGuestMode) return;
       const nameEl = document.getElementById('adminGuestNameInput');
       if (!nameEl) return;
 
