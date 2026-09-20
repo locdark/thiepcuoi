@@ -1680,6 +1680,54 @@
                   <i class="fa-solid fa-share-nodes"></i> Gửi Qua Zalo
                 </button>
               </div>
+              <div class="p-3.5 bg-black/40 border border-wedding-gold/30 rounded-xl space-y-2.5">
+                <div class="flex items-center justify-between flex-wrap gap-1">
+                  <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5 font-serif">
+                    <i class="fa-solid fa-share-nodes text-amber-400"></i> Link Thiệp Mặc Định (Gửi Chung / Nhóm Zalo):
+                  </span>
+                  <span class="text-[10px] text-amber-200/60 italic">Không cần nhập tên riêng (Hiện: Quý Khách & Gia Đình)</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <!-- Nhà Trai -->
+                  <div class="p-2.5 bg-white/5 rounded-lg border border-amber-400/30 flex items-center justify-between gap-2 hover:border-amber-400/60 transition-all">
+                    <div class="min-w-0 flex-1">
+                      <p class="font-bold text-amber-300 text-[11px] truncate flex items-center gap-1">
+                        🤵 Nhà Trai (25/10 - TT Thanh Phụng)
+                      </p>
+                      <a href="https://ngaycuoi.online/nhatrai" target="_blank" class="text-[11px] font-mono text-amber-200/80 hover:text-white underline truncate block" title="Mở thử thiệp Nhà Trai">https://ngaycuoi.online/nhatrai</a>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="copyDefaultSideLink('nhatrai')"
+                        class="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-[11px] font-bold transition-all shadow-sm flex items-center gap-1" title="Sao chép link Nhà Trai">
+                        <i class="fa-regular fa-copy"></i> Chép
+                      </button>
+                      <a href="https://ngaycuoi.online/nhatrai" target="_blank"
+                        class="px-2 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-amber-200 text-[11px] font-medium transition-all border border-white/10 flex items-center" title="Mở xem">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                      </a>
+                    </div>
+                  </div>
+                  <!-- Nhà Gái -->
+                  <div class="p-2.5 bg-white/5 rounded-lg border border-rose-400/30 flex items-center justify-between gap-2 hover:border-rose-400/60 transition-all">
+                    <div class="min-w-0 flex-1">
+                      <p class="font-bold text-rose-300 text-[11px] truncate flex items-center gap-1">
+                        👰 Nhà Gái (17/10 - NH Công Đoàn)
+                      </p>
+                      <a href="https://ngaycuoi.online/nhagai" target="_blank" class="text-[11px] font-mono text-rose-200/80 hover:text-white underline truncate block" title="Mở thử thiệp Nhà Gái">https://ngaycuoi.online/nhagai</a>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="copyDefaultSideLink('nhagai')"
+                        class="px-2.5 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-400 text-white text-[11px] font-bold transition-all shadow-sm flex items-center gap-1" title="Sao chép link Nhà Gái">
+                        <i class="fa-regular fa-copy"></i> Chép
+                      </button>
+                      <a href="https://ngaycuoi.online/nhagai" target="_blank"
+                        class="px-2 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-rose-200 text-[11px] font-medium transition-all border border-white/10 flex items-center" title="Mở xem">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Generated Guest History Table -->
@@ -3191,6 +3239,27 @@
       let salutFromUrl = urlParams.get('salutation') || urlParams.get('sung') || urlParams.get('prefix') || urlParams.get('s');
       let guestIdFromUrl = urlParams.get('id');
 
+      // Check default side route (/nhagai, /nhatrai, /vuquy, /tanhon, /thiepgai, /thieptrai)
+      const pathClean = decodeURIComponent(window.location.pathname || '')
+        .replace(/^\/+/, '')
+        .replace(/\.html$/i, '')
+        .trim();
+      const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
+      const pathLower = pathClean.toLowerCase();
+
+      const isDefaultNhagai = pathLower === 'nhagai' || pathLower === 'vuquy' || pathLower === 'thiepgai';
+      const isDefaultNhatrai = pathLower === 'nhatrai' || pathLower === 'tanhon' || pathLower === 'thieptrai';
+
+      if (isDefaultNhagai) {
+        currentWeddingVersion = 'nhagai';
+        guestFromUrl = 'Quý Khách & Gia Đình';
+        salutFromUrl = 'Trân trọng kính mời';
+      } else if (isDefaultNhatrai) {
+        currentWeddingVersion = 'nhatrai';
+        guestFromUrl = 'Quý Khách & Gia Đình';
+        salutFromUrl = 'Trân trọng kính mời';
+      }
+
       if (b64) {
         try {
           let base64 = b64.replace(/-/g, '+').replace(/_/g, '/');
@@ -3210,14 +3279,7 @@
         } catch (e) { }
       }
 
-      if (!guestFromUrl) {
-        const pathClean = decodeURIComponent(window.location.pathname || '')
-          .replace(/^\/+/, '')
-          .replace(/\.html$/i, '')
-          .trim();
-
-        const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
-
+      if (!guestFromUrl && !isDefaultNhagai && !isDefaultNhatrai) {
         if (pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/')) {
           let localGuests = [];
           try { localGuests = JSON.parse(localStorage.getItem('weddingGuestList') || '[]'); } catch (e) {}
@@ -3409,13 +3471,29 @@
 
     function buildCleanShareUrl(salut, name, id, verOverride, preferLocal = false) {
       const baseDomain = preferLocal ? window.location.origin : getShareBaseDomain();
-      const cleanName = (name || 'Quý Khách & Gia Đình').trim();
+      const cleanName = (name || '').trim();
+      const targetSide = verOverride || (typeof getActiveTab1CreateSide === 'function' ? getActiveTab1CreateSide() : currentWeddingVersion);
+
+      if (!cleanName || cleanName === 'Quý Khách & Gia Đình' || cleanName.toLowerCase() === 'quy khach & gia dinh') {
+        return targetSide === 'nhagai' ? `${baseDomain}/nhagai` : `${baseDomain}/nhatrai`;
+      }
       const slug = makeGuestSlug(cleanName);
+      if (targetSide === 'nhagai') {
+        return `${baseDomain}/${slug}?v=nhagai`;
+      }
       return `${baseDomain}/${slug}`;
+    }
+
+    function copyDefaultSideLink(side) {
+      const baseDomain = getShareBaseDomain();
+      const url = `${baseDomain}/${side === 'nhagai' ? 'nhagai' : 'nhatrai'}`;
+      const sideName = side === 'nhagai' ? 'Nhà Gái (17/10 - Lễ Vu Quy)' : 'Nhà Trai (25/10 - Lễ Tân Hôn)';
+      copyText(url, `Đã sao chép link mặc định ${sideName}! Bạn có thể dán vào Zalo/Facebook gửi ngay.`);
     }
 
     function checkInitialAccessMode() {
       const urlParams = new URLSearchParams(window.location.search);
+      const verParam = (urlParams.get('v') || urlParams.get('ver') || urlParams.get('side') || '').trim().toLowerCase();
       let guestFromUrl = urlParams.get('to') || urlParams.get('guest') || urlParams.get('khach') || urlParams.get('n');
       let guestIdFromUrl = urlParams.get('id');
       const b64 = urlParams.get('b');
@@ -3425,7 +3503,11 @@
         .replace(/\.html$/i, '')
         .trim();
       const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
-      const isCustomSlug = pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/');
+      const pathLower = pathClean.toLowerCase();
+
+      const isDefaultNhagai = pathLower === 'nhagai' || pathLower === 'vuquy' || pathLower === 'thiepgai' || verParam === 'nhagai' || verParam === 'gai' || verParam === '2' || verParam === 'vuquy';
+      const isDefaultNhatrai = pathLower === 'nhatrai' || pathLower === 'tanhon' || pathLower === 'thieptrai' || verParam === 'nhatrai' || verParam === 'trai' || verParam === '1' || verParam === 'tanhon';
+      const isCustomSlug = pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/') && !isDefaultNhagai && !isDefaultNhatrai;
 
       if (b64) {
         try {
@@ -3440,11 +3522,15 @@
         } catch (e) { }
       }
 
-      if (guestFromUrl || guestIdFromUrl || b64 || isCustomSlug) {
-        // GUEST MODE: Visitor accessed with custom invitation link
+      if (guestFromUrl || guestIdFromUrl || b64 || isCustomSlug || isDefaultNhagai || isDefaultNhatrai) {
+        // GUEST MODE: Visitor accessed with custom invitation link or default link
         isGuestMode = true;
 
-        if (isCustomSlug) {
+        if (isDefaultNhagai) {
+          currentWeddingVersion = 'nhagai';
+        } else if (isDefaultNhatrai) {
+          currentWeddingVersion = 'nhatrai';
+        } else if (isCustomSlug) {
           let localGuests = [];
           try { localGuests = JSON.parse(localStorage.getItem('weddingGuestList') || '[]'); } catch (e) {}
           const cleanSlug = pathClean.toLowerCase().replace(/^(?:phuochongmoi|moi)/i, '');
@@ -3457,9 +3543,14 @@
         // Strictly enforce version from URL/b64 for guest
         switchWeddingVersion(currentWeddingVersion, false, true);
 
-        // Hide version switch pill on top so guests CANNOT switch version!
+        // Hide version switch pill on top for custom guest links so guests stay on their side
         const togglePill = document.getElementById('weddingVersionTogglePill');
-        if (togglePill) togglePill.classList.add('hidden');
+        if (togglePill && (isCustomSlug || guestFromUrl || b64)) {
+          togglePill.classList.add('hidden');
+        } else if (togglePill) {
+          // Keep pill visible on default links if they want to browse both sides
+          togglePill.classList.remove('hidden');
+        }
 
         // Hide Admin floating & top nav buttons completely
         const topAdminBtn = document.getElementById('topAdminBtn');
@@ -3478,11 +3569,11 @@
         const decodedName = guestFromUrl ? decodeURIComponent(guestFromUrl.trim()) : '';
         OnlineDB.trackRead(guestIdFromUrl, decodedName);
       } else {
-        // DIRECT ROOT ACCESS: index.html without parameters -> Admin guard required!
-        isGuestMode = false;
+        // DIRECT ROOT ACCESS
         const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
         if (storedAuth === 'true') {
           isAdminLoggedIn = true;
+          isGuestMode = false;
           currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
           // Auto switch to role's version
           if (currentAdminRole === 'admin2' && currentWeddingVersion !== 'nhagai') {
@@ -3498,8 +3589,17 @@
           if (floatAdminBtn) floatAdminBtn.classList.remove('hidden');
           if (togglePill) togglePill.classList.remove('hidden');
         } else {
-          // STRICT LOCK: Lock screen completely, require admin login
-          lockRootForAdminOnly();
+          // GUEST ACCESS ON ROOT: Normal guest browsing root domain
+          isGuestMode = true;
+          switchWeddingVersion(currentWeddingVersion, false, true);
+          const topAdminBtn = document.getElementById('topAdminBtn');
+          const topCreateBtn = document.getElementById('topCreateBtn');
+          const floatAdminBtn = document.getElementById('floatingAdminBtn');
+          if (topAdminBtn) topAdminBtn.classList.add('hidden');
+          if (topCreateBtn) topCreateBtn.classList.add('hidden');
+          if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
+          const togglePill = document.getElementById('weddingVersionTogglePill');
+          if (togglePill) togglePill.classList.remove('hidden');
         }
       }
     }
