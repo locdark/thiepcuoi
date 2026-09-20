@@ -1362,6 +1362,73 @@
     </div>
   </div>
 
+  <!-- CALENDAR SELECTION MODAL (IPHONE & ANDROID COMPATIBLE) -->
+  <div id="calendarModal"
+    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div
+      class="bg-[#240508] border border-wedding-gold/40 rounded-2xl w-full max-w-sm p-5 text-amber-100 shadow-2xl relative">
+      <button onclick="closeCalendarModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 flex items-center justify-center text-sm transition-all">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-4">
+        <div class="w-12 h-12 rounded-full bg-wedding-red/60 text-amber-300 flex items-center justify-center mx-auto mb-2 text-xl border border-wedding-gold/30 shadow-inner">
+          <i class="fa-regular fa-calendar-check"></i>
+        </div>
+        <h3 class="font-serif text-lg font-bold text-amber-200">Lưu Lịch Hôn Lễ</h3>
+        <p class="text-[11px] text-amber-200/70 mt-0.5" id="calendarModalEventTitle">Tiệc Cưới: Hoài Phước & Diệu Hồng</p>
+      </div>
+
+      <div class="space-y-2.5 text-xs">
+        <!-- Nút Lịch iPhone (Apple Calendar) -->
+        <button type="button" onclick="saveToAppleCalendar()" id="btnAppleCalendar"
+          class="w-full bg-white/10 hover:bg-white/20 border border-white/20 hover:border-amber-300/50 p-3 rounded-xl flex items-center justify-between gap-3 transition-all text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-xl text-white group-hover:scale-105 transition-transform flex-shrink-0">
+              <i class="fa-brands fa-apple"></i>
+            </div>
+            <div>
+              <div class="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5">
+                Lịch iPhone (Apple Calendar)
+                <span id="badgeAppleRec" class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 font-normal hidden">Khuyên dùng</span>
+              </div>
+              <p class="text-[11px] text-amber-200/70">Mở trực tiếp ứng dụng Lịch trên iPhone, iPad, Mac</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-amber-300/60 text-xs"></i>
+        </button>
+
+        <!-- Nút Lịch Android / Google Calendar -->
+        <button type="button" onclick="saveToGoogleCalendar()" id="btnGoogleCalendar"
+          class="w-full bg-white/10 hover:bg-white/20 border border-white/20 hover:border-amber-300/50 p-3 rounded-xl flex items-center justify-between gap-3 transition-all text-left group">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-xl text-blue-400 group-hover:scale-105 transition-transform flex-shrink-0">
+              <i class="fa-brands fa-google"></i>
+            </div>
+            <div>
+              <div class="font-bold text-white text-xs sm:text-sm flex items-center gap-1.5">
+                Lịch Android / Google Calendar
+                <span id="badgeAndroidRec" class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 font-normal hidden">Khuyên dùng</span>
+              </div>
+              <p class="text-[11px] text-amber-200/70">Samsung, Xiaomi, Oppo, Pixel, Gmail...</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-amber-300/60 text-xs"></i>
+        </button>
+
+        <!-- Tải file .ICS -->
+        <button type="button" onclick="downloadIcsFile()"
+          class="w-full bg-white/5 hover:bg-white/10 border border-white/10 p-2.5 rounded-xl flex items-center justify-between gap-3 transition-all text-left text-xs text-amber-200/80">
+          <span class="inline-flex items-center gap-2">
+            <i class="fa-regular fa-file-lines text-amber-300"></i>
+            <span>Tải file lịch (.ics) cho ứng dụng khác</span>
+          </span>
+          <i class="fa-solid fa-download text-amber-300/60 text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ADMIN MANAGEMENT MODAL WITH LOGIN PROTECTION -->
   <div id="adminModal"
     class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 hidden overflow-y-auto"
@@ -3136,7 +3203,7 @@
           .replace(/\.html$/i, '')
           .trim();
 
-        const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico)$/i.test(pathClean);
+        const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
 
         if (pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/')) {
           let localGuests = [];
@@ -3331,7 +3398,7 @@
         .replace(/^\/+/, '')
         .replace(/\.html$/i, '')
         .trim();
-      const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico)$/i.test(pathClean);
+      const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
       const isCustomSlug = pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/');
 
       if (b64) {
@@ -5580,25 +5647,151 @@
       );
     }
 
-    function addToCalendar() {
-      const isNhagai = currentWeddingVersion === 'nhagai';
-      let title, details, location, dates;
+    function isIOSDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+      return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
 
-      if (isNhagai) {
-        title = encodeURIComponent("Tiệc Cưới (Lễ Vu Quy): Diệu Hồng & Hoài Phước");
-        details = encodeURIComponent("Kính mời quý khách đến dự tiệc mừng lễ vu quy của Diệu Hồng & Hoài Phước tại Nhà Hàng Công Đoàn, Lầu 1, Số 53 Đường Độc Lập, Phường Tuy Hòa, Đắk Lắk.");
-        location = encodeURIComponent("Nhà Hàng Công Đoàn, 53 Đường Độc Lập, Phường Tuy Hòa, Đắk Lắk");
-        dates = "20261017T040000Z/20261017T070000Z"; // 11:00 - 14:00 (UTC+7) 17/10/2026
-      } else {
-        title = encodeURIComponent("Tiệc Cưới (Lễ Tân Hôn): Hoài Phước & Diệu Hồng");
-        details = encodeURIComponent("Kính mời quý khách đến dự tiệc mừng lễ thành hôn của Hoài Phước & Diệu Hồng tại TT Tiệc cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM.");
-        location = encodeURIComponent("Trung Tâm Sự Kiện Và Tiệc Cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM");
-        dates = "20261025T040000Z/20261025T070000Z"; // 11:00 - 14:00 (UTC+7) 25/10/2026
+    function isAndroidDevice() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+      return /Android/i.test(ua);
+    }
+
+    function openCalendarModal() {
+      const modal = document.getElementById('calendarModal');
+      if (!modal) return;
+      const isNhagai = currentWeddingVersion === 'nhagai';
+      const titleEl = document.getElementById('calendarModalEventTitle');
+      if (titleEl) {
+        titleEl.textContent = isNhagai
+          ? 'Tiệc Cưới (Lễ Vu Quy): Diệu Hồng & Hoài Phước - 17/10/2026'
+          : 'Tiệc Cưới (Lễ Tân Hôn): Hoài Phước & Diệu Hồng - 25/10/2026';
       }
+
+      const appleBadge = document.getElementById('badgeAppleRec');
+      const androidBadge = document.getElementById('badgeAndroidRec');
+      if (isIOSDevice()) {
+        if (appleBadge) appleBadge.classList.remove('hidden');
+        if (androidBadge) androidBadge.classList.add('hidden');
+      } else if (isAndroidDevice()) {
+        if (appleBadge) appleBadge.classList.add('hidden');
+        if (androidBadge) androidBadge.classList.remove('hidden');
+      } else {
+        if (appleBadge) appleBadge.classList.add('hidden');
+        if (androidBadge) androidBadge.classList.add('hidden');
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeCalendarModal() {
+      const modal = document.getElementById('calendarModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function addToCalendar() {
+      // Tự động nhận diện thiết bị và nhảy thẳng tới Lịch tương ứng
+      if (isIOSDevice()) {
+        saveToAppleCalendar();
+      } else if (isAndroidDevice()) {
+        saveToGoogleCalendar();
+      } else {
+        openCalendarModal();
+      }
+    }
+
+    function getIcsDataString() {
+      const isNhagai = currentWeddingVersion === 'nhagai';
+      const title = isNhagai
+        ? 'Tiệc Cưới (Lễ Vu Quy): Diệu Hồng & Hoài Phước'
+        : 'Tiệc Cưới (Lễ Tân Hôn): Hoài Phước & Diệu Hồng';
+
+      const location = isNhagai
+        ? (eventConfig.partyVenue || 'Nhà Hàng Công Đoàn, Lầu 1, Số 53 Đường Độc Lập, Phường Tuy Hòa, Đắk Lắk')
+        : (eventConfig.partyVenue || 'Trung Tâm Sự Kiện Và Tiệc Cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM');
+
+      const description = isNhagai
+        ? 'Kính mời quý khách đến dự tiệc mừng lễ vu quy của Diệu Hồng & Hoài Phước. Rất hân hạnh được đón tiếp!'
+        : 'Kính mời quý khách đến dự tiệc mừng lễ thành hôn của Hoài Phước & Diệu Hồng. Rất hân hạnh được đón tiếp!';
+
+      const dtStart = isNhagai ? '20261017T040000Z' : '20261025T040000Z'; // 11:00 UTC+7
+      const dtEnd = isNhagai ? '20261017T070000Z' : '20261025T070000Z';   // 14:00 UTC+7
+      const uid = (isNhagai ? 'wedding-nhagai-' : 'wedding-nhatrai-') + Date.now() + '@ngaycuoi.online';
+
+      return [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//NgayCuoiOnline//WeddingCalendar//VI',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        'UID:' + uid,
+        'DTSTAMP:20260920T000000Z',
+        'DTSTART:' + dtStart,
+        'DTEND:' + dtEnd,
+        'SUMMARY:' + title,
+        'DESCRIPTION:' + description,
+        'LOCATION:' + location,
+        'STATUS:CONFIRMED',
+        'BEGIN:VALARM',
+        'TRIGGER:-PT2H',
+        'ACTION:DISPLAY',
+        'DESCRIPTION:Nhắc nhở: Tiệc cưới sẽ bắt đầu sau 2 giờ nữa!',
+        'END:VALARM',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+    }
+
+    function saveToAppleCalendar() {
+      const isNhagai = currentWeddingVersion === 'nhagai';
+      const fileName = isNhagai ? 'wedding-nhagai.ics' : 'wedding-nhatrai.ics';
+      const icsData = getIcsDataString();
+
+      // Sử dụng Blob với MIME text/calendar để iOS Safari & các trình duyệt mở trực tiếp Apple Calendar
+      const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.setAttribute('download', fileName);
+      a.setAttribute('target', '_blank');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => {
+        window.URL.revokeObjectURL(blobUrl);
+      }, 8000);
+
+      showToast('🍎 Đang mở ứng dụng Lịch iPhone...');
+      closeCalendarModal();
+    }
+
+    function saveToGoogleCalendar() {
+      const isNhagai = currentWeddingVersion === 'nhagai';
+      const title = encodeURIComponent(isNhagai
+        ? 'Tiệc Cưới (Lễ Vu Quy): Diệu Hồng & Hoài Phước'
+        : 'Tiệc Cưới (Lễ Tân Hôn): Hoài Phước & Diệu Hồng');
+
+      const details = encodeURIComponent(isNhagai
+        ? 'Kính mời quý khách đến dự tiệc mừng lễ vu quy của Diệu Hồng & Hoài Phước. Rất hân hạnh được đón tiếp!'
+        : 'Kính mời quý khách đến dự tiệc mừng lễ thành hôn của Hoài Phước & Diệu Hồng. Rất hân hạnh được đón tiếp!');
+
+      const location = encodeURIComponent(isNhagai
+        ? (eventConfig.partyVenue || 'Nhà Hàng Công Đoàn, 53 Đường Độc Lập, Phường Tuy Hòa, Đắk Lắk')
+        : (eventConfig.partyVenue || 'Trung Tâm Sự Kiện Và Tiệc Cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM'));
+
+      const dates = isNhagai ? '20261017T040000Z/20261017T070000Z' : '20261025T040000Z/20261025T070000Z';
 
       const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
       window.open(googleCalUrl, '_blank');
-      showToast('Đang mở ứng dụng lịch...');
+      showToast('🤖 Đang mở ứng dụng Lịch Android / Google Calendar...');
+      closeCalendarModal();
+    }
+
+    function downloadIcsFile() {
+      saveToAppleCalendar();
     }
 
     function openRSVPModal() { document.getElementById('rsvpModal').classList.remove('hidden'); }
@@ -5630,11 +5823,16 @@
         closeRSVPModal();
         closeMapModal();
         closeGiftModal();
+        closeCalendarModal();
         closePersonalizeModal();
       }
     });
 
     // Backdrop click handling
+    document.getElementById('calendarModal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'calendarModal') closeCalendarModal();
+    });
+
     document.getElementById('adminModal')?.addEventListener('click', (e) => {
       if (e.target.id === 'adminModal') {
         if (!isAdminLoggedIn && !isGuestMode) {

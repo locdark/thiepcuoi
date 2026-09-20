@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//NgayCuoiOnline//WeddingNhaTrai//VI
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:wedding-nhatrai-20261025@ngaycuoi.online
+DTSTAMP:20260920T000000Z
+DTSTART:20261025T040000Z
+DTEND:20261025T070000Z
+SUMMARY:Tiệc Cưới (Lễ Tân Hôn): Hoài Phước & Diệu Hồng
+DESCRIPTION:Kính mời quý khách đến dự tiệc mừng lễ thành hôn của Hoài Phước & Diệu Hồng tại TT Tiệc cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM.
+LOCATION:Trung Tâm Sự Kiện Và Tiệc Cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-PT2H
+ACTION:DISPLAY
+DESCRIPTION:Nhắc nhở: Tiệc cưới Hoài Phước & Diệu Hồng sẽ bắt đầu sau 2 giờ nữa!
+END:VALARM
+END:VEVENT
+END:VCALENDAR
