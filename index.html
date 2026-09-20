@@ -225,9 +225,9 @@
     class="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-wedding-red/20 blur-[130px] rounded-full pointer-events-none -z-10">
   </div>
 
-  <!-- Quick Switch Version Toggle (Nhà Trai 25/10 - Nhà Gái 17/10) -->
+  <!-- Quick Switch Version Toggle (Nhà Trai 25/10 - Nhà Gái 17/10) - Chỉ hiển thị cho Quản Trị Viên -->
   <div id="weddingVersionTogglePill"
-    class="fixed top-4 left-4 z-50 flex items-center bg-black/75 backdrop-blur-md rounded-full p-1 border border-wedding-gold/50 shadow-2xl text-xs transition-all">
+    class="fixed top-4 left-4 z-50 flex items-center bg-black/75 backdrop-blur-md rounded-full p-1 border border-wedding-gold/50 shadow-2xl text-xs transition-all hidden">
     <button id="btnVerNhatrai" onclick="switchWeddingVersion('nhatrai')"
       class="px-3 py-1.5 rounded-full font-semibold transition-all flex items-center gap-1.5 shadow-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500"
       title="Xem thiệp cưới Nhà Trai (Lễ Tân Hôn - 25/10)">
@@ -2651,6 +2651,7 @@
           localStorage.setItem('weddingDeletedGuests', JSON.stringify(deletedSet));
         } catch (e) { }
 
+        const guestSlug = makeGuestSlug(guest.name || '').toLowerCase();
         let list = JSON.parse(localStorage.getItem('weddingGuestList') || '[]');
         const idx = list.findIndex(g => g.id === guest.id || (g.name && guest.name && g.name.trim().toLowerCase() === guest.name.trim().toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === guestSlug);
         if (idx >= 0) list[idx] = Object.assign({}, list[idx], guest);
@@ -3319,7 +3320,7 @@
 
           if (matched) {
             guestFromUrl = matched.name;
-            if (matched.salut) salutFromUrl = matched.salut;
+            if (matched.salut && !salutFromUrl) salutFromUrl = matched.salut;
             if (matched.side) currentWeddingVersion = matched.side;
             if (matched.id) guestIdFromUrl = matched.id;
           } else {
@@ -3333,7 +3334,7 @@
             const cloudMatched = findBestGuestMatch(cloudGuests, cleanSlug, pathClean.toLowerCase());
             if (cloudMatched) {
               const finalAccentedName = cloudMatched.name || guestFromUrl;
-              const finalAccentedSalut = cloudMatched.salut || salutFromUrl || 'Kính mời';
+              const finalAccentedSalut = salutFromUrl || cloudMatched.salut || 'Kính mời';
               updateGuestName(finalAccentedName, finalAccentedSalut);
               if (cloudMatched.side && cloudMatched.side !== currentWeddingVersion) {
                 switchWeddingVersion(cloudMatched.side, true, true);
@@ -3597,13 +3598,14 @@
         // Strictly enforce version from URL/b64 for guest
         switchWeddingVersion(currentWeddingVersion, false, true);
 
-        // Hide version switch pill on top for custom guest links so guests stay on their side
+        // Khách mời hoàn toàn không thấy nút chuyển đổi Nhà Trai / Nhà Gái:
         const togglePill = document.getElementById('weddingVersionTogglePill');
-        if (togglePill && (isCustomSlug || guestFromUrl || b64)) {
-          togglePill.classList.add('hidden');
-        } else if (togglePill) {
-          // Keep pill visible on default links if they want to browse both sides
-          togglePill.classList.remove('hidden');
+        if (togglePill) {
+          if (isAdminLoggedIn && !isGuestMode) {
+            togglePill.classList.remove('hidden');
+          } else {
+            togglePill.classList.add('hidden');
+          }
         }
 
         // Hide Admin controls for guests, but keep quick login trigger
@@ -3643,7 +3645,7 @@
           if (floatAdminBtn) floatAdminBtn.classList.remove('hidden');
           if (togglePill) togglePill.classList.remove('hidden');
         } else {
-          // GUEST ACCESS ON ROOT: Normal guest browsing root domain
+          // GUEST ACCESS ON ROOT: Normal guest browsing root domain (no toggle pill for guest)
           isGuestMode = true;
           switchWeddingVersion(currentWeddingVersion, false, true);
           const topAdminBtn = document.getElementById('topAdminBtn');
@@ -3655,7 +3657,7 @@
           if (topCreateBtn) topCreateBtn.classList.add('hidden');
           if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
           const togglePill = document.getElementById('weddingVersionTogglePill');
-          if (togglePill) togglePill.classList.remove('hidden');
+          if (togglePill) togglePill.classList.add('hidden');
         }
       }
     }
@@ -4705,9 +4707,15 @@
         if (logoutBtn) logoutBtn.classList.remove('hidden');
         if (closeBtn) closeBtn.classList.remove('hidden');
         if (viewCardBtn) viewCardBtn.classList.remove('hidden');
-        setTab1CreateSide(currentAdminRole === 'admin2' ? 'nhagai' : 'nhatrai');
+        const defaultSide = currentAdminRole === 'admin2' ? 'nhagai' : 'nhatrai';
+        setTab1CreateSide(defaultSide);
+        const sideFilter = document.getElementById('guestSideFilter');
+        if (sideFilter && (!sideFilter.value || sideFilter.value === 'all')) {
+          sideFilter.value = defaultSide;
+        }
         populateAdminForm();
         updateAdminPreview();
+        renderGuestTable();
       } else {
         if (loginView) loginView.classList.remove('hidden');
         if (mainView) mainView.classList.add('hidden');
@@ -4736,11 +4744,11 @@
         } catch (err) { }
 
         // Automatically set active version based on admin account if logging in freshly
-        if (user === 'admin2') {
-          switchWeddingVersion('nhagai', false);
-        } else if (user === 'admin') {
-          switchWeddingVersion('nhatrai', false);
-        }
+        const defaultSide = user === 'admin2' ? 'nhagai' : 'nhatrai';
+        switchWeddingVersion(defaultSide, false);
+        setTab1CreateSide(defaultSide);
+        const sideFilter = document.getElementById('guestSideFilter');
+        if (sideFilter) sideFilter.value = defaultSide;
 
         const loginError = document.getElementById('adminLoginError');
         if (loginError) loginError.classList.add('hidden');
@@ -4779,8 +4787,10 @@
 
       const topAdminBtn = document.getElementById('topAdminBtn');
       const adminTriggerBtn = document.getElementById('adminLoginTriggerBtn');
+      const togglePill = document.getElementById('weddingVersionTogglePill');
       if (topAdminBtn) topAdminBtn.classList.add('hidden');
       if (adminTriggerBtn) adminTriggerBtn.classList.remove('hidden');
+      if (togglePill) togglePill.classList.add('hidden');
 
       showToast('🔒 Đã đăng xuất khỏi tài khoản Admin.');
       openAdminModal();
@@ -4985,86 +4995,37 @@
       }
     }
 
-    async function copyAdminPreviewLink() {
+    function copyAdminPreviewLink() {
       const name = (document.getElementById('adminGuestNameInput')?.value || '').trim() || 'Quý Khách & Gia Đình';
       const salut = getActiveAdminSalutation();
-      const guestId = 'guest_' + Date.now();
       const targetSide = getActiveTab1CreateSide();
-
-      const guests = await OnlineDB.getGuests();
-      const inputSlug = makeGuestSlug(name).toLowerCase();
-      let matched = guests.find(g => (g.name && g.name.toLowerCase() === name.toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === inputSlug);
-      if (!matched) {
-        matched = {
-          id: guestId,
-          name: name,
-          salut: salut,
-          side: targetSide,
-          date: new Date().toLocaleDateString('vi-VN'),
-          isRead: false,
-          readCount: 0,
-          firstReadAt: '',
-          lastReadAt: '',
-          rsvp: 'pending',
-          rsvpCount: 1
-        };
-        await OnlineDB.saveGuest(matched);
-      } else {
-        matched.name = name;
-        matched.salut = salut;
-        matched.side = targetSide;
-        await OnlineDB.saveGuest(matched);
-      }
+      const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
 
       updateGuestName(name, salut);
-      const url = buildCleanShareUrl(salut, name, matched.id, targetSide);
-      const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      const url = buildCleanShareUrl(salut, name, '', targetSide);
       copyText(url, `Đã sao chép link gọn (${sideName}) cho "${name}"!`);
-      renderGuestTable();
+
+      // Lưu vào danh sách và đồng bộ máy chủ chạy ngầm (không làm chậm hay lỗi clipboard)
+      saveCurrentGuestToList(false);
     }
 
-    async function copyAdminGuestLink() {
-      const name = document.getElementById('adminGuestNameInput').value.trim() || 'Quý Khách & Gia Đình';
+    function copyAdminGuestLink() {
+      const name = (document.getElementById('adminGuestNameInput')?.value || '').trim() || 'Quý Khách & Gia Đình';
       const salut = getActiveAdminSalutation();
-      const guestId = 'guest_' + Date.now();
       const targetSide = getActiveTab1CreateSide();
-
-      const guests = await OnlineDB.getGuests();
-      const inputSlug = makeGuestSlug(name).toLowerCase();
-      let matched = guests.find(g => (g.name && g.name.toLowerCase() === name.toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === inputSlug);
-      if (!matched) {
-        matched = {
-          id: guestId,
-          name: name,
-          salut: salut,
-          side: targetSide,
-          date: new Date().toLocaleDateString('vi-VN'),
-          isRead: false,
-          readCount: 0,
-          firstReadAt: '',
-          lastReadAt: '',
-          rsvp: 'pending',
-          rsvpCount: 1
-        };
-        await OnlineDB.saveGuest(matched);
-      } else {
-        matched.name = name;
-        matched.salut = salut;
-        matched.side = targetSide;
-        await OnlineDB.saveGuest(matched);
-      }
+      const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
 
       updateGuestName(name, salut);
-      const url = buildCleanShareUrl(salut, name, matched.id, targetSide);
-
-      const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      const url = buildCleanShareUrl(salut, name, '', targetSide);
       copyText(url, `Đã sao chép link online (${sideName}) cho "${name}"!`);
-      renderGuestTable();
+
+      // Lưu vào danh sách và đồng bộ máy chủ chạy ngầm (không làm chậm hay lỗi clipboard)
+      saveCurrentGuestToList(false);
     }
 
-    async function saveCurrentGuestToList() {
+    async function saveCurrentGuestToList(showToastMsg = true) {
       const salut = getActiveAdminSalutation();
-      const name = document.getElementById('adminGuestNameInput').value.trim() || 'Quý Khách & Gia Đình';
+      const name = (document.getElementById('adminGuestNameInput')?.value || '').trim() || 'Quý Khách & Gia Đình';
       const guestId = 'guest_' + Date.now();
       const targetSide = getActiveTab1CreateSide();
 
@@ -5096,7 +5057,9 @@
 
       renderGuestTable();
       const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
-      showToast(`Đã lưu "${name}" (${sideName}) vào danh sách thiệp!`);
+      if (showToastMsg) {
+        showToast(`Đã lưu "${name}" (${sideName}) vào danh sách thiệp!`);
+      }
       return matched;
     }
 
@@ -5557,18 +5520,21 @@
     function updateAdminUIControls() {
       const cardChangeBtn = document.getElementById('cardChangePhotoBtn');
       const overlayBtn = document.getElementById('cardOverlayPhotoBtn');
+      const togglePill = document.getElementById('weddingVersionTogglePill');
       if (isAdminLoggedIn && !isGuestMode) {
         if (cardChangeBtn) cardChangeBtn.classList.remove('hidden');
         if (overlayBtn) {
           overlayBtn.classList.remove('hidden');
           overlayBtn.classList.add('flex');
         }
+        if (togglePill) togglePill.classList.remove('hidden');
       } else {
         if (cardChangeBtn) cardChangeBtn.classList.add('hidden');
         if (overlayBtn) {
           overlayBtn.classList.add('hidden');
           overlayBtn.classList.remove('flex');
         }
+        if (togglePill) togglePill.classList.add('hidden');
       }
     }
 
@@ -6206,16 +6172,46 @@
     });
 
     function copyText(text, successMsg) {
+      if (!text) return;
+      let copied = false;
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast(successMsg || 'Đã sao chép thành công!');
+          }).catch(() => {
+            fallbackExecCopy(text, successMsg);
+          });
+          return;
+        } catch (e) {
+          copied = false;
+        }
+      }
+      fallbackExecCopy(text, successMsg);
+    }
+
+    function fallbackExecCopy(text, successMsg) {
+      let success = false;
       try {
-        const tempInput = document.createElement('input');
-        tempInput.value = text;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-        showToast(successMsg || 'Đã sao chép thành công!');
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        textarea.style.top = '0';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+        success = document.execCommand('copy');
+        document.body.removeChild(textarea);
       } catch (err) {
-        showToast('Sao chép: ' + text);
+        success = false;
+      }
+      if (success) {
+        showToast(successMsg || 'Đã sao chép thành công!');
+      } else {
+        window.prompt('Vui lòng nhấn Ctrl+C hoặc giữ để sao chép link:', text);
       }
     }
 
