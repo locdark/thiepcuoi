@@ -2175,14 +2175,16 @@
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
                   </div>
                   <div>
-                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Ông / Bà Nhà Trai:</label>
-                    <input type="text" id="adminGroomParents" placeholder="Ông: LÊ THANH HOA - Bà: NGUYỄN THỊ ÁI DIỄM"
-                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Phụ Huynh & Địa Chỉ Nhà Trai:</label>
+                    <textarea id="adminGroomParents" rows="2" placeholder="Dòng 1: Ông: LÊ THANH HOA - Bà: NGUYỄN THỊ ÁI DIỄM&#10;Dòng 2: Ấp Hai Đông, Xã Bàu Lâm, TP. HCM"
+                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300 leading-relaxed resize-none"></textarea>
+                    <p class="text-[10px] text-amber-200/60 mt-0.5">Dòng 1: Cha / Mẹ • Dòng 2: Địa chỉ tư gia</p>
                   </div>
                   <div>
-                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Bà / Ông Nhà Gái:</label>
-                    <input type="text" id="adminBrideParents" placeholder="Bà: NGUYỄN THỊ TÍN"
-                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Phụ Huynh & Địa Chỉ Nhà Gái:</label>
+                    <textarea id="adminBrideParents" rows="2" placeholder="Dòng 1: Bà: NGUYỄN THỊ TÍN&#10;Dòng 2: Phường Tuy Hòa, Đắk Lắk"
+                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300 leading-relaxed resize-none"></textarea>
+                    <p class="text-[10px] text-amber-200/60 mt-0.5">Dòng 1: Mẹ / Cha • Dòng 2: Địa chỉ tư gia</p>
                   </div>
                 </div>
               </div>
@@ -2447,10 +2449,10 @@
 
         <!-- Two Families (Phụ Huynh Hai Nhà) -->
         <div id="exportCardParentsContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; font-size: 11px; text-align: center; border-bottom: 1px dashed rgba(201, 158, 92, 0.4); padding-bottom: 8px;">
-          <div id="exportCardGroomParents">
+          <div id="exportCardGroomParents" class="space-y-0.5">
             <!-- Rendered dynamically -->
           </div>
-          <div id="exportCardBrideParents">
+          <div id="exportCardBrideParents" class="space-y-0.5">
             <!-- Rendered dynamically -->
           </div>
         </div>
@@ -3761,6 +3763,18 @@
           }
         }
 
+        // Auto-heal glued parents and addresses in stored configs
+        ['nhatrai', 'nhagai'].forEach(side => {
+          if (weddingConfigs[side]) {
+            ['groomParents', 'brideParents'].forEach(pKey => {
+              if (weddingConfigs[side][pKey]) {
+                weddingConfigs[side][pKey] = String(weddingConfigs[side][pKey])
+                  .replace(/([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9])(?=(?:Ấp|Thôn|Xã|Phường|Đường|Khu\s*phố|Số\s*\d|TP\.|Thành\s*phố|Tỉnh)\b)/gu, '$1\n');
+              }
+            });
+          }
+        });
+
         eventConfig = Object.assign({}, weddingConfigs[currentWeddingVersion] || weddingConfigs.nhatrai);
         targetWeddingTimestamp = eventConfig.targetTimestamp || (currentWeddingVersion === 'nhagai' ? DEFAULT_CONFIG_NHAGAI.targetTimestamp : DEFAULT_CONFIG_NHATRAI.targetTimestamp);
 
@@ -3795,11 +3809,64 @@
       // Parents format
       function formatParentsHTML(title, rawText) {
         if (!rawText) return '';
-        const lines = rawText.split(/\s*[-–—]\s*|\n|<br\s*\/?>/gi).map(s => s.trim()).filter(Boolean);
-        let html = `<p class="font-serif font-bold text-wedding-text tracking-wide uppercase text-[11px] sm:text-xs mb-1">${title}</p>`;
-        lines.forEach(line => {
-          html += `<p class="font-medium text-wedding-text text-[11px] sm:text-xs leading-snug">${escapeHTML(line)}</p>`;
+        let s = String(rawText).trim();
+
+        // Auto-heal glued words like DIỄMẤp, TÍNPhường, etc.
+        s = s.replace(/([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9])(?=(?:Ấp|Thôn|Xã|Phường|Đường|Khu\s*phố|Số\s*\d|TP\.|Thành\s*phố|Tỉnh)\b)/gu, '$1\n');
+
+        const rawLines = s.split(/\r?\n|<br\s*\/?>/gi).map(x => x.trim()).filter(Boolean);
+        const parentLines = [];
+        const addressLines = [];
+
+        const isAddressRegex = /(?:Ấp|Thôn|Xã|Phường|Đường|Khu\s*phố|Quận|Huyện|TP\.|Thành\s*phố|Tỉnh|Đắk\s*Lắk|TP\.?\s*HCM|Hồ\s*Chí\s*Minh)/i;
+        const isParentPrefixRegex = /^(?:Ông|Bà|Ông\s*Bà|Cha|Mẹ|Gia\s*đình)\s*:/i;
+
+        rawLines.forEach(line => {
+          if (isAddressRegex.test(line) && !isParentPrefixRegex.test(line)) {
+            addressLines.push(line);
+          } else {
+            const subParts = line.split(/\s+[-–—]\s+/).map(p => p.trim()).filter(Boolean);
+            subParts.forEach(p => {
+              if (isAddressRegex.test(p) && !isParentPrefixRegex.test(p)) {
+                addressLines.push(p);
+              } else {
+                parentLines.push(p);
+              }
+            });
+          }
         });
+
+        let html = `<p class="font-serif font-bold text-wedding-text tracking-wide uppercase text-[11px] sm:text-xs mb-1">${escapeHTML(title)}</p>`;
+
+        if (parentLines.length === 1) {
+          html += `<div class="h-4 sm:h-5"></div>`;
+        }
+
+        parentLines.forEach(p => {
+          const match = p.match(/^(Ông\s*Bà|Ông|Bà|Cha|Mẹ|Gia\s*đình)\s*:\s*(.+)$/i);
+          if (match) {
+            html += `<p class="font-medium text-wedding-text text-[11px] sm:text-xs leading-snug"><span class="font-normal text-wedding-subtext">${escapeHTML(match[1])}:</span> ${escapeHTML(match[2])}</p>`;
+          } else {
+            html += `<p class="font-medium text-wedding-text text-[11px] sm:text-xs leading-snug">${escapeHTML(p)}</p>`;
+          }
+        });
+
+        if (addressLines.length > 0) {
+          const addrText = addressLines.join(', ');
+          let formattedAddr = escapeHTML(addrText);
+          if (formattedAddr.includes('Ấp Hai Đông, Xã Bàu Lâm, TP. HCM')) {
+            formattedAddr = 'Ấp Hai Đông, Xã Bàu Lâm<br>TP. HCM';
+          } else if (formattedAddr.includes('Phường Tuy Hòa, Đắk Lắk')) {
+            formattedAddr = 'Phường Tuy Hòa<br>Đắk Lắk';
+          } else {
+            const lastCommaIdx = formattedAddr.lastIndexOf(',');
+            if (lastCommaIdx !== -1 && formattedAddr.length > 20) {
+              formattedAddr = formattedAddr.substring(0, lastCommaIdx) + '<br>' + formattedAddr.substring(lastCommaIdx + 1).trim();
+            }
+          }
+          html += `<p class="text-[10px] sm:text-xs text-wedding-subtext leading-tight pt-1">${formattedAddr}</p>`;
+        }
+
         return html;
       }
 
@@ -4121,12 +4188,31 @@
                 c.weddingConfigs.nhagai = Object.assign({}, DEFAULT_CONFIG_NHAGAI);
               }
             }
+
+            // Auto-heal cloud parents and addresses
+            ['nhatrai', 'nhagai'].forEach(side => {
+              if (c.weddingConfigs[side]) {
+                ['groomParents', 'brideParents'].forEach(pKey => {
+                  if (c.weddingConfigs[side][pKey]) {
+                    c.weddingConfigs[side][pKey] = String(c.weddingConfigs[side][pKey])
+                      .replace(/([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9])(?=(?:Ấp|Thôn|Xã|Phường|Đường|Khu\s*phố|Số\s*\d|TP\.|Thành\s*phố|Tỉnh)\b)/gu, '$1\n');
+                  }
+                });
+              }
+            });
+
             weddingConfigs = Object.assign({}, weddingConfigs, c.weddingConfigs);
             localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai));
             localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai));
             eventConfig = Object.assign({}, weddingConfigs[currentWeddingVersion] || weddingConfigs.nhatrai);
             changed = true;
           } else if (c.eventConfig && JSON.stringify(c.eventConfig) !== JSON.stringify(eventConfig)) {
+            ['groomParents', 'brideParents'].forEach(pKey => {
+              if (c.eventConfig[pKey]) {
+                c.eventConfig[pKey] = String(c.eventConfig[pKey])
+                  .replace(/([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9])(?=(?:Ấp|Thôn|Xã|Phường|Đường|Khu\s*phố|Số\s*\d|TP\.|Thành\s*phố|Tỉnh)\b)/gu, '$1\n');
+              }
+            });
             eventConfig = Object.assign({}, eventConfig, c.eventConfig);
             localStorage.setItem('weddingEventConfig', JSON.stringify(eventConfig));
             changed = true;
