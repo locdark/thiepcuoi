@@ -15,8 +15,14 @@
         });
         var path = decoded[0].slice(2);
         var query = decoded.slice(1).join('&');
+        query = query.replace(/^(?:q=)+/, '').replace(/&(?:q=)+/g, '&');
         window.history.replaceState(null, null,
           l.pathname.slice(0, -1) + path + (query ? '?' + query : '') + l.hash
+        );
+      } else if (l.search && l.search.includes('q=')) {
+        var s = l.search.replace(/^[?&]+/, '').replace(/^(?:q=)+/, '').replace(/&(?:q=)+/g, '&');
+        window.history.replaceState(null, null,
+          l.pathname + (s ? '?' + s : '') + l.hash
         );
       }
     }(window.location));
@@ -3245,13 +3251,17 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       // 1. Parse URL parameters first to know version
-      const urlParams = new URLSearchParams(window.location.search);
-      const verParam = urlParams.get('v') || urlParams.get('ver') || urlParams.get('side');
+      let rawSearch = (window.location.search || '').replace(/^[?&]+/, '').replace(/^(?:q=)+/, '').replace(/&(?:q=)+/g, '&');
+      const urlParams = new URLSearchParams(rawSearch ? '?' + rawSearch : '');
+      let verParam = (urlParams.get('v') || urlParams.get('ver') || urlParams.get('side') || '').trim().toLowerCase();
+      if (!verParam && rawSearch.includes('v=nhagai')) verParam = 'nhagai';
+      if (!verParam && rawSearch.includes('v=nhatrai')) verParam = 'nhatrai';
+      const hasExplicitUrlVer = !!verParam;
+
       if (verParam) {
-        const vClean = verParam.trim().toLowerCase();
-        if (vClean === 'nhagai' || vClean === 'gai' || vClean === '2' || vClean === 'vuquy') {
+        if (verParam === 'nhagai' || verParam === 'gai' || verParam === '2' || verParam === 'vuquy') {
           currentWeddingVersion = 'nhagai';
-        } else if (vClean === 'nhatrai' || vClean === 'trai' || vClean === '1' || vClean === 'tanhon') {
+        } else if (verParam === 'nhatrai' || verParam === 'trai' || verParam === '1' || verParam === 'tanhon') {
           currentWeddingVersion = 'nhatrai';
         }
       }
@@ -3325,7 +3335,7 @@
           if (matched) {
             guestFromUrl = matched.name;
             if (matched.salut && !salutFromUrl) salutFromUrl = matched.salut;
-            if (matched.side) currentWeddingVersion = matched.side;
+            if (matched.side && !hasExplicitUrlVer) currentWeddingVersion = matched.side;
             if (matched.id) guestIdFromUrl = matched.id;
           } else {
             const rawSlug = pathClean.replace(/^(?:Phuochongmoi|phuochongmoi|moi)/i, '');
@@ -3340,7 +3350,7 @@
               const finalAccentedName = cloudMatched.name || guestFromUrl;
               const finalAccentedSalut = salutFromUrl || cloudMatched.salut || 'Kính mời';
               updateGuestName(finalAccentedName, finalAccentedSalut);
-              if (cloudMatched.side && cloudMatched.side !== currentWeddingVersion) {
+              if (!hasExplicitUrlVer && cloudMatched.side && cloudMatched.side !== currentWeddingVersion) {
                 switchWeddingVersion(cloudMatched.side, true, true);
               }
               OnlineDB.trackRead(cloudMatched.id, finalAccentedName);
@@ -3537,8 +3547,11 @@
     }
 
     function checkInitialAccessMode() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const verParam = (urlParams.get('v') || urlParams.get('ver') || urlParams.get('side') || '').trim().toLowerCase();
+      let rawSearch = (window.location.search || '').replace(/^[?&]+/, '').replace(/^(?:q=)+/, '').replace(/&(?:q=)+/g, '&');
+      const urlParams = new URLSearchParams(rawSearch ? '?' + rawSearch : '');
+      let verParam = (urlParams.get('v') || urlParams.get('ver') || urlParams.get('side') || '').trim().toLowerCase();
+      if (!verParam && rawSearch.includes('v=nhagai')) verParam = 'nhagai';
+      if (!verParam && rawSearch.includes('v=nhatrai')) verParam = 'nhatrai';
       let guestFromUrl = urlParams.get('to') || urlParams.get('guest') || urlParams.get('khach') || urlParams.get('n');
       let guestIdFromUrl = urlParams.get('id');
       const b64 = urlParams.get('b');
@@ -3564,7 +3577,7 @@
 
       const isDefaultNhagai = pathLower === 'nhagai' || pathLower === 'vuquy' || pathLower === 'thiepgai' || verParam === 'nhagai' || verParam === 'gai' || verParam === '2' || verParam === 'vuquy';
       const isDefaultNhatrai = pathLower === 'nhatrai' || pathLower === 'tanhon' || pathLower === 'thieptrai' || verParam === 'nhatrai' || verParam === 'trai' || verParam === '1' || verParam === 'tanhon';
-      const isCustomSlug = pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/') && !isDefaultNhagai && !isDefaultNhatrai;
+      const isCustomSlug = pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/');
 
       if (b64) {
         try {
@@ -3583,9 +3596,9 @@
         // GUEST MODE: Visitor accessed with custom invitation link or default link
         isGuestMode = true;
 
-        if (isDefaultNhagai) {
+        if (verParam === 'nhagai' || isDefaultNhagai) {
           currentWeddingVersion = 'nhagai';
-        } else if (isDefaultNhatrai) {
+        } else if (verParam === 'nhatrai' || isDefaultNhatrai) {
           currentWeddingVersion = 'nhatrai';
         } else if (isCustomSlug) {
           let localGuests = [];
@@ -3708,12 +3721,25 @@
           currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
         }
 
+        let rawSearch = (window.location.search || '').replace(/^[?&]+/, '').replace(/^(?:q=)+/, '').replace(/&(?:q=)+/g, '&');
+        let verParam = '';
+        try {
+          const urlParams = new URLSearchParams(rawSearch ? '?' + rawSearch : '');
+          verParam = (urlParams.get('v') || urlParams.get('ver') || urlParams.get('side') || '').trim().toLowerCase();
+        } catch (e) { }
+        if (!verParam && rawSearch.includes('v=nhagai')) verParam = 'nhagai';
+        if (!verParam && rawSearch.includes('v=nhatrai')) verParam = 'nhatrai';
+
         const pathClean = decodeURIComponent(window.location.pathname || '').replace(/^\/+/, '').replace(/\.html$/i, '').trim();
         const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
         const hasGuestSlug = pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/');
-        const hasParams = window.location.search.includes('to=') || window.location.search.includes('guest=') || window.location.search.includes('b=');
+        const hasParams = rawSearch.includes('to=') || rawSearch.includes('guest=') || rawSearch.includes('b=') || rawSearch.includes('v=');
 
-        if (!hasGuestSlug && !hasParams) {
+        if (verParam === 'nhagai') {
+          currentWeddingVersion = 'nhagai';
+        } else if (verParam === 'nhatrai') {
+          currentWeddingVersion = 'nhatrai';
+        } else if (!hasGuestSlug && !hasParams) {
           const storedVer = localStorage.getItem('weddingCurrentVersion');
           if (storedVer === 'nhagai' || storedVer === 'nhatrai') {
             currentWeddingVersion = storedVer;

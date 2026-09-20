@@ -8,10 +8,11 @@
     // SPA Router for GitHub Pages to support clean URLs like /Phuochongmoiaido
     var pathSegmentsToKeep = 0;
     var l = window.location;
+    var cleanSearch = l.search ? l.search.slice(1).replace(/^(?:q=)+/, '').replace(/&(?:q=)+/g, '&') : '';
     var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
       l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?p=/' +
       l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      (cleanSearch ? '&q=' + cleanSearch.replace(/&/g, '~and~') : '') +
       l.hash;
     l.replace(redirectUrl);
   </script>
