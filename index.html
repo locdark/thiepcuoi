@@ -209,6 +209,21 @@
     class="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-wedding-red/20 blur-[130px] rounded-full pointer-events-none -z-10">
   </div>
 
+  <!-- Quick Switch Version Toggle (Nhà Trai 25/10 - Nhà Gái 17/10) -->
+  <div id="weddingVersionTogglePill"
+    class="fixed top-4 left-4 z-50 flex items-center bg-black/75 backdrop-blur-md rounded-full p-1 border border-wedding-gold/50 shadow-2xl text-xs transition-all">
+    <button id="btnVerNhatrai" onclick="switchWeddingVersion('nhatrai')"
+      class="px-3 py-1.5 rounded-full font-semibold transition-all flex items-center gap-1.5 shadow-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500"
+      title="Xem thiệp cưới Nhà Trai (Lễ Tân Hôn - 25/10)">
+      <span>🤵 Nhà Trai (25/10)</span>
+    </button>
+    <button id="btnVerNhagai" onclick="switchWeddingVersion('nhagai')"
+      class="px-3 py-1.5 rounded-full font-medium transition-all text-amber-200/80 hover:text-white flex items-center gap-1.5"
+      title="Xem thiệp cưới Nhà Gái (Lễ Vu Quy - 17/10)">
+      <span>👰 Nhà Gái (17/10)</span>
+    </button>
+  </div>
+
   <nav class="fixed top-4 right-4 z-50 flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
     <!-- Admin Management Button -->
     <button id="topAdminBtn" onclick="openAdminModal()"
@@ -285,8 +300,8 @@
           <div id="waxSealBtn"
             class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-[#780d19] via-[#ab1a2d] to-[#d63045] shadow-wax border-4 border-amber-300/50 flex flex-col items-center justify-center text-center text-amber-200 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
             <span class="text-lg">囍</span>
-            <span class="font-script text-xl sm:text-2xl text-amber-100 font-bold -mt-1 leading-none">P & H</span>
-            <span class="text-[10px] tracking-widest text-amber-200/90 font-cinzel mt-1">25.10.2026</span>
+            <span id="waxSealInitials" class="font-script text-xl sm:text-2xl text-amber-100 font-bold -mt-1 leading-none">P & H</span>
+            <span id="waxSealDate" class="text-[10px] tracking-widest text-amber-200/90 font-cinzel mt-1">25.10.2026</span>
           </div>
           <p class="text-amber-200 text-xs tracking-wider mt-4 font-medium flex items-center gap-1.5 animate-bounce">
             <i class="fa-regular fa-hand-pointer"></i> Chạm để mở thiệp
@@ -685,21 +700,21 @@
             <div class="my-4">
               <p class="text-[11px] sm:text-xs font-semibold tracking-wider text-wedding-text uppercase font-sans">Trân
                 Trọng Báo Tin</p>
-              <p class="text-xs sm:text-sm font-bold tracking-widest text-wedding-red uppercase font-serif mt-0.5">
+              <p id="cardCeremonyTypeHeading" class="text-xs sm:text-sm font-bold tracking-widest text-wedding-red uppercase font-serif mt-0.5">
                 LỄ TÂN HÔN <span class="font-normal text-wedding-subtext text-[11px] lowercase tracking-normal">của con
                   chúng tôi</span>
               </p>
             </div>
 
             <!-- Groom & Bride Calligraphy Names (Exact font style & layout) -->
-            <div class="my-4 space-y-3">
+            <div id="cardCoupleNamesBlock" class="my-4 space-y-3">
               <!-- Groom -->
               <div>
                 <h2 id="cardGroomNameDisplay"
                   class="font-script text-3xl sm:text-4xl text-wedding-red font-normal leading-tight tracking-wide drop-shadow-sm hover:scale-105 transition-transform">
                   Lê Hoài Phước
                 </h2>
-                <p class="text-[11px] sm:text-xs text-wedding-subtext italic mt-0.5 font-serif">Trưởng Nam</p>
+                <p id="cardGroomRoleDisplay" class="text-[11px] sm:text-xs text-wedding-subtext italic mt-0.5 font-serif">Trưởng Nam</p>
               </div>
 
               <!-- Interlocking Wedding Rings Symbol -->
@@ -719,13 +734,13 @@
                   class="font-script text-3xl sm:text-4xl text-wedding-red font-normal leading-tight tracking-wide drop-shadow-sm hover:scale-105 transition-transform">
                   Nguyễn Diệu Hồng
                 </h2>
-                <p class="text-[11px] sm:text-xs text-wedding-subtext italic mt-0.5 font-serif">Quý Nữ</p>
+                <p id="cardBrideRoleDisplay" class="text-[11px] sm:text-xs text-wedding-subtext italic mt-0.5 font-serif">Quý Nữ</p>
               </div>
             </div>
 
             <!-- Ceremony Time & Place -->
             <div class="mt-5 pt-4 border-t border-dashed border-[#dfd2c0] space-y-1">
-              <p class="text-[11px] sm:text-xs font-serif font-bold text-wedding-text uppercase tracking-wider">
+              <p id="cardCeremonyLocationDisplay" class="text-[11px] sm:text-xs font-serif font-bold text-wedding-text uppercase tracking-wider">
                 HÔN LỄ ĐƯỢC CỬ HÀNH TẠI: TƯ GIA NHÀ TRAI
               </p>
               <p id="cardCeremonyTimeDisplay" class="text-[11px] sm:text-xs text-wedding-text font-medium uppercase tracking-wider">
@@ -733,16 +748,16 @@
               </p>
 
               <!-- Highlighted Date Display -->
-              <div
+              <div id="cardCeremonyDateDisplay"
                 class="my-2 flex items-center justify-center gap-3 text-wedding-red font-bold text-2xl sm:text-3xl font-serif">
-                <span>20</span>
+                <span id="cardCeremonyDay">20</span>
                 <span class="text-wedding-gold font-light">|</span>
-                <span>10</span>
+                <span id="cardCeremonyMonth">10</span>
                 <span class="text-wedding-gold font-light">|</span>
-                <span>2026</span>
+                <span id="cardCeremonyYear">2026</span>
               </div>
 
-              <p class="text-[11px] sm:text-xs text-wedding-subtext italic">
+              <p id="cardCeremonyLunarDisplay" class="text-[11px] sm:text-xs text-wedding-subtext italic">
                 (Nhằm ngày 11 tháng 09 năm Bính Ngọ)
               </p>
 
@@ -750,7 +765,7 @@
               <div class="pt-2">
                 <a id="cardGroomMapBtn" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
                   class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-wedding-red/10 text-wedding-red hover:bg-wedding-red hover:text-white border border-wedding-red/30 transition-all shadow-sm">
-                  <i class="fa-solid fa-location-dot"></i> Bản đồ Google Maps chỉ đường đến Nhà Trai
+                  <i class="fa-solid fa-location-dot"></i> <span id="cardGroomMapBtnText">Bản đồ Google Maps chỉ đường đến Nhà Trai</span>
                 </a>
               </div>
             </div>
@@ -785,7 +800,7 @@
                 </div>
 
                 <!-- Names & Month Header -->
-                <p class="font-script text-2xl text-wedding-red leading-none">
+                <p id="cardCalendarCouple" class="font-script text-2xl text-wedding-red leading-none">
                   Phước <span class="text-sm font-sans text-wedding-red">❤</span> Hồng
                 </p>
                 <p class="text-[11px] font-serif font-bold text-wedding-red uppercase tracking-widest mt-1 mb-2">
@@ -802,22 +817,23 @@
                   </div>
                   <!-- Calendar Days October 2026 -->
                   <!-- Oct 1, 2026 is Thursday (Starts at Thu) -->
-                  <div class="grid grid-cols-7 gap-1 items-center justify-items-center py-0.5">
+                  <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 items-center justify-items-center py-0.5">
                     <!-- Blank Mon, Tue, Wed -->
                     <span></span><span></span><span></span>
                     <span>1</span><span>2</span><span>3</span><span class="text-wedding-subtext">4</span>
 
                     <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span
                       class="text-wedding-subtext">11</span>
-                    <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span
-                      class="text-wedding-subtext">18</span>
+                    <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span>
+                    <span id="calDay17">17</span>
+                    <span class="text-wedding-subtext">18</span>
                     <span>19</span>
                     <!-- 20: Groom's house ceremony -->
-                    <span class="font-bold text-wedding-red underline decoration-wedding-gold underline-offset-2"
+                    <span id="calDay20" class="font-bold text-wedding-red underline decoration-wedding-gold underline-offset-2"
                       title="Lễ Tân Hôn">20</span>
                     <span>21</span><span>22</span><span>23</span><span>24</span>
                     <!-- 25: Reception day with Heart Highlight! -->
-                    <span class="calendar-heart" title="Tiệc Cưới">25</span>
+                    <span id="calDay25" class="calendar-heart" title="Tiệc Cưới">25</span>
 
                     <span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span></span>
                   </div>
@@ -845,7 +861,7 @@
 
                 <!-- Venue Info -->
                 <div class="space-y-1 pt-1">
-                  <p class="text-[10px] sm:text-[11px] font-sans font-bold text-wedding-subtext uppercase tracking-widest">
+                  <p id="cardPartyVenueCategory" class="text-[10px] sm:text-[11px] font-sans font-bold text-wedding-subtext uppercase tracking-widest">
                     TRUNG TÂM SỰ KIỆN VÀ TIỆC CƯỚI
                   </p>
                   <h3 id="cardPartyVenueTitle" class="font-serif text-xl sm:text-2xl font-bold text-wedding-red tracking-wide uppercase">
@@ -869,11 +885,11 @@
                     VÀO LÚC: 11 GIỜ 00 - CHỦ NHẬT
                   </p>
 
-                  <div class="text-2xl sm:text-3xl font-serif font-bold text-wedding-red tracking-wider">
+                  <div id="cardPartyDateDisplay" class="text-2xl sm:text-3xl font-serif font-bold text-wedding-red tracking-wider">
                     25 . 10 . 2026
                   </div>
 
-                  <p class="text-[11px] text-wedding-subtext italic">
+                  <p id="cardPartyLunarDisplay" class="text-[11px] text-wedding-subtext italic">
                     (Nhằm ngày 16 tháng 09 năm Bính Ngọ)
                   </p>
                 </div>
@@ -885,10 +901,10 @@
                   </p>
 
                   <div class="pt-1.5 text-center md:text-right">
-                    <p class="font-script text-2xl text-wedding-red leading-none">
+                    <p id="cardClosingFamily" class="font-serif font-bold text-sm sm:text-base text-wedding-red tracking-wider mt-1">
                       Gia Đình Hoa Diễm
                     </p>
-                    <p class="text-[11px] font-serif font-bold text-wedding-text uppercase tracking-widest mt-0.5">
+                    <p id="cardClosingKinhMoi" class="text-[11px] font-serif font-bold text-wedding-text uppercase tracking-widest mt-0.5">
                       KÍNH MỜI!
                     </p>
                   </div>
@@ -1136,9 +1152,9 @@
           <div>
             <span class="inline-block px-2 py-0.5 rounded text-[10px] bg-wedding-red text-amber-100 font-bold mb-1">TIỆC
               MỪNG CHÍNH</span>
-            <h4 class="font-serif text-base font-bold text-amber-200">Trung Tâm Tiệc Cưới THANH PHỤNG</h4>
-            <p class="text-amber-100/80 text-xs mt-1">Ấp Hai Đông, Xã Bàu Lâm, TP. HCM</p>
-            <p class="text-amber-300 text-xs font-semibold mt-1">11:00 • Chủ Nhật, 25/10/2026</p>
+            <h4 id="modalPartyVenueName" class="font-serif text-base font-bold text-amber-200">Trung Tâm Tiệc Cưới THANH PHỤNG</h4>
+            <p id="modalPartyVenueAddress" class="text-amber-100/80 text-xs mt-1">Ấp Hai Đông, Xã Bàu Lâm, TP. HCM</p>
+            <p id="modalPartyTime" class="text-amber-300 text-xs font-semibold mt-1">11:00 • Chủ Nhật, 25/10/2026</p>
           </div>
           <a id="modalPartyMapBtn" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6"
             target="_blank"
@@ -1147,18 +1163,18 @@
           </a>
         </div>
 
-        <!-- Venue 2: Tư Gia Nhà Trai -->
+        <!-- Venue 2: Tư Gia Nhà Trai / Nhà Gái -->
         <div class="p-4 rounded-xl bg-white/5 border border-wedding-gold/30 flex flex-col justify-between gap-3">
           <div>
-            <span class="inline-block px-2 py-0.5 rounded text-[10px] bg-amber-900/60 text-amber-200 font-bold mb-1">LỄ
+            <span id="modalCeremonyBadge" class="inline-block px-2 py-0.5 rounded text-[10px] bg-amber-900/60 text-amber-200 font-bold mb-1">LỄ
               TÂN HÔN (NHÀ TRAI)</span>
-            <h4 class="font-serif text-base font-bold text-amber-200">Tư Gia Nhà Trai</h4>
-            <p class="text-amber-100/80 text-xs mt-1">Ấp Hai Đông, Xã Bàu Lâm, TP. HCM</p>
-            <p class="text-amber-300 text-xs font-semibold mt-1">09:00 • Thứ Ba, 20/10/2026</p>
+            <h4 id="modalCeremonyVenueName" class="font-serif text-base font-bold text-amber-200">Tư Gia Nhà Trai</h4>
+            <p id="modalCeremonyVenueAddress" class="text-amber-100/80 text-xs mt-1">Ấp Hai Đông, Xã Bàu Lâm, TP. HCM</p>
+            <p id="modalCeremonyTime" class="text-amber-300 text-xs font-semibold mt-1">09:00 • Thứ Ba, 20/10/2026</p>
           </div>
           <a id="modalGroomMapBtn" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
             class="wedding-venue-map-link w-full text-center bg-wedding-red hover:bg-wedding-darkred text-white py-2.5 rounded-xl font-medium transition-all active:scale-95 flex items-center justify-center gap-1.5 border border-wedding-gold/30">
-            <i class="fa-solid fa-location-dot text-amber-300"></i> Mở Google Maps Chỉ Đường Đến Nhà Trai
+            <i class="fa-solid fa-location-dot text-amber-300"></i> <span id="modalGroomMapBtnText">Mở Google Maps Chỉ Đường Đến Nhà Trai</span>
           </a>
         </div>
       </div>
@@ -1376,7 +1392,7 @@
                 class="absolute inset-y-0 left-0 pl-3 flex items-center text-amber-300/70 text-sm pointer-events-none">
                 <i class="fa-solid fa-user"></i>
               </span>
-              <input type="text" id="adminUsernameInputLogin" required placeholder="Nhập tên đăng nhập..."
+              <input type="text" id="adminUsernameInputLogin" required placeholder="admin (Nhà Trai) hoặc admin2 (Nhà Gái)..."
                 autocomplete="username"
                 class="w-full bg-white/10 border border-wedding-gold/40 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300 font-medium">
             </div>
@@ -1389,7 +1405,7 @@
                 class="absolute inset-y-0 left-0 pl-3 flex items-center text-amber-300/70 text-sm pointer-events-none">
                 <i class="fa-solid fa-key"></i>
               </span>
-              <input type="password" id="adminPasswordInputLogin" required placeholder="Nhập mật khẩu quản trị..."
+              <input type="password" id="adminPasswordInputLogin" required placeholder="Nhập mật khẩu quản trị (admin123)..."
                 autocomplete="current-password"
                 class="w-full bg-white/10 border border-wedding-gold/40 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300 font-medium">
             </div>
@@ -1406,13 +1422,34 @@
           </button>
         </form>
 
-        <p class="text-[11px] text-amber-200/50 italic pt-1 border-t border-white/5 w-full">
-          * Khách mời chỉ cần mở đường link thiệp cưới riêng đã được gửi kèm tên bạn.
+        <p class="text-[11px] text-amber-200/60 italic pt-1 border-t border-white/5 w-full text-center">
+          * Tài khoản: <strong>admin</strong> (Nhà Trai) | <strong>admin2</strong> (Nhà Gái) • Mật khẩu: <strong>admin123</strong>
         </p>
       </div>
 
       <!-- MAIN ADMIN PANEL VIEW (Unlocked after admin login) -->
       <div id="adminMainView" class="flex flex-col flex-1 min-h-0 overflow-hidden hidden">
+        <!-- Admin Active Version Bar -->
+        <div class="px-3 sm:px-5 py-2.5 bg-[#1C0509] border-b border-wedding-gold/25 flex items-center justify-between flex-wrap gap-2 text-xs flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-amber-200/70">Đang quản trị:</span>
+            <span id="adminLoggedRoleBadge" class="font-bold text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+              🤵 Nhà Trai (admin)
+            </span>
+          </div>
+          <div class="flex items-center gap-1.5 bg-black/40 rounded-xl p-1 border border-wedding-gold/30">
+            <span class="text-[11px] text-amber-200/70 px-1 hidden sm:inline">Chuyển xem:</span>
+            <button type="button" id="adminToggleVerNhatrai" onclick="switchWeddingVersion('nhatrai')"
+              class="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-amber-400 text-slate-950">
+              🤵 Nhà Trai
+            </button>
+            <button type="button" id="adminToggleVerNhagai" onclick="switchWeddingVersion('nhagai')"
+              class="px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all text-amber-200/70 hover:text-white">
+              👰 Nhà Gái
+            </button>
+          </div>
+        </div>
+
         <!-- Admin Tabs Navigation -->
         <div class="flex border-b border-wedding-gold/30 bg-black/30 flex-shrink-0 text-xs sm:text-sm overflow-x-auto">
           <button id="adminTabBtn1" onclick="switchAdminTab(1)"
@@ -1443,9 +1480,14 @@
           <!-- TAB 1: GENERATE LINK & EXPORT CARD IMAGE -->
           <div id="adminTab1" class="space-y-4">
             <div class="bg-white/5 border border-wedding-gold/30 rounded-2xl p-4 sm:p-5 space-y-4">
-              <h4 class="font-serif text-base font-bold text-amber-300 flex items-center gap-2">
-                <i class="fa-solid fa-user-plus text-amber-400"></i> Nhập Thông Tin Người Được Mời
-              </h4>
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <h4 class="font-serif text-base font-bold text-amber-300 flex items-center gap-2">
+                  <i class="fa-solid fa-user-plus text-amber-400"></i> Nhập Thông Tin Người Được Mời
+                </h4>
+                <span id="tab1ActiveRoleBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                  👰 Link tạo cho khách: <strong>NHÀ GÁI (17/10)</strong>
+                </span>
+              </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                 <div class="sm:col-span-5">
@@ -1606,6 +1648,7 @@
                       <option value="VPB">VPBank</option>
                       <option value="ACB">ACB</option>
                       <option value="TPB" selected>TPBank</option>
+                      <option value="VIB">VIB</option>
                       <option value="STB">Sacombank</option>
                       <option value="VBA">Agribank</option>
                       <option value="MSB">MSB</option>
@@ -1643,7 +1686,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label class="block mb-1 text-amber-200/90 text-xs font-medium">Họ tên hiển thị:</label>
-                    <input type="text" id="adminBrideHolder" required placeholder="NGUYỄN DIỆU HỒNG"
+                    <input type="text" id="adminBrideHolder" required placeholder="NGUYEN DIEU HONG"
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
                   </div>
 
@@ -1651,7 +1694,8 @@
                     <label class="block mb-1 text-amber-200/90 text-xs font-medium">Chọn Ngân Hàng / Ví:</label>
                     <select id="adminBrideBankCode"
                       class="w-full bg-[#2A080C] border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
-                      <option value="MB" selected>MBBank</option>
+                      <option value="VIB" selected>VIB</option>
+                      <option value="MB">MBBank</option>
                       <option value="VCB">Vietcombank</option>
                       <option value="TCB">Techcombank</option>
                       <option value="BIDV">BIDV</option>
@@ -1668,7 +1712,7 @@
 
                   <div>
                     <label class="block mb-1 text-amber-200/90 text-xs font-medium">Số Tài Khoản (STK):</label>
-                    <input type="text" id="adminBrideStk" required placeholder="2510202699"
+                    <input type="text" id="adminBrideStk" required placeholder="666608899"
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-300">
                   </div>
 
@@ -1835,6 +1879,26 @@
               </div>
             </div>
 
+            <!-- Version Editing Context in Tab 4 -->
+            <div class="bg-black/40 border border-wedding-gold/30 rounded-2xl p-3.5 sm:p-4 flex items-center justify-between flex-wrap gap-2 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-amber-200/80">Phiên bản đang chỉnh sửa:</span>
+                <span id="tab4ActiveVersionBadge" class="font-bold text-amber-300 bg-amber-400/20 px-2.5 py-1 rounded-full border border-amber-400/30">
+                  🤵 Nhà Trai (Lễ Tân Hôn)
+                </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="loadVersionDefaults('nhatrai')"
+                  class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/30 px-2.5 py-1.5 rounded-lg transition-all font-medium flex items-center gap-1">
+                  <i class="fa-solid fa-rotate-left"></i> Gốc Nhà Trai
+                </button>
+                <button type="button" onclick="loadVersionDefaults('nhagai')"
+                  class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-400/30 px-2.5 py-1.5 rounded-lg transition-all font-medium flex items-center gap-1">
+                  <i class="fa-solid fa-rotate-left"></i> Gốc Nhà Gái
+                </button>
+              </div>
+            </div>
+
             <form onsubmit="handleSaveEventConfig(event)" class="space-y-4">
               <div class="bg-white/5 border border-wedding-gold/30 rounded-2xl p-4 sm:p-5 space-y-3">
                 <h4
@@ -1869,10 +1933,25 @@
               <div class="bg-white/5 border border-wedding-gold/30 rounded-2xl p-4 sm:p-5 space-y-3">
                 <h4
                   class="font-serif text-base font-bold text-amber-300 flex items-center gap-2 border-b border-white/10 pb-2">
-                  <i class="fa-solid fa-clock-stop text-amber-400"></i> Thời Gian & Địa Điểm Tiệc Cưới
+                  <i class="fa-solid fa-clock-stop text-amber-400"></i> Thời Gian, Nghi Lễ & Địa Điểm
                 </h4>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Loại Nghi Lễ (LỄ TÂN HÔN / LỄ VU QUY):</label>
+                    <input type="text" id="adminCeremonyType" placeholder="LỄ TÂN HÔN"
+                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
+                  </div>
+                  <div>
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Nơi Cử Hành Hôn Lễ (TƯ GIA NHÀ TRAI / NHÀ GÁI):</label>
+                    <input type="text" id="adminCeremonyLocation" placeholder="TƯ GIA NHÀ TRAI"
+                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
+                  </div>
+                  <div>
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Ngày Giờ Hôn Lễ:</label>
+                    <input type="text" id="adminCeremonyTime" placeholder="09:00 • Thứ Ba, 20/10/2026"
+                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
+                  </div>
                   <div>
                     <label class="block mb-1 text-amber-200/90 text-xs font-medium">Ngày Giờ Tiệc Cưới chính:</label>
                     <input type="text" id="adminPartyTime" placeholder="11:00 • Chủ Nhật, 25/10/2026"
@@ -1885,18 +1964,17 @@
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
                   </div>
                   <div>
-                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Ngày Giờ Lễ Tân Hôn (Nhà
-                      trai):</label>
-                    <input type="text" id="adminCeremonyTime" placeholder="09:00 • Thứ Ba, 20/10/2026"
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Đại diện gia đình Kính Mời:</label>
+                    <input type="text" id="adminClosingFamily" placeholder="Gia Đình Hoa Diễm"
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
                   </div>
                   <div>
-                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Link Google Maps (Tiệc Cưới - Thanh Phụng):</label>
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Link Google Maps (Tiệc Cưới):</label>
                     <input type="url" id="adminMapUrl" placeholder="https://maps.app.goo.gl/..."
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
                   </div>
                   <div>
-                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Link Google Maps (Tư Gia Nhà Trai):</label>
+                    <label class="block mb-1 text-amber-200/90 text-xs font-medium">Link Google Maps (Tư Gia):</label>
                     <input type="url" id="adminGroomMapUrl" placeholder="https://maps.app.goo.gl/..."
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-300">
                   </div>
@@ -2095,7 +2173,7 @@
         <div style="font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 4px; color: #9E7432; text-transform: uppercase; font-weight: 600; margin-bottom: 2px;">
           SAVE THE DATE
         </div>
-        <h2 style="font-family: 'Alex Brush', cursive; font-size: 40px; line-height: 1.1; color: #891322; margin: 0 0 4px 0; font-weight: normal;">
+        <h2 id="exportCardTitle" style="font-family: 'Alex Brush', cursive; font-size: 40px; line-height: 1.1; color: #891322; margin: 0 0 4px 0; font-weight: normal;">
           Thiệp Mời Thành Hôn
         </h2>
 
@@ -2122,7 +2200,7 @@
 
         <!-- Groom & Bride Names -->
         <div style="margin-bottom: 10px;">
-          <div style="font-size: 10px; letter-spacing: 2px; color: #891322; font-weight: bold; text-transform: uppercase; font-family: 'Cinzel', serif;">TRÂN TRỌNG BÁO TIN LỄ TÂN HÔN</div>
+          <div id="exportCardCeremonyHeader" style="font-size: 10px; letter-spacing: 2px; color: #891322; font-weight: bold; text-transform: uppercase; font-family: 'Cinzel', serif;">TRÂN TRỌNG BÁO TIN LỄ TÂN HÔN</div>
           <div id="exportCardCoupleNames" style="font-family: 'Great Vibes', cursive; font-size: 34px; color: #891322; line-height: 1.2; margin-top: 2px;">
             Lê Hoài Phước <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> Nguyễn Diệu Hồng
           </div>
@@ -2130,7 +2208,7 @@
 
         <!-- Ceremony Info (Hôn Lễ) -->
         <div style="background: rgba(137, 19, 34, 0.04); border: 1px solid rgba(201, 158, 92, 0.3); border-radius: 10px; padding: 6px 10px; margin: 0 auto 10px auto; font-size: 11px;">
-          <div style="font-weight: bold; color: #891322; font-size: 10.5px; text-transform: uppercase;">HÔN LỄ ĐƯỢC CỬ HÀNH TẠI: TƯ GIA NHÀ TRAI</div>
+          <div id="exportCardCeremonyLocation" style="font-weight: bold; color: #891322; font-size: 10.5px; text-transform: uppercase;">HÔN LỄ ĐƯỢC CỬ HÀNH TẠI: TƯ GIA NHÀ TRAI</div>
           <div id="exportCardCeremonyTime" style="color: #3D3430; font-weight: 600; margin-top: 1px; font-size: 11px;">VÀO LÚC: 09 GIỜ 00 • THỨ BA, 20/10/2026</div>
         </div>
 
@@ -2149,7 +2227,7 @@
 
         <!-- Venue -->
         <div style="background: rgba(201, 158, 92, 0.1); border: 1px solid rgba(201, 158, 92, 0.35); border-radius: 12px; padding: 8px 12px; margin: 0 auto 10px auto; max-width: 440px;">
-          <div style="font-family: 'Montserrat', sans-serif; font-size: 9.5px; font-weight: bold; letter-spacing: 2px; color: #3D3430; text-transform: uppercase;">
+          <div id="exportCardVenueCategory" style="font-family: 'Montserrat', sans-serif; font-size: 9.5px; font-weight: bold; letter-spacing: 2px; color: #3D3430; text-transform: uppercase;">
             TRUNG TÂM SỰ KIỆN VÀ TIỆC CƯỚI
           </div>
           <div id="exportCardVenueName" style="font-family: 'Cinzel', serif; font-size: 20px; font-weight: bold; color: #891322; letter-spacing: 1px; margin: 2px 0;">
@@ -2167,13 +2245,13 @@
             <div id="exportCardEventTime" style="font-size: 16px; font-weight: bold; color: #891322; font-family: 'Cinzel', serif;">11:00</div>
           </div>
           <div style="border: 2px solid #891322; background: #891322; color: #FAF7F2; border-radius: 10px; padding: 5px 14px; text-align: center;">
-            <div style="font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">CHỦ NHẬT</div>
-            <div style="font-size: 20px; font-weight: bold; font-family: 'Cinzel', serif; line-height: 1;">25.10</div>
-            <div style="font-size: 9.5px; font-weight: 600;">2026</div>
+            <div id="exportCardDayOfWeek" style="font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">CHỦ NHẬT</div>
+            <div id="exportCardDayMonth" style="font-size: 20px; font-weight: bold; font-family: 'Cinzel', serif; line-height: 1;">25.10</div>
+            <div id="exportCardYear" style="font-size: 9.5px; font-weight: 600;">2026</div>
           </div>
           <div style="border-top: 1px solid #C99E5C; border-bottom: 1px solid #C99E5C; padding: 5px 12px; text-align: center;">
-            <div style="font-size: 9.5px; color: #891322; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">AL: 16.09</div>
-            <div style="font-size: 11px; font-weight: 600; color: #685D58;">Bính Ngọ</div>
+            <div id="exportCardLunarDay" style="font-size: 9.5px; color: #891322; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">AL: 16.09</div>
+            <div id="exportCardLunarYear" style="font-size: 11px; font-weight: 600; color: #685D58;">Bính Ngọ</div>
           </div>
         </div>
 
@@ -2183,40 +2261,6 @@
           <span style="font-family: 'Montserrat', sans-serif; font-size: 10.5px; color: #685D58; font-style: italic;">
             Rất hân hạnh được đón tiếp quý khách! • ngaycuoi.online
           </span>
-        </div>
-
-      </div>
-    </div>
-  </div>tyle="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; font-family: 'Montserrat', sans-serif;">
-          <div style="border-top: 1px solid #C99E5C; border-bottom: 1px solid #C99E5C; padding: 6px 14px; text-align: center;">
-            <div style="font-size: 10px; color: #891322; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">VÀO LÚC</div>
-            <div id="exportCardEventTime" style="font-size: 18px; font-weight: bold; color: #891322; font-family: 'Cinzel', serif;">11:00</div>
-          </div>
-          <div style="border: 2px solid #891322; background: #891322; color: #FAF7F2; border-radius: 10px; padding: 6px 16px; text-align: center;">
-            <div style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">CHỦ NHẬT</div>
-            <div style="font-size: 22px; font-weight: bold; font-family: 'Cinzel', serif; line-height: 1;">25.10</div>
-            <div style="font-size: 10px; font-weight: 600;">2026</div>
-          </div>
-          <div style="border-top: 1px solid #C99E5C; border-bottom: 1px solid #C99E5C; padding: 6px 14px; text-align: center;">
-            <div style="font-size: 10px; color: #891322; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">AL: 16.09</div>
-            <div style="font-size: 12px; font-weight: 600; color: #685D58;">Bính Ngọ</div>
-          </div>
-        </div>
-
-        <!-- Groom & Bride Names -->
-        <div style="margin-bottom: 12px;">
-          <div id="exportCardCoupleNames" style="font-family: 'Great Vibes', cursive; font-size: 32px; color: #891322; line-height: 1;">
-            Hoài Phước <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> Diệu Hồng
-          </div>
-        </div>
-
-        <!-- Footer Note -->
-        <div style="border-top: 1px dashed rgba(201, 158, 92, 0.5); padding-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <i class="fa-solid fa-heart" style="color: #891322; font-size: 10px;"></i>
-          <span style="font-family: 'Montserrat', sans-serif; font-size: 11px; color: #685D58; font-style: italic;">
-            Rất hân hạnh được đón tiếp quý khách! • ngaycuoi.online
-          </span>
-          <i class="fa-solid fa-heart" style="color: #891322; font-size: 10px;"></i>
         </div>
 
       </div>
@@ -2491,7 +2535,25 @@
         if (!configUpdate) return false;
         if (configUpdate.eventConfig) {
           eventConfig = Object.assign({}, eventConfig, configUpdate.eventConfig);
+          if (typeof weddingConfigs !== 'undefined') {
+            if (currentWeddingVersion === 'nhagai') {
+              weddingConfigs.nhagai = Object.assign({}, weddingConfigs.nhagai, configUpdate.eventConfig);
+              try { localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai)); } catch (e) { }
+            } else {
+              weddingConfigs.nhatrai = Object.assign({}, weddingConfigs.nhatrai, configUpdate.eventConfig);
+              try { localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai)); } catch (e) { }
+            }
+          }
           try { localStorage.setItem('weddingEventConfig', JSON.stringify(eventConfig)); } catch (e) { }
+          updateEventUI();
+        }
+        if (configUpdate.weddingConfigs && typeof weddingConfigs !== 'undefined') {
+          weddingConfigs = Object.assign({}, weddingConfigs, configUpdate.weddingConfigs);
+          try {
+            localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai));
+            localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai));
+          } catch (e) { }
+          eventConfig = Object.assign({}, currentWeddingVersion === 'nhagai' ? weddingConfigs.nhagai : weddingConfigs.nhatrai);
           updateEventUI();
         }
         if (configUpdate.bankConfig) {
@@ -2516,6 +2578,7 @@
           const savedPhoto = localStorage.getItem('weddingCouplePhoto') || '';
           cloudData.config = {
             eventConfig: eventConfig,
+            weddingConfigs: typeof weddingConfigs !== 'undefined' ? weddingConfigs : null,
             bankConfig: bankConfig,
             musicSrc: currentMusicSrc,
             couplePhoto: savedPhoto,
@@ -2537,6 +2600,7 @@
           wishes: wishes,
           config: {
             eventConfig: eventConfig,
+            weddingConfigs: typeof weddingConfigs !== 'undefined' ? weddingConfigs : null,
             bankConfig: bankConfig,
             musicSrc: currentMusicSrc,
             updatedAt: new Date().toISOString()
@@ -2568,12 +2632,20 @@
         }
 
         if (cloudData.config) {
-          if (cloudData.config.eventConfig) {
+          if (cloudData.config.weddingConfigs && typeof weddingConfigs !== 'undefined') {
+            weddingConfigs = Object.assign({}, weddingConfigs, cloudData.config.weddingConfigs);
+            localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai));
+            localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai));
+            eventConfig = Object.assign({}, currentWeddingVersion === 'nhagai' ? weddingConfigs.nhagai : weddingConfigs.nhatrai);
+          } else if (cloudData.config.eventConfig) {
             eventConfig = Object.assign({}, eventConfig, cloudData.config.eventConfig);
             localStorage.setItem('weddingEventConfig', JSON.stringify(eventConfig));
           }
           if (cloudData.config.bankConfig) {
             bankConfig = Object.assign({}, bankConfig, cloudData.config.bankConfig);
+            if (!bankConfig.bride || !bankConfig.bride.stk || bankConfig.bride.stk === '2510202699' || bankConfig.bride.stk === '9988776655' || bankConfig.bride.bankCode === 'VCB' || bankConfig.bride.qrImage === '9daece09-9701-4168-857e-230f18768e16.jpg') {
+              bankConfig.bride = Object.assign({}, DEFAULT_BANK_CONFIG.bride);
+            }
             localStorage.setItem('weddingBankConfig', JSON.stringify(bankConfig));
           }
           if (cloudData.config.musicSrc) {
@@ -2753,7 +2825,7 @@
       reader.onload = async function (evt) {
         try {
           const json = JSON.parse(evt.target.result);
-          if (!json || (!json.guests && !json.eventConfig)) {
+          if (!json || (!json.guests && !json.eventConfig && !json.weddingConfigs)) {
             showToast('⚠️ File sao lưu không hợp lệ!');
             return;
           }
@@ -2763,7 +2835,12 @@
           if (Array.isArray(json.wishes)) {
             localStorage.setItem('weddingWishesList', JSON.stringify(json.wishes));
           }
-          if (json.eventConfig) {
+          if (json.weddingConfigs) {
+            weddingConfigs = Object.assign({}, weddingConfigs, json.weddingConfigs);
+            localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai));
+            localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai));
+            eventConfig = Object.assign({}, currentWeddingVersion === 'nhagai' ? weddingConfigs.nhagai : weddingConfigs.nhatrai);
+          } else if (json.eventConfig) {
             eventConfig = Object.assign({}, eventConfig, json.eventConfig);
             localStorage.setItem('weddingEventConfig', JSON.stringify(eventConfig));
           }
@@ -2813,34 +2890,89 @@
       }
     }
 
-    let bankConfig = {
+    const DEFAULT_BANK_CONFIG = {
       groom: { holder: 'LE HOAI PHUOC', bank: 'TPBank', bankCode: 'TPB', stk: '00299030001', qrImage: '' },
-      bride: { holder: 'NGUYỄN DIỆU HỒNG', bank: 'MB Bank', bankCode: 'MB', stk: '2510202699', qrImage: '' },
+      bride: { holder: 'NGUYEN DIEU HONG', bank: 'VIB', bankCode: 'VIB', stk: '666608899', qrImage: '' },
       transferPrefix: 'Mung cuoi',
       appendGuestNameToMemo: true
     };
 
+    let bankConfig = JSON.parse(JSON.stringify(DEFAULT_BANK_CONFIG));
+
     let guestList = [];
 
-    let eventConfig = {
+    const DEFAULT_CONFIG_NHATRAI = {
+      version: 'nhatrai',
+      defaultCouplePhoto: 'a29fae59-2022-48fd-800d-264e51e25015.jpg',
+      ceremonyType: 'LỄ TÂN HÔN',
+      ceremonyTypeHeading: 'TRÂN TRỌNG BÁO TIN LỄ TÂN HÔN CỦA CON CHÚNG TÔI',
       groomName: 'Lê Hoài Phước',
+      groomRole: 'Trưởng Nam',
       brideName: 'Nguyễn Diệu Hồng',
-      groomParents: 'Ông: LÊ THANH HOA - Bà: NGUYỄN THỊ ÁI DIỄM',
-      brideParents: 'Bà: NGUYỄN THỊ TÍN',
-      partyTime: '11:00 • Chủ Nhật, 25/10/2026',
-      partyVenue: 'Trung Tâm Tiệc Cưới THANH PHỤNG, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM',
+      brideRole: 'Quý Nữ',
+      groomParents: 'Ông: LÊ THANH HOA - Bà: NGUYỄN THỊ ÁI DIỄM\nẤp Hai Đông, Xã Bàu Lâm, TP. HCM',
+      brideParents: 'Bà: NGUYỄN THỊ TÍN\nPhường Tuy Hòa, Đắk Lắk',
+      ceremonyLocation: 'TƯ GIA NHÀ TRAI',
       ceremonyTime: '09:00 • Thứ Ba, 20/10/2026',
-      mapUrl: 'https://www.google.com/maps/search/?api=1&query=Trung+T%C3%A2m+Ti%E1%BB%87c+C%C6%B0%E1%BB%9Bi+Thanh+Ph%E1%BB%A5ng,+%E1%BA%A5p+2+%C4%90%C3%B4ng,+B%C3%A0u+L%C3%A2m,+Xuy%C3%AAn+M%E1%BB%99c',
-      groomMapUrl: 'https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6'
+      ceremonyDay: '20',
+      ceremonyLunar: 'Nhằm ngày 11 tháng 09 năm Bính Ngọ',
+      partyVenue: 'Trung Tâm Tiệc Cưới THANH PHỤNG, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM',
+      partyVenueCategory: 'TRUNG TÂM SỰ KIỆN VÀ TIỆC CƯỚI',
+      partyTime: '11:00 • Chủ Nhật, 25/10/2026',
+      partyDateDisplay: '25 . 10 . 2026',
+      partyLunar: 'Nhằm ngày 16 tháng 09 năm Bính Ngọ',
+      closingFamily: 'Gia Đình Hoa Diễm',
+      mapUrl: 'https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6',
+      groomMapUrl: 'https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6',
+      targetTimestamp: new Date("2026-10-25T11:00:00+07:00").getTime(),
+      waxSealInitials: 'P & H',
+      waxSealDate: '25.10.2026',
+      calendarCouple: 'Phước ❤ Hồng'
     };
+
+    const DEFAULT_CONFIG_NHAGAI = {
+      version: 'nhagai',
+      defaultCouplePhoto: '9daece09-9701-4168-857e-230f18768e16.jpg',
+      ceremonyType: 'LỄ VU QUY',
+      ceremonyTypeHeading: 'TRÂN TRỌNG BÁO TIN LỄ VU QUY CỦA CON CHÚNG TÔI',
+      groomName: 'Lê Hoài Phước',
+      groomRole: 'Trưởng Nam',
+      brideName: 'Nguyễn Diệu Hồng',
+      brideRole: 'Quý Nữ',
+      groomParents: 'Ông: LÊ THANH HOA - Bà: NGUYỄN THỊ ÁI DIỄM\nẤp Hai Đông, Xã Bàu Lâm, TP. HCM',
+      brideParents: 'Bà: NGUYỄN THỊ TÍN\nPhường Tuy Hòa, Đắk Lắk',
+      ceremonyLocation: 'TƯ GIA NHÀ GÁI',
+      ceremonyTime: '09:00 • Thứ Bảy, 17/10/2026',
+      ceremonyDay: '17',
+      ceremonyLunar: 'Nhằm ngày 08 tháng 09 năm Bính Ngọ',
+      partyVenue: 'NHÀ HÀNG CÔNG ĐOÀN, Lầu 1, Số 53 Đường Độc Lập, Phường Tuy Hòa, Đắk Lắk',
+      partyVenueCategory: 'NHÀ HÀNG',
+      partyTime: '11:00 • Thứ Bảy, 17/10/2026',
+      partyDateDisplay: '17 . 10 . 2026',
+      partyLunar: 'Nhằm ngày 08 tháng 09 năm Bính Ngọ',
+      closingFamily: 'Bà: NGUYỄN THỊ TÍN',
+      mapUrl: 'https://maps.app.goo.gl/i6VipoGVxYzVsvfT6',
+      groomMapUrl: 'https://www.google.com/maps/search/?api=1&query=Tuy+H%C3%B2a,+%C4%90%E1%BA%AFk+L%E1%BA%AFk',
+      targetTimestamp: new Date("2026-10-17T11:00:00+07:00").getTime(),
+      waxSealInitials: 'H & P',
+      waxSealDate: '17.10.2026',
+      calendarCouple: 'Hồng ❤ Phước'
+    };
+
+    let weddingConfigs = {
+      nhatrai: Object.assign({}, DEFAULT_CONFIG_NHATRAI),
+      nhagai: Object.assign({}, DEFAULT_CONFIG_NHAGAI)
+    };
+
+    let currentWeddingVersion = 'nhatrai';
+    let currentAdminRole = 'admin'; // 'admin' (Nhà Trai) or 'admin2' (Nhà Gái)
+    let eventConfig = Object.assign({}, weddingConfigs.nhatrai);
+    let targetWeddingTimestamp = weddingConfigs.nhatrai.targetTimestamp;
 
     // State management
     let isEnvelopeOpen = false;
     let isMusicPlaying = false;
     let currentMusicSrc = 'ngay_dau_tien.m4a';
-
-    // Target wedding dates
-    const weddingDate = new Date("2026-10-25T11:00:00+07:00").getTime();
 
     // DOM Elements
     const closedEnvelope = document.getElementById('closedEnvelope');
@@ -2852,17 +2984,23 @@
     const generatedShareUrl = document.getElementById('generatedShareUrl');
 
     window.addEventListener('DOMContentLoaded', () => {
-      loadAndSyncConfig();
-      initMusic();
-      checkInitialAccessMode();
-
-      // Parse URL parameters for customized guest name & salutation
+      // 1. Parse URL parameters first to know version
       const urlParams = new URLSearchParams(window.location.search);
+      const verParam = urlParams.get('v') || urlParams.get('ver') || urlParams.get('side');
+      if (verParam) {
+        const vClean = verParam.trim().toLowerCase();
+        if (vClean === 'nhagai' || vClean === 'gai' || vClean === '2' || vClean === 'vuquy') {
+          currentWeddingVersion = 'nhagai';
+        } else if (vClean === 'nhatrai' || vClean === 'trai' || vClean === '1' || vClean === 'tanhon') {
+          currentWeddingVersion = 'nhatrai';
+        }
+      }
+
+      const b64 = urlParams.get('b');
       let guestFromUrl = urlParams.get('to') || urlParams.get('guest') || urlParams.get('khach') || urlParams.get('n');
       let salutFromUrl = urlParams.get('salutation') || urlParams.get('sung') || urlParams.get('prefix') || urlParams.get('s');
       let guestIdFromUrl = urlParams.get('id');
 
-      const b64 = urlParams.get('b');
       if (b64) {
         try {
           let base64 = b64.replace(/-/g, '+').replace(/_/g, '/');
@@ -2873,9 +3011,19 @@
             salutFromUrl = parts[0];
             guestFromUrl = parts[1];
             if (parts[2]) guestIdFromUrl = parts[2];
+            if (parts[3]) {
+              const b64Ver = parts[3].trim().toLowerCase();
+              if (b64Ver === 'nhagai' || b64Ver === 'gai') currentWeddingVersion = 'nhagai';
+              else if (b64Ver === 'nhatrai' || b64Ver === 'trai') currentWeddingVersion = 'nhatrai';
+            }
           }
         } catch (e) { }
       }
+
+      loadAndSyncConfig();
+      switchWeddingVersion(currentWeddingVersion, false);
+      initMusic();
+      checkInitialAccessMode();
 
       if (guestFromUrl && guestFromUrl.trim() !== '') {
         const decodedName = guestFromUrl.trim();
@@ -2897,7 +3045,64 @@
       renderWishesListOnCard();
     });
 
-    function buildCleanShareUrl(salut, name, id) {
+    function switchWeddingVersion(ver, updateUi = true, force = false) {
+      if (isGuestMode && !force) {
+        // Guest mode is strictly locked to the version assigned in their invitation link!
+        return;
+      }
+      if (ver !== 'nhagai' && ver !== 'nhatrai') ver = 'nhatrai';
+      currentWeddingVersion = ver;
+      try { localStorage.setItem('weddingCurrentVersion', ver); } catch (e) { }
+
+      eventConfig = Object.assign({}, weddingConfigs[ver] || weddingConfigs.nhatrai);
+      targetWeddingTimestamp = eventConfig.targetTimestamp || (ver === 'nhagai' ? DEFAULT_CONFIG_NHAGAI.targetTimestamp : DEFAULT_CONFIG_NHATRAI.targetTimestamp);
+
+      // Update top pill active state
+      const btnTrai = document.getElementById('btnVerNhatrai');
+      const btnGai = document.getElementById('btnVerNhagai');
+      if (btnTrai && btnGai) {
+        if (ver === 'nhagai') {
+          btnTrai.className = 'px-3 py-1.5 rounded-full font-medium transition-all text-amber-200/80 hover:text-white flex items-center gap-1.5';
+          btnGai.className = 'px-3 py-1.5 rounded-full font-semibold transition-all flex items-center gap-1.5 shadow-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500';
+        } else {
+          btnTrai.className = 'px-3 py-1.5 rounded-full font-semibold transition-all flex items-center gap-1.5 shadow-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500';
+          btnGai.className = 'px-3 py-1.5 rounded-full font-medium transition-all text-amber-200/80 hover:text-white flex items-center gap-1.5';
+        }
+      }
+
+      // Update admin toggle bar
+      const admBtnTrai = document.getElementById('adminToggleVerNhatrai');
+      const admBtnGai = document.getElementById('adminToggleVerNhagai');
+      if (admBtnTrai && admBtnGai) {
+        if (ver === 'nhagai') {
+          admBtnTrai.className = 'px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all text-amber-200/70 hover:text-white';
+          admBtnGai.className = 'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-amber-400 text-slate-950';
+        } else {
+          admBtnTrai.className = 'px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-amber-400 text-slate-950';
+          admBtnGai.className = 'px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all text-amber-200/70 hover:text-white';
+        }
+      }
+
+      // Update Tab 4 badge if present
+      const tab4Badge = document.getElementById('tab4ActiveVersionBadge');
+      if (tab4Badge) {
+        tab4Badge.innerHTML = ver === 'nhagai'
+          ? '<span class="text-amber-300 font-bold">👰 ĐANG SỬA BẢN: NHÀ GÁI (LỄ VU QUY - 17/10/2026)</span>'
+          : '<span class="text-amber-300 font-bold">🤵 ĐANG SỬA BẢN: NHÀ TRAI (LỄ TÂN HÔN - 25/10/2026)</span>';
+      }
+
+      updateCouplePhotoUI();
+
+      if (updateUi) {
+        updateEventUI();
+        renderGiftModal();
+        if (isAdminLoggedIn) populateAdminForm();
+        updateShareUrl();
+        showToast(ver === 'nhagai' ? '👰 Đã chuyển sang bản thiệp NHÀ GÁI (17/10/2026)' : '🤵 Đã chuyển sang bản thiệp NHÀ TRAI (25/10/2026)');
+      }
+    }
+
+    function buildCleanShareUrl(salut, name, id, verOverride) {
       const baseUrl = window.location.origin + window.location.pathname;
       const url = new URL(baseUrl);
 
@@ -2905,18 +3110,27 @@
       const cleanName = (name || 'Quý Khách & Gia Đình').trim();
       const cleanId = (id || '').trim();
 
+      let ver = verOverride;
+      if (!ver) {
+        if (currentAdminRole === 'admin2') ver = 'nhagai';
+        else if (currentAdminRole === 'admin') ver = 'nhatrai';
+        else ver = currentWeddingVersion || 'nhatrai';
+      }
+
       try {
-        const payload = `${cleanSalut}|${cleanName}|${cleanId}`;
+        const payload = `${cleanSalut}|${cleanName}|${cleanId}|${ver}`;
         const b64 = btoa(unescape(encodeURIComponent(payload)))
           .replace(/\+/g, '-')
           .replace(/\//g, '_')
           .replace(/=+$/, '');
         url.searchParams.set('b', b64);
+        url.searchParams.set('v', ver);
         return url.toString();
       } catch (e) {
         url.searchParams.set('to', cleanName);
         url.searchParams.set('salutation', cleanSalut);
         if (cleanId) url.searchParams.set('id', cleanId);
+        url.searchParams.set('v', ver);
         return url.toString();
       }
     }
@@ -2944,6 +3158,13 @@
         // GUEST MODE: Visitor accessed with custom invitation link
         isGuestMode = true;
 
+        // Strictly enforce version from URL/b64 for guest
+        switchWeddingVersion(currentWeddingVersion, false, true);
+
+        // Hide version switch pill on top so guests CANNOT switch version!
+        const togglePill = document.getElementById('weddingVersionTogglePill');
+        if (togglePill) togglePill.classList.add('hidden');
+
         // Hide Admin floating & top nav buttons completely
         const topAdminBtn = document.getElementById('topAdminBtn');
         const topCreateBtn = document.getElementById('topCreateBtn');
@@ -2966,11 +3187,20 @@
         const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
         if (storedAuth === 'true') {
           isAdminLoggedIn = true;
-          // Show admin buttons
+          currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
+          // Auto switch to role's version
+          if (currentAdminRole === 'admin2' && currentWeddingVersion !== 'nhagai') {
+            switchWeddingVersion('nhagai', false, true);
+          } else if (currentAdminRole === 'admin' && currentWeddingVersion !== 'nhatrai') {
+            switchWeddingVersion('nhatrai', false, true);
+          }
+          // Show admin buttons and toggle pill for admin
           const topAdminBtn = document.getElementById('topAdminBtn');
           const floatAdminBtn = document.getElementById('floatingAdminBtn');
+          const togglePill = document.getElementById('weddingVersionTogglePill');
           if (topAdminBtn) topAdminBtn.classList.remove('hidden');
           if (floatAdminBtn) floatAdminBtn.classList.remove('hidden');
+          if (togglePill) togglePill.classList.remove('hidden');
         } else {
           // STRICT LOCK: Lock screen completely, require admin login
           lockRootForAdminOnly();
@@ -3006,18 +3236,30 @@
     function checkAdminPermission() {
       if (isAdminLoggedIn) return true;
       openAdminModal();
-      showToast('⚠️ Vui lòng đăng nhập Admin (tk: admin, mk: admin123) để thực hiện!');
+      showToast('⚠️ Vui lòng đăng nhập Admin (tk: admin / admin2, mk: admin123) để thực hiện!');
       return false;
     }
 
     function loadStoredConfig() {
       try {
         const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
-        if (storedAuth === 'true') isAdminLoggedIn = true;
+        if (storedAuth === 'true') {
+          isAdminLoggedIn = true;
+          currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
+        }
+
+        const storedVer = localStorage.getItem('weddingCurrentVersion');
+        if (storedVer === 'nhagai' || storedVer === 'nhatrai') {
+          currentWeddingVersion = storedVer;
+        }
 
         const storedBank = localStorage.getItem('weddingBankConfig');
         if (storedBank) {
           bankConfig = JSON.parse(storedBank);
+          if (!bankConfig.bride || !bankConfig.bride.stk || bankConfig.bride.stk === '2510202699' || bankConfig.bride.stk === '9988776655' || bankConfig.bride.bankCode === 'VCB' || bankConfig.bride.qrImage === '9daece09-9701-4168-857e-230f18768e16.jpg' || bankConfig.bride.holder === 'NGUYỄN DIỆU HỒNG') {
+            bankConfig.bride = Object.assign({}, DEFAULT_BANK_CONFIG.bride);
+            localStorage.setItem('weddingBankConfig', JSON.stringify(bankConfig));
+          }
           if (bankConfig.groom && (bankConfig.groom.stk === '1020268888' || bankConfig.groom.bankCode === 'VCB')) {
             bankConfig.groom.holder = 'LE HOAI PHUOC';
             bankConfig.groom.bank = 'TPBank';
@@ -3027,10 +3269,17 @@
           }
           if (!bankConfig.transferPrefix) bankConfig.transferPrefix = 'Mung cuoi';
           if (bankConfig.appendGuestNameToMemo === undefined) bankConfig.appendGuestNameToMemo = true;
+        } else {
+          localStorage.setItem('weddingBankConfig', JSON.stringify(bankConfig));
         }
 
-        const storedEvent = localStorage.getItem('weddingEventConfig');
-        if (storedEvent) eventConfig = JSON.parse(storedEvent);
+        const storedNhatrai = localStorage.getItem('weddingEventConfig_nhatrai');
+        if (storedNhatrai) weddingConfigs.nhatrai = Object.assign({}, DEFAULT_CONFIG_NHATRAI, JSON.parse(storedNhatrai));
+        const storedNhagai = localStorage.getItem('weddingEventConfig_nhagai');
+        if (storedNhagai) weddingConfigs.nhagai = Object.assign({}, DEFAULT_CONFIG_NHAGAI, JSON.parse(storedNhagai));
+
+        eventConfig = Object.assign({}, weddingConfigs[currentWeddingVersion] || weddingConfigs.nhatrai);
+        targetWeddingTimestamp = eventConfig.targetTimestamp || (currentWeddingVersion === 'nhagai' ? DEFAULT_CONFIG_NHAGAI.targetTimestamp : DEFAULT_CONFIG_NHATRAI.targetTimestamp);
 
         const storedGuests = localStorage.getItem('weddingGuestList');
         if (storedGuests) guestList = JSON.parse(storedGuests);
@@ -3042,20 +3291,25 @@
     function updateEventUI() {
       if (!eventConfig) return;
 
+      const isNhagai = currentWeddingVersion === 'nhagai';
+
       // 1. Header couple names
       const headerCouple = document.getElementById('headerCoupleNames');
       if (headerCouple) {
-        headerCouple.innerHTML = `${escapeHTML(eventConfig.groomName || 'Hoài Phước')} <span class="font-script text-3xl sm:text-4xl text-amber-300 mx-1">&</span> ${escapeHTML(eventConfig.brideName || 'Diệu Hồng')}`;
+        if (isNhagai) {
+          headerCouple.innerHTML = `${escapeHTML(eventConfig.brideName || 'Diệu Hồng')} <span class="font-script text-3xl sm:text-4xl text-amber-300 mx-1">&</span> ${escapeHTML(eventConfig.groomName || 'Hoài Phước')}`;
+        } else {
+          headerCouple.innerHTML = `${escapeHTML(eventConfig.groomName || 'Hoài Phước')} <span class="font-script text-3xl sm:text-4xl text-amber-300 mx-1">&</span> ${escapeHTML(eventConfig.brideName || 'Diệu Hồng')}`;
+        }
       }
 
-      // 2. Card Groom & Bride Calligraphy Names
-      const cardGroom = document.getElementById('cardGroomNameDisplay');
-      if (cardGroom) cardGroom.textContent = eventConfig.groomName || 'Lê Hoài Phước';
+      // Wax Seal initials & date
+      const waxInitials = document.getElementById('waxSealInitials');
+      if (waxInitials) waxInitials.textContent = eventConfig.waxSealInitials || (isNhagai ? 'H & P' : 'P & H');
+      const waxDate = document.getElementById('waxSealDate');
+      if (waxDate) waxDate.textContent = eventConfig.waxSealDate || (isNhagai ? '17.10.2026' : '25.10.2026');
 
-      const cardBride = document.getElementById('cardBrideNameDisplay');
-      if (cardBride) cardBride.textContent = eventConfig.brideName || 'Nguyễn Diệu Hồng';
-
-      // 3. Parents
+      // Parents format
       function formatParentsHTML(title, rawText) {
         if (!rawText) return '';
         const lines = rawText.split(/\s*[-–—]\s*|\n|<br\s*\/?>/gi).map(s => s.trim()).filter(Boolean);
@@ -3075,13 +3329,116 @@
         cardBrideParents.innerHTML = formatParentsHTML('Nhà Gái', eventConfig.brideParents);
       }
 
-      // 4. Ceremony Time
+      // Ceremony Type Heading
+      const cardCeremonyHeading = document.getElementById('cardCeremonyTypeHeading');
+      if (cardCeremonyHeading) {
+        if (isNhagai) {
+          cardCeremonyHeading.innerHTML = `LỄ VU QUY <span class="font-normal text-wedding-subtext text-[11px] lowercase tracking-normal">của con chúng tôi</span>`;
+        } else {
+          cardCeremonyHeading.innerHTML = `LỄ TÂN HÔN <span class="font-normal text-wedding-subtext text-[11px] lowercase tracking-normal">của con chúng tôi</span>`;
+        }
+      }
+
+      // Card Groom & Bride Calligraphy Names Block (Reordered for Nhà Gái vs Nhà Trai)
+      const namesBlock = document.getElementById('cardCoupleNamesBlock');
+      if (namesBlock) {
+        const ringsHtml = `
+          <div class="flex items-center justify-center my-1">
+            <svg width="46" height="24" viewBox="0 0 46 24" fill="none" class="text-wedding-gold">
+              <circle cx="17" cy="12" r="9" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.9" />
+              <circle cx="29" cy="12" r="9" stroke="currentColor" stroke-width="2.2" fill="none" opacity="0.9" />
+              <polygon points="29,1 31,4 29,7 27,4" fill="#E8C78A" />
+              <circle cx="29" cy="4" r="1.5" fill="#FFF" />
+            </svg>
+          </div>`;
+
+        const groomHtml = `
+          <div>
+            <h2 id="cardGroomNameDisplay"
+              class="font-script text-3xl sm:text-4xl text-wedding-red font-normal leading-tight tracking-wide drop-shadow-sm hover:scale-105 transition-transform">
+              ${escapeHTML(eventConfig.groomName || 'Lê Hoài Phước')}
+            </h2>
+            <p id="cardGroomRoleDisplay" class="text-[11px] sm:text-xs text-wedding-subtext italic mt-0.5 font-serif">${escapeHTML(eventConfig.groomRole || 'Trưởng Nam')}</p>
+          </div>`;
+
+        const brideHtml = `
+          <div>
+            <h2 id="cardBrideNameDisplay"
+              class="font-script text-3xl sm:text-4xl text-wedding-red font-normal leading-tight tracking-wide drop-shadow-sm hover:scale-105 transition-transform">
+              ${escapeHTML(eventConfig.brideName || 'Nguyễn Diệu Hồng')}
+            </h2>
+            <p id="cardBrideRoleDisplay" class="text-[11px] sm:text-xs text-wedding-subtext italic mt-0.5 font-serif">${escapeHTML(eventConfig.brideRole || 'Quý Nữ')}</p>
+          </div>`;
+
+        if (isNhagai) {
+          namesBlock.innerHTML = brideHtml + ringsHtml + groomHtml;
+        } else {
+          namesBlock.innerHTML = groomHtml + ringsHtml + brideHtml;
+        }
+      }
+
+      // Ceremony Location & Time
+      const cardCeremonyLoc = document.getElementById('cardCeremonyLocationDisplay');
+      if (cardCeremonyLoc) {
+        cardCeremonyLoc.textContent = `HÔN LỄ ĐƯỢC CỬ HÀNH TẠI: ${(eventConfig.ceremonyLocation || (isNhagai ? 'TƯ GIA NHÀ GÁI' : 'TƯ GIA NHÀ TRAI')).toUpperCase()}`;
+      }
+
       const cardCeremony = document.getElementById('cardCeremonyTimeDisplay');
       if (cardCeremony && eventConfig.ceremonyTime) {
         cardCeremony.textContent = `VÀO LÚC: ${eventConfig.ceremonyTime.toUpperCase()}`;
       }
 
-      // 5. Party Venue & Time
+      const cardCeremonyDay = document.getElementById('cardCeremonyDay');
+      if (cardCeremonyDay) cardCeremonyDay.textContent = eventConfig.ceremonyDay || (isNhagai ? '17' : '20');
+
+      const cardCeremonyLunar = document.getElementById('cardCeremonyLunarDisplay');
+      if (cardCeremonyLunar) {
+        cardCeremonyLunar.textContent = `(${eventConfig.ceremonyLunar || (isNhagai ? 'Nhằm ngày 08 tháng 09 năm Bính Ngọ' : 'Nhằm ngày 11 tháng 09 năm Bính Ngọ')})`;
+      }
+
+      const cardGroomMapBtn = document.getElementById('cardGroomMapBtn');
+      if (cardGroomMapBtn) {
+        cardGroomMapBtn.href = eventConfig.groomMapUrl || eventConfig.mapUrl || '#';
+      }
+      const cardGroomMapBtnText = document.getElementById('cardGroomMapBtnText');
+      if (cardGroomMapBtnText) {
+        cardGroomMapBtnText.textContent = isNhagai ? 'Bản đồ Google Maps chỉ đường đến Nhà Gái' : 'Bản đồ Google Maps chỉ đường đến Nhà Trai';
+      }
+
+      // Section 3: Mini Calendar
+      const cardCalendarCouple = document.getElementById('cardCalendarCouple');
+      if (cardCalendarCouple) {
+        cardCalendarCouple.innerHTML = isNhagai ? 'Hồng <span class="text-sm font-sans text-wedding-red">❤</span> Phước' : 'Phước <span class="text-sm font-sans text-wedding-red">❤</span> Hồng';
+      }
+
+      const cal17 = document.getElementById('calDay17');
+      const cal20 = document.getElementById('calDay20');
+      const cal25 = document.getElementById('calDay25');
+
+      if (cal17 && cal20 && cal25) {
+        if (isNhagai) {
+          cal17.className = 'calendar-heart';
+          cal17.title = 'Tiệc Cưới & Lễ Vu Quy (17/10)';
+          cal20.className = '';
+          cal20.title = '';
+          cal25.className = '';
+          cal25.title = '';
+        } else {
+          cal17.className = '';
+          cal17.title = '';
+          cal20.className = 'font-bold text-wedding-red underline decoration-wedding-gold underline-offset-2';
+          cal20.title = 'Lễ Tân Hôn (20/10)';
+          cal25.className = 'calendar-heart';
+          cal25.title = 'Tiệc Cưới Nhà Trai (25/10)';
+        }
+      }
+
+      // Section 3: Party Venue & Time
+      const cardVenueCategory = document.getElementById('cardPartyVenueCategory');
+      if (cardVenueCategory) {
+        cardVenueCategory.textContent = eventConfig.partyVenueCategory || (isNhagai ? 'NHÀ HÀNG' : 'TRUNG TÂM SỰ KIỆN VÀ TIỆC CƯỚI');
+      }
+
       const cardVenueTitle = document.getElementById('cardPartyVenueTitle');
       const cardVenueAddrText = document.getElementById('cardPartyVenueAddress');
       const cardVenueAddr = document.getElementById('cardVenueAddress');
@@ -3089,7 +3446,7 @@
       if (eventConfig.partyVenue) {
         const parts = eventConfig.partyVenue.split(',').map(s => s.trim());
         let venueName = parts[0];
-        const cleanedName = venueName.replace(/^(Trung\s+Tâm\s+Tiệc\s+Cưới|TT\s+Tiệc\s+Cưới)\s*/i, '').trim();
+        const cleanedName = venueName.replace(/^(Trung\s+Tâm\s+Tiệc\s+Cưới|TT\s+Tiệc\s+Cưới|Nhà\s+Hàng)\s*/i, '').trim();
 
         if (cardVenueTitle) {
           cardVenueTitle.textContent = (cleanedName || venueName).toUpperCase();
@@ -3110,69 +3467,120 @@
         cardPartyTime.textContent = `VÀO LÚC: ${eventConfig.partyTime.toUpperCase()}`;
       }
 
-      // 6. Map Links in Modals & Page
-      const cardGroomMapBtn = document.getElementById('cardGroomMapBtn');
-      if (cardGroomMapBtn) {
-        cardGroomMapBtn.href = eventConfig.groomMapUrl || eventConfig.mapUrl || '#';
+      const cardPartyDateDisplay = document.getElementById('cardPartyDateDisplay');
+      if (cardPartyDateDisplay) {
+        cardPartyDateDisplay.textContent = eventConfig.partyDateDisplay || (isNhagai ? '17 . 10 . 2026' : '25 . 10 . 2026');
+      }
+
+      const cardPartyLunar = document.getElementById('cardPartyLunarDisplay');
+      if (cardPartyLunar) {
+        cardPartyLunar.textContent = `(${eventConfig.partyLunar || (isNhagai ? 'Nhằm ngày 08 tháng 09 năm Bính Ngọ' : 'Nhằm ngày 16 tháng 09 năm Bính Ngọ')})`;
+      }
+
+      const cardClosingFamily = document.getElementById('cardClosingFamily');
+      if (cardClosingFamily) {
+        const rawFam = (eventConfig.closingFamily || (isNhagai ? 'Bà: NGUYỄN THỊ TÍN' : 'Gia Đình Hoa Diễm')).trim();
+        const match = rawFam.match(/^(Bà|Ông|Ông Bà|Gia đình|Gia Đình)\s*:\s*(.+)$/i);
+        if (match) {
+          cardClosingFamily.innerHTML = `<span class="font-serif font-normal italic text-xs text-wedding-subtext">${escapeHTML(match[1])}: </span><span class="font-serif font-bold text-sm sm:text-base text-wedding-red uppercase tracking-wider">${escapeHTML(match[2])}</span>`;
+        } else {
+          cardClosingFamily.innerHTML = `<span class="font-serif font-bold text-sm sm:text-base text-wedding-red uppercase tracking-wider">${escapeHTML(rawFam)}</span>`;
+        }
+      }
+
+      // Map Modal contents
+      const modalPartyVenue = document.getElementById('modalPartyVenueName');
+      if (modalPartyVenue) {
+        modalPartyVenue.textContent = isNhagai ? 'Nhà Hàng CÔNG ĐOÀN' : 'Trung Tâm Tiệc Cưới THANH PHỤNG';
+      }
+      const modalPartyAddr = document.getElementById('modalPartyVenueAddress');
+      if (modalPartyAddr) {
+        modalPartyAddr.textContent = isNhagai ? 'Lầu 1, Số 53 Đường Độc Lập, Phường Tuy Hòa, Đắk Lắk' : 'Ấp Hai Đông, Xã Bàu Lâm, TP. HCM';
+      }
+      const modalPartyTime = document.getElementById('modalPartyTime');
+      if (modalPartyTime) {
+        modalPartyTime.textContent = isNhagai ? '11:00 • Thứ Bảy, 17/10/2026' : '11:00 • Chủ Nhật, 25/10/2026';
+      }
+      const modalCeremonyBadge = document.getElementById('modalCeremonyBadge');
+      if (modalCeremonyBadge) {
+        modalCeremonyBadge.textContent = isNhagai ? 'LỄ VU QUY (NHÀ GÁI)' : 'HÔN LỄ GIA TIÊN (NHÀ TRAI)';
+      }
+      const modalCeremonyVenue = document.getElementById('modalCeremonyVenueName');
+      if (modalCeremonyVenue) {
+        modalCeremonyVenue.textContent = isNhagai ? 'Tư Gia Nhà Gái' : 'Tư Gia Nhà Trai';
+      }
+      const modalCeremonyAddr = document.getElementById('modalCeremonyVenueAddress');
+      if (modalCeremonyAddr) {
+        modalCeremonyAddr.textContent = isNhagai ? 'Phường Tuy Hòa, Đắk Lắk' : 'Ấp Hai Đông, Xã Bàu Lâm, TP. HCM';
+      }
+      const modalCeremonyTime = document.getElementById('modalCeremonyTime');
+      if (modalCeremonyTime) {
+        modalCeremonyTime.textContent = isNhagai ? '09:00 • Thứ Bảy, 17/10/2026' : '09:00 • Thứ Ba, 20/10/2026';
+      }
+      const modalGroomMapBtnText = document.getElementById('modalGroomMapBtnText');
+      if (modalGroomMapBtnText) {
+        modalGroomMapBtnText.textContent = isNhagai ? 'Chỉ đường Google Maps đến Nhà Gái' : 'Chỉ đường Google Maps đến Nhà Trai';
       }
 
       const modalPartyMapBtn = document.getElementById('modalPartyMapBtn');
-      if (modalPartyMapBtn) {
-        modalPartyMapBtn.href = eventConfig.mapUrl || '#';
-      }
-
+      if (modalPartyMapBtn) modalPartyMapBtn.href = eventConfig.mapUrl || '#';
       const modalGroomMapBtn = document.getElementById('modalGroomMapBtn');
-      if (modalGroomMapBtn) {
-        modalGroomMapBtn.href = eventConfig.groomMapUrl || eventConfig.mapUrl || '#';
+      if (modalGroomMapBtn) modalGroomMapBtn.href = eventConfig.groomMapUrl || eventConfig.mapUrl || '#';
+
+      // Dedicated Export Card Updates
+      const exportCardTitle = document.getElementById('exportCardCeremonyTitle');
+      if (exportCardTitle) {
+        exportCardTitle.textContent = isNhagai ? 'LỄ VU QUY' : 'LỄ THÀNH HÔN';
       }
-
-      const mapLinks = document.querySelectorAll('.wedding-venue-map-link');
-      mapLinks.forEach(link => {
-        if (link.id === 'modalGroomMapBtn') {
-          if (eventConfig.groomMapUrl) link.href = eventConfig.groomMapUrl;
-        } else {
-          if (eventConfig.mapUrl) link.href = eventConfig.mapUrl;
-        }
-      });
-
-      // 7. Dedicated Export Card Updates
+      const exportCardCeremonyHeading = document.getElementById('exportCardCeremonyHeading');
+      if (exportCardCeremonyHeading) {
+        exportCardCeremonyHeading.textContent = isNhagai ? 'TRÂN TRỌNG BÁO TIN LỄ VU QUY CỦA CON CHÚNG TÔI' : 'TRÂN TRỌNG BÁO TIN LỄ TÂN HÔN CỦA CON CHÚNG TÔI';
+      }
       const exportCouple = document.getElementById('exportCardCoupleNames');
       if (exportCouple) {
-        exportCouple.innerHTML = `${escapeHTML(eventConfig.groomName || 'Lê Hoài Phước')} <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> ${escapeHTML(eventConfig.brideName || 'Nguyễn Diệu Hồng')}`;
+        if (isNhagai) {
+          exportCouple.innerHTML = `${escapeHTML(eventConfig.brideName || 'Nguyễn Diệu Hồng')} <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> ${escapeHTML(eventConfig.groomName || 'Lê Hoài Phước')}`;
+        } else {
+          exportCouple.innerHTML = `${escapeHTML(eventConfig.groomName || 'Lê Hoài Phước')} <span style="font-size: 20px; color: #C99E5C; vertical-align: middle;">&hearts;</span> ${escapeHTML(eventConfig.brideName || 'Nguyễn Diệu Hồng')}`;
+        }
       }
-
       const exportGroomParents = document.getElementById('exportCardGroomParents');
       if (exportGroomParents && eventConfig.groomParents) {
         exportGroomParents.innerHTML = formatParentsHTML('Nhà Trai', eventConfig.groomParents);
       }
-
       const exportBrideParents = document.getElementById('exportCardBrideParents');
       if (exportBrideParents && eventConfig.brideParents) {
         exportBrideParents.innerHTML = formatParentsHTML('Nhà Gái', eventConfig.brideParents);
       }
-
       const exportCeremonyTime = document.getElementById('exportCardCeremonyTime');
       if (exportCeremonyTime && eventConfig.ceremonyTime) {
         exportCeremonyTime.textContent = `VÀO LÚC: ${eventConfig.ceremonyTime.toUpperCase()}`;
       }
-
+      const exportCeremonyLoc = document.getElementById('exportCardCeremonyLocation');
+      if (exportCeremonyLoc) {
+        exportCeremonyLoc.textContent = `HÔN LỄ ĐƯỢC CỬ HÀNH TẠI: ${(eventConfig.ceremonyLocation || (isNhagai ? 'TƯ GIA NHÀ GÁI' : 'TƯ GIA NHÀ TRAI')).toUpperCase()}`;
+      }
       const exportVenueName = document.getElementById('exportCardVenueName');
       const exportVenueAddress = document.getElementById('exportCardVenueAddress');
       if (eventConfig.partyVenue) {
         const parts = eventConfig.partyVenue.split(',').map(s => s.trim());
         let venueName = parts[0];
-        const cleanedName = venueName.replace(/^(Trung\s+Tâm\s+Tiệc\s+Cưới|TT\s+Tiệc\s+Cưới)\s*/i, '').trim();
+        const cleanedName = venueName.replace(/^(Trung\s+Tâm\s+Tiệc\s+Cưới|TT\s+Tiệc\s+Cưới|Nhà\s+Hàng)\s*/i, '').trim();
         if (exportVenueName) exportVenueName.textContent = (cleanedName || venueName).toUpperCase();
         if (exportVenueAddress && parts.length > 1) {
           exportVenueAddress.textContent = parts.slice(1).join(', ');
         }
       }
+      const exportDayOfWeek = document.getElementById('exportCardDayOfWeek');
+      if (exportDayOfWeek) exportDayOfWeek.textContent = isNhagai ? 'THỨ BẢY' : 'CHỦ NHẬT';
+      const exportDayMonth = document.getElementById('exportCardDayMonth');
+      if (exportDayMonth) exportDayMonth.textContent = isNhagai ? '17 . 10' : '25 . 10';
+      const exportLunarDay = document.getElementById('exportCardLunarDay');
+      if (exportLunarDay) exportLunarDay.textContent = isNhagai ? '(Nhằm ngày 08 tháng 09 năm Bính Ngọ)' : '(Nhằm ngày 16 tháng 09 năm Bính Ngọ)';
+      const exportClosingFamily = document.getElementById('exportCardClosingFamily');
+      if (exportClosingFamily) exportClosingFamily.textContent = eventConfig.closingFamily || (isNhagai ? 'Bà: NGUYỄN THỊ TÍN' : 'Gia Đình Hoa Diễm');
 
-      const exportTime = document.getElementById('exportCardEventTime');
-      if (exportTime && eventConfig.partyTime) {
-        const timeMatch = eventConfig.partyTime.match(/\d{1,2}:\d{2}/);
-        exportTime.textContent = timeMatch ? timeMatch[0] : '11:00';
-      }
+      updateCouplePhotoUI();
     }
 
     async function loadAndSyncConfig() {
@@ -3187,13 +3595,22 @@
         if (cloudData && cloudData.config) {
           const c = cloudData.config;
           let changed = false;
-          if (c.eventConfig && JSON.stringify(c.eventConfig) !== JSON.stringify(eventConfig)) {
+          if (c.weddingConfigs) {
+            weddingConfigs = Object.assign({}, weddingConfigs, c.weddingConfigs);
+            localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai));
+            localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai));
+            eventConfig = Object.assign({}, weddingConfigs[currentWeddingVersion] || weddingConfigs.nhatrai);
+            changed = true;
+          } else if (c.eventConfig && JSON.stringify(c.eventConfig) !== JSON.stringify(eventConfig)) {
             eventConfig = Object.assign({}, eventConfig, c.eventConfig);
             localStorage.setItem('weddingEventConfig', JSON.stringify(eventConfig));
             changed = true;
           }
           if (c.bankConfig && JSON.stringify(c.bankConfig) !== JSON.stringify(bankConfig)) {
             bankConfig = Object.assign({}, bankConfig, c.bankConfig);
+            if (!bankConfig.bride || !bankConfig.bride.stk || bankConfig.bride.stk === '2510202699' || bankConfig.bride.stk === '9988776655' || bankConfig.bride.bankCode === 'VCB' || bankConfig.bride.qrImage === '9daece09-9701-4168-857e-230f18768e16.jpg') {
+              bankConfig.bride = Object.assign({}, DEFAULT_BANK_CONFIG.bride);
+            }
             localStorage.setItem('weddingBankConfig', JSON.stringify(bankConfig));
             changed = true;
           }
@@ -3288,14 +3705,15 @@
       if (!container) return;
 
       const defaultMemo = getTransferMemo();
+      const isBrideFirst = currentWeddingVersion === 'nhagai';
 
       const groomQr = bankConfig.groom.qrImage || getVietQRUrl(bankConfig.groom.bankCode, bankConfig.groom.stk, bankConfig.groom.holder, defaultMemo);
       const brideQr = bankConfig.bride.qrImage || getVietQRUrl(bankConfig.bride.bankCode, bankConfig.bride.stk, bankConfig.bride.holder, defaultMemo);
 
-      container.innerHTML = `
+      const groomCardHtml = `
         <!-- Groom Bank Card -->
         <div class="bg-white/5 border border-wedding-gold/30 rounded-xl p-3.5 sm:p-4 flex items-center gap-3 sm:gap-4">
-          <div class="w-24 h-24 bg-white p-1 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md overflow-hidden">
+          <div class="w-24 h-24 bg-white p-1 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md overflow-hidden cursor-pointer" onclick="window.open('${groomQr}', '_blank')" title="Bấm để phóng to mã QR">
             <img src="${groomQr}" alt="QR Chú Rể" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='${getVietQRUrl('TPB', bankConfig.groom.stk, bankConfig.groom.holder, defaultMemo)}';">
           </div>
           <div class="text-xs space-y-1 flex-1 min-w-0">
@@ -3315,11 +3733,13 @@
             </div>
           </div>
         </div>
+      `;
 
+      const brideCardHtml = `
         <!-- Bride Bank Card -->
         <div class="bg-white/5 border border-wedding-gold/30 rounded-xl p-3.5 sm:p-4 flex items-center gap-3 sm:gap-4">
-          <div class="w-24 h-24 bg-white p-1 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md overflow-hidden">
-            <img src="${brideQr}" alt="QR Cô Dâu" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='${getVietQRUrl('MB', bankConfig.bride.stk, bankConfig.bride.holder, defaultMemo)}';">
+          <div class="w-24 h-24 bg-white p-1 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md overflow-hidden cursor-pointer" onclick="window.open('${brideQr}', '_blank')" title="Bấm để phóng to mã QR">
+            <img src="${brideQr}" alt="QR Cô Dâu" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='${getVietQRUrl('VIB', bankConfig.bride.stk, bankConfig.bride.holder, defaultMemo)}';">
           </div>
           <div class="text-xs space-y-1 flex-1 min-w-0">
             <p class="font-bold text-amber-300 uppercase tracking-wide truncate">CÔ DÂU: ${escapeHTML(bankConfig.bride.holder)}</p>
@@ -3339,24 +3759,101 @@
           </div>
         </div>
       `;
+
+      if (isGuestMode) {
+        // In Guest Mode: strictly show only the bank account corresponding to the version the guest was invited to!
+        container.innerHTML = (currentWeddingVersion === 'nhagai') ? brideCardHtml : groomCardHtml;
+      } else {
+        // In Admin / Preview Mode: show both cards, with active version first
+        container.innerHTML = isBrideFirst ? (brideCardHtml + groomCardHtml) : (groomCardHtml + brideCardHtml);
+      }
+    }
+
+    function getDefaultCouplePhoto(ver = currentWeddingVersion) {
+      if (ver === 'nhagai') {
+        return (weddingConfigs.nhagai && weddingConfigs.nhagai.defaultCouplePhoto) || '9daece09-9701-4168-857e-230f18768e16.jpg';
+      }
+      return (weddingConfigs.nhatrai && weddingConfigs.nhatrai.defaultCouplePhoto) || 'a29fae59-2022-48fd-800d-264e51e25015.jpg';
+    }
+
+    function isCustomPhotoActive(ver = currentWeddingVersion) {
+      try {
+        const verPhoto = localStorage.getItem('weddingCouplePhoto_' + ver);
+        if (verPhoto) return true;
+        const saved = localStorage.getItem('weddingCouplePhoto');
+        if (saved && saved !== 'a29fae59-2022-48fd-800d-264e51e25015.jpg' && saved !== '9daece09-9701-4168-857e-230f18768e16.jpg') {
+          return true;
+        }
+      } catch (e) { }
+      return false;
+    }
+
+    function getCurrentCouplePhoto(ver = currentWeddingVersion) {
+      try {
+        const verPhoto = localStorage.getItem('weddingCouplePhoto_' + ver);
+        if (verPhoto) return verPhoto;
+        const saved = localStorage.getItem('weddingCouplePhoto');
+        if (saved && saved !== 'a29fae59-2022-48fd-800d-264e51e25015.jpg' && saved !== '9daece09-9701-4168-857e-230f18768e16.jpg') {
+          return saved;
+        }
+      } catch (e) { }
+      return getDefaultCouplePhoto(ver);
+    }
+
+    function updateCouplePhotoUI() {
+      const photo = getCurrentCouplePhoto(currentWeddingVersion);
+      const isCustom = isCustomPhotoActive(currentWeddingVersion);
+      const img = document.getElementById('coupleCustomImg');
+      const adminPreview = document.getElementById('adminCouplePhotoPreview');
+      const exportImg = document.getElementById('exportCardCoupleImg');
+      const imgWrapper = document.getElementById('coupleCustomImgWrapper');
+      const svgWrapper = document.getElementById('coupleSvgWrapper');
+      const resetBtn = document.getElementById('resetPhotoBtn');
+      const typeText = document.getElementById('adminPhotoTypeText');
+      const statusBadge = document.getElementById('adminPhotoStatusBadge');
+      const verName = currentWeddingVersion === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+
+      if (img) {
+        img.dataset.retried = '';
+        img.src = photo;
+      }
+      if (adminPreview) adminPreview.src = photo;
+      if (exportImg) exportImg.src = photo;
+
+      if (imgWrapper) imgWrapper.classList.remove('hidden');
+      if (svgWrapper) svgWrapper.classList.add('hidden');
+
+      if (isCustom) {
+        if (resetBtn) {
+          resetBtn.classList.remove('hidden');
+          resetBtn.classList.add('inline-flex');
+        }
+        if (typeText) typeText.textContent = `Ảnh thiệp cưới tùy chỉnh (${verName})`;
+        if (statusBadge) {
+          statusBadge.textContent = 'Ảnh Tùy Chỉnh';
+          statusBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        }
+      } else {
+        if (resetBtn) {
+          resetBtn.classList.add('hidden');
+          resetBtn.classList.remove('inline-flex');
+        }
+        if (typeText) typeText.textContent = `Ảnh mặc định (${verName})`;
+        if (statusBadge) {
+          statusBadge.textContent = 'Ảnh Mặc Định';
+          statusBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        }
+      }
     }
 
     function initCouplePhoto() {
-      try {
-        const savedPhoto = localStorage.getItem('weddingCouplePhoto');
-        if (savedPhoto) {
-          applyCustomPhoto(savedPhoto);
-          return;
-        }
-      } catch (e) {
-        console.warn('Storage unavailable:', e);
-      }
+      updateCouplePhotoUI();
     }
 
     function handleCoupleImgError(img) {
       if (!img.dataset.retried) {
         img.dataset.retried = 'true';
-        img.src = 'a29fae59-2022-48fd-800d-264e51e25015.jpg';
+        img.src = getDefaultCouplePhoto(currentWeddingVersion);
         return;
       }
       document.getElementById('coupleCustomImgWrapper').classList.add('hidden');
@@ -3418,12 +3915,13 @@
       reader.onload = function (e) {
         const dataUrl = e.target.result;
         try {
+          localStorage.setItem('weddingCouplePhoto_' + currentWeddingVersion, dataUrl);
           localStorage.setItem('weddingCouplePhoto', dataUrl);
         } catch (err) {
           console.warn('Storage quota exceeded:', err);
         }
         applyCustomPhoto(dataUrl);
-        OnlineDB.saveConfig({ couplePhoto: dataUrl });
+        OnlineDB.saveConfig({ couplePhoto: dataUrl, ['couplePhoto_' + currentWeddingVersion]: dataUrl });
         showToast('🎉 Đã tải lên & áp dụng ảnh thiệp cưới mới thành công!');
       };
       reader.readAsDataURL(file);
@@ -3449,10 +3947,11 @@
       }
       const url = urlInput.value.trim();
       try {
+        localStorage.setItem('weddingCouplePhoto_' + currentWeddingVersion, url);
         localStorage.setItem('weddingCouplePhoto', url);
       } catch (e) { }
       applyCustomPhoto(url);
-      OnlineDB.saveConfig({ couplePhoto: url });
+      OnlineDB.saveConfig({ couplePhoto: url, ['couplePhoto_' + currentWeddingVersion]: url });
       showToast('🎉 Đã áp dụng link ảnh thiệp cưới & đồng bộ Cloud!');
     }
 
@@ -3467,8 +3966,9 @@
       const typeText = document.getElementById('adminPhotoTypeText');
       const statusBadge = document.getElementById('adminPhotoStatusBadge');
       const adminPhotoUrlInput = document.getElementById('adminPhotoUrlInput');
+      const verName = currentWeddingVersion === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
 
-      if (img) img.src = srcUrl;
+      if (img) { img.dataset.retried = ''; img.src = srcUrl; }
       if (adminPreview) adminPreview.src = srcUrl;
       if (exportImg) exportImg.src = srcUrl;
       if (adminPhotoUrlInput && srcUrl.startsWith('http')) adminPhotoUrlInput.value = srcUrl;
@@ -3479,7 +3979,7 @@
         resetBtn.classList.add('inline-flex');
       }
       if (svgWrapper) svgWrapper.classList.add('hidden');
-      if (typeText) typeText.textContent = 'Ảnh thiệp cưới tùy chỉnh';
+      if (typeText) typeText.textContent = `Ảnh thiệp cưới tùy chỉnh (${verName})`;
       if (statusBadge) {
         statusBadge.textContent = 'Ảnh Tùy Chỉnh';
         statusBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
@@ -3489,10 +3989,11 @@
     function resetCouplePhotoToDefault(event) {
       if (event) event.stopPropagation();
       try {
+        localStorage.removeItem('weddingCouplePhoto_' + currentWeddingVersion);
         localStorage.removeItem('weddingCouplePhoto');
       } catch (e) { }
 
-      const defaultImg = 'a29fae59-2022-48fd-800d-264e51e25015.jpg';
+      const defaultImg = getDefaultCouplePhoto(currentWeddingVersion);
       const img = document.getElementById('coupleCustomImg');
       const adminPreview = document.getElementById('adminCouplePhotoPreview');
       const exportImg = document.getElementById('exportCardCoupleImg');
@@ -3504,8 +4005,9 @@
       const adminPhotoUrl = document.getElementById('adminPhotoUrlInput');
       const typeText = document.getElementById('adminPhotoTypeText');
       const statusBadge = document.getElementById('adminPhotoStatusBadge');
+      const verName = currentWeddingVersion === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
 
-      if (img) img.src = defaultImg;
+      if (img) { img.dataset.retried = ''; img.src = defaultImg; }
       if (adminPreview) adminPreview.src = defaultImg;
       if (exportImg) exportImg.src = defaultImg;
 
@@ -3518,14 +4020,14 @@
       if (photoInput) photoInput.value = '';
       if (adminPhotoFile) adminPhotoFile.value = '';
       if (adminPhotoUrl) adminPhotoUrl.value = '';
-      if (typeText) typeText.textContent = 'Ảnh cặp đôi mặc định';
+      if (typeText) typeText.textContent = `Ảnh mặc định (${verName})`;
       if (statusBadge) {
         statusBadge.textContent = 'Ảnh Mặc Định';
         statusBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
       }
 
-      OnlineDB.saveConfig({ couplePhoto: '' });
-      showToast('Đã khôi phục ảnh thiệp cưới mặc định!');
+      OnlineDB.saveConfig({ couplePhoto: '', ['couplePhoto_' + currentWeddingVersion]: '' });
+      showToast(`Đã khôi phục ảnh thiệp cưới mặc định cho ${verName}!`);
     }
 
     function resetCouplePhoto(event) {
@@ -3684,12 +4186,23 @@
       const user = document.getElementById('adminUsernameInputLogin').value.trim().toLowerCase();
       const pass = document.getElementById('adminPasswordInputLogin').value.trim();
 
-      // Valid credentials: admin / admin123 (or admin / 123)
-      if (user === 'admin' && (pass === 'admin123' || pass === '123')) {
+      // Valid credentials:
+      // 1. admin / admin123 (or admin / 123) -> Quản trị Nhà Trai
+      // 2. admin2 / admin123 (or admin2 / 123) -> Quản trị Nhà Gái
+      if ((user === 'admin' || user === 'admin2') && (pass === 'admin123' || pass === '123')) {
         isAdminLoggedIn = true;
+        currentAdminRole = user;
         try {
           localStorage.setItem('weddingAdminLoggedIn', 'true');
+          localStorage.setItem('weddingAdminRole', user);
         } catch (err) { }
+
+        // Automatically set active version based on admin account if logging in freshly
+        if (user === 'admin2') {
+          switchWeddingVersion('nhagai', false);
+        } else if (user === 'admin') {
+          switchWeddingVersion('nhatrai', false);
+        }
 
         const loginError = document.getElementById('adminLoginError');
         if (loginError) loginError.classList.add('hidden');
@@ -3707,11 +4220,12 @@
         updateAdminUIControls();
 
         openAdminModal();
-        showToast('🔓 Đăng nhập Admin thành công! Chào mừng Quản trị viên.');
+        const roleName = user === 'admin2' ? 'Nhà Gái (admin2)' : 'Nhà Trai (admin)';
+        showToast(`🔓 Đăng nhập Quản trị viên ${roleName} thành công!`);
       } else {
         const loginError = document.getElementById('adminLoginError');
         if (loginError) loginError.classList.remove('hidden');
-        showToast('❌ Sai tài khoản hoặc mật khẩu! (tk: admin, mk: admin123)');
+        showToast('❌ Sai tài khoản hoặc mật khẩu! (admin hoặc admin2, mk: admin123)');
       }
     }
 
@@ -3719,6 +4233,7 @@
       isAdminLoggedIn = false;
       try {
         localStorage.removeItem('weddingAdminLoggedIn');
+        localStorage.removeItem('weddingAdminRole');
       } catch (err) { }
       updateAdminUIControls();
 
@@ -3832,6 +4347,7 @@
       const name = document.getElementById('adminGuestNameInput').value.trim() || 'Quý Khách & Gia Đình';
       const salut = getActiveAdminSalutation();
       const guestId = 'guest_' + Date.now();
+      const targetSide = currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion);
 
       const guests = await OnlineDB.getGuests();
       let matched = guests.find(g => g.name.toLowerCase() === name.toLowerCase());
@@ -3840,6 +4356,7 @@
           id: guestId,
           name: name,
           salut: salut,
+          side: targetSide,
           date: new Date().toLocaleDateString('vi-VN'),
           isRead: false,
           readCount: 0,
@@ -3849,15 +4366,18 @@
           rsvpCount: 1
         };
         await OnlineDB.saveGuest(matched);
-      } else if (matched.salut !== salut) {
-        matched.salut = salut;
-        await OnlineDB.saveGuest(matched);
+      } else {
+        let dirty = false;
+        if (matched.salut !== salut) { matched.salut = salut; dirty = true; }
+        if (!matched.side) { matched.side = targetSide; dirty = true; }
+        if (dirty) await OnlineDB.saveGuest(matched);
       }
 
       updateGuestName(name, salut);
-      const url = buildCleanShareUrl(salut, name, matched.id);
+      const url = buildCleanShareUrl(salut, name, matched.id, matched.side || targetSide);
 
-      copyText(url, `Đã sao chép link online riêng cho "${name}"!`);
+      const sideName = (matched.side || targetSide) === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      copyText(url, `Đã sao chép link online (${sideName}) cho "${name}"!`);
       renderGuestTable();
     }
 
@@ -3865,11 +4385,13 @@
       const salut = getActiveAdminSalutation();
       const name = document.getElementById('adminGuestNameInput').value.trim() || 'Quý Khách & Gia Đình';
       const guestId = 'guest_' + Date.now();
+      const targetSide = currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion);
 
       const newGuest = {
         id: guestId,
         name: name,
         salut: salut,
+        side: targetSide,
         date: new Date().toLocaleDateString('vi-VN'),
         isRead: false,
         readCount: 0,
@@ -3881,7 +4403,8 @@
 
       await OnlineDB.saveGuest(newGuest);
       renderGuestTable();
-      showToast(`Đã lưu "${name}" (${salut}) vào danh sách thiệp!`);
+      const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      showToast(`Đã lưu "${name}" (${sideName}) vào danh sách thiệp!`);
       return newGuest;
     }
 
@@ -3919,7 +4442,12 @@
           <tr class="hover:bg-white/5 transition-all border-b border-white/5">
             <td class="p-2.5 font-mono text-amber-300 text-center">${idx + 1}</td>
             <td class="p-2.5 text-amber-200/80">${escapeHTML(g.salut || 'Kính mời')}</td>
-            <td class="p-2.5 font-bold text-amber-100">${escapeHTML(g.name)}</td>
+            <td class="p-2.5 font-bold text-amber-100">
+              ${escapeHTML(g.name)}
+              ${g.side === 'nhagai'
+                ? '<span class="ml-1 text-[9px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">Nhà Gái</span>'
+                : '<span class="ml-1 text-[9px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">Nhà Trai</span>'}
+            </td>
             <td class="p-2.5">${readBadge}</td>
             <td class="p-2.5">${rsvpBadge}</td>
             <td class="p-2.5 text-right space-x-1 whitespace-nowrap">
@@ -4013,9 +4541,12 @@
 
     function copyGuestLinkFromList(name, salut, id) {
       updateGuestName(name, salut);
-      const url = buildCleanShareUrl(salut || 'Kính mời', name, id);
+      const guestObj = (guestList || []).find(g => g.id === id);
+      const guestSide = (guestObj && guestObj.side) ? guestObj.side : (currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion));
+      const url = buildCleanShareUrl(salut || 'Kính mời', name, id, guestSide);
+      const sideLabel = guestSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
 
-      copyText(url, `Đã sao chép link thiệp cho "${name}"!`);
+      copyText(url, `Đã sao chép link thiệp ${sideLabel} cho "${name}"!`);
     }
 
     function exportGuestCardFromList(name, salut) {
@@ -4174,23 +4705,53 @@
       if (appendNameCheck) appendNameCheck.checked = bankConfig.appendGuestNameToMemo !== false;
       updateTransferMemoPreview();
 
-      document.getElementById('adminGroomName').value = eventConfig.groomName;
-      document.getElementById('adminBrideName').value = eventConfig.brideName;
-      document.getElementById('adminGroomParents').value = eventConfig.groomParents;
-      document.getElementById('adminBrideParents').value = eventConfig.brideParents;
-      document.getElementById('adminPartyTime').value = eventConfig.partyTime;
-      document.getElementById('adminPartyVenue').value = eventConfig.partyVenue;
-      document.getElementById('adminCeremonyTime').value = eventConfig.ceremonyTime;
-      document.getElementById('adminMapUrl').value = eventConfig.mapUrl || '';
+      const curCfg = weddingConfigs[currentWeddingVersion] || eventConfig;
+      document.getElementById('adminGroomName').value = curCfg.groomName || '';
+      document.getElementById('adminBrideName').value = curCfg.brideName || '';
+      document.getElementById('adminGroomParents').value = curCfg.groomParents || '';
+      document.getElementById('adminBrideParents').value = curCfg.brideParents || '';
+      document.getElementById('adminPartyTime').value = curCfg.partyTime || '';
+      document.getElementById('adminPartyVenue').value = curCfg.partyVenue || '';
+      document.getElementById('adminCeremonyTime').value = curCfg.ceremonyTime || '';
+      document.getElementById('adminMapUrl').value = curCfg.mapUrl || '';
       const groomMapInput = document.getElementById('adminGroomMapUrl');
-      if (groomMapInput) groomMapInput.value = eventConfig.groomMapUrl || '';
+      if (groomMapInput) groomMapInput.value = curCfg.groomMapUrl || '';
 
-      const savedPhoto = localStorage.getItem('weddingCouplePhoto');
-      if (savedPhoto) {
-        applyCustomPhoto(savedPhoto);
-      } else {
-        const adminPreview = document.getElementById('adminCouplePhotoPreview');
-        if (adminPreview) adminPreview.src = 'a29fae59-2022-48fd-800d-264e51e25015.jpg';
+      const ceremonyTypeInput = document.getElementById('adminCeremonyType');
+      if (ceremonyTypeInput) ceremonyTypeInput.value = curCfg.ceremonyType || (currentWeddingVersion === 'nhagai' ? 'LỄ VU QUY' : 'LỄ TÂN HÔN');
+      const ceremonyLocInput = document.getElementById('adminCeremonyLocation');
+      if (ceremonyLocInput) ceremonyLocInput.value = curCfg.ceremonyLocation || (currentWeddingVersion === 'nhagai' ? 'TƯ GIA NHÀ GÁI' : 'TƯ GIA NHÀ TRAI');
+      const closingFamInput = document.getElementById('adminClosingFamily');
+      if (closingFamInput) closingFamInput.value = curCfg.closingFamily || (currentWeddingVersion === 'nhagai' ? 'Bà: NGUYỄN THỊ TÍN' : 'Gia Đình Hoa Diễm');
+
+      // Update Tab 4 badge
+      const tab4Badge = document.getElementById('tab4ActiveVersionBadge');
+      if (tab4Badge) {
+        tab4Badge.innerHTML = currentWeddingVersion === 'nhagai'
+          ? '<span class="text-amber-300 font-bold">👰 ĐANG SỬA BẢN: NHÀ GÁI (LỄ VU QUY - 17/10/2026)</span>'
+          : '<span class="text-amber-300 font-bold">🤵 ĐANG SỬA BẢN: NHÀ TRAI (LỄ TÂN HÔN - 25/10/2026)</span>';
+      }
+
+      // Update admin role badge
+      const roleBadge = document.getElementById('adminLoggedRoleBadge');
+      if (roleBadge) {
+        roleBadge.innerHTML = currentAdminRole === 'admin2'
+          ? '👰 Nhà Gái (admin2)'
+          : '🤵 Nhà Trai (admin)';
+      }
+
+      updateCouplePhotoUI();
+
+      // Update Tab 1 active role badge
+      const tab1RoleBadge = document.getElementById('tab1ActiveRoleBadge');
+      if (tab1RoleBadge) {
+        if (currentAdminRole === 'admin2') {
+          tab1RoleBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30';
+          tab1RoleBadge.innerHTML = '👰 Link tạo cho khách: <strong>NHÀ GÁI (17/10)</strong>';
+        } else {
+          tab1RoleBadge.className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30';
+          tab1RoleBadge.innerHTML = '🤵 Link tạo cho khách: <strong>NHÀ TRAI (25/10)</strong>';
+        }
       }
 
       updateAdminUIControls();
@@ -4259,34 +4820,77 @@
     }
 
     async function resetBankConfig() {
-      bankConfig = {
-        groom: { holder: 'LE HOAI PHUOC', bank: 'TPBank', bankCode: 'TPB', stk: '00299030001', qrImage: '' },
-        bride: { holder: 'NGUYỄN DIỆU HỒNG', bank: 'MB Bank', bankCode: 'MB', stk: '2510202699', qrImage: '' },
-        transferPrefix: 'Mung cuoi',
-        appendGuestNameToMemo: true
-      };
+      bankConfig = JSON.parse(JSON.stringify(DEFAULT_BANK_CONFIG));
+      try { localStorage.setItem('weddingBankConfig', JSON.stringify(bankConfig)); } catch (e) { }
       await OnlineDB.saveConfig({ bankConfig });
       populateAdminForm();
       renderGiftModal();
-      showToast('Đã khôi phục cấu hình STK mặc định & đồng bộ Cloud!');
+      showToast('Đã khôi phục cấu hình STK mặc định (Cô Dâu: VIB 666608899) & đồng bộ Cloud!');
+    }
+
+    async function restoreDefaultNhatrai() {
+      if (!confirm('Khôi phục toàn bộ thông tin gốc cho bản Nhà Trai (Lễ Tân Hôn - 25/10)?')) return;
+      weddingConfigs.nhatrai = Object.assign({}, DEFAULT_CONFIG_NHATRAI);
+      try { localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai)); } catch (e) { }
+      if (currentWeddingVersion === 'nhatrai') {
+        eventConfig = Object.assign({}, weddingConfigs.nhatrai);
+        try { localStorage.setItem('weddingEventConfig', JSON.stringify(eventConfig)); } catch (e) { }
+        updateEventUI();
+      }
+      await OnlineDB.saveConfig({ weddingConfigs, eventConfig });
+      populateAdminForm();
+      showToast('Đã khôi phục thông tin mặc định cho Nhà Trai!');
+    }
+
+    async function restoreDefaultNhagai() {
+      if (!confirm('Khôi phục toàn bộ thông tin gốc cho bản Nhà Gái (Lễ Vu Quy - 17/10)?')) return;
+      weddingConfigs.nhagai = Object.assign({}, DEFAULT_CONFIG_NHAGAI);
+      try { localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai)); } catch (e) { }
+      if (currentWeddingVersion === 'nhagai') {
+        eventConfig = Object.assign({}, weddingConfigs.nhagai);
+        try { localStorage.setItem('weddingEventConfig', JSON.stringify(eventConfig)); } catch (e) { }
+        updateEventUI();
+      }
+      await OnlineDB.saveConfig({ weddingConfigs, eventConfig });
+      populateAdminForm();
+      showToast('Đã khôi phục thông tin mặc định cho Nhà Gái!');
     }
 
     async function handleSaveEventConfig(e) {
       e.preventDefault();
-      eventConfig.groomName = document.getElementById('adminGroomName').value.trim();
-      eventConfig.brideName = document.getElementById('adminBrideName').value.trim();
-      eventConfig.groomParents = document.getElementById('adminGroomParents').value.trim();
-      eventConfig.brideParents = document.getElementById('adminBrideParents').value.trim();
-      eventConfig.partyTime = document.getElementById('adminPartyTime').value.trim();
-      eventConfig.partyVenue = document.getElementById('adminPartyVenue').value.trim();
-      eventConfig.ceremonyTime = document.getElementById('adminCeremonyTime').value.trim();
-      eventConfig.mapUrl = document.getElementById('adminMapUrl').value.trim();
-      const groomMapInput = document.getElementById('adminGroomMapUrl');
-      if (groomMapInput) eventConfig.groomMapUrl = groomMapInput.value.trim();
+      const updated = {
+        groomName: document.getElementById('adminGroomName').value.trim(),
+        brideName: document.getElementById('adminBrideName').value.trim(),
+        groomParents: document.getElementById('adminGroomParents').value.trim(),
+        brideParents: document.getElementById('adminBrideParents').value.trim(),
+        partyTime: document.getElementById('adminPartyTime').value.trim(),
+        partyVenue: document.getElementById('adminPartyVenue').value.trim(),
+        ceremonyTime: document.getElementById('adminCeremonyTime').value.trim(),
+        mapUrl: document.getElementById('adminMapUrl').value.trim(),
+        groomMapUrl: document.getElementById('adminGroomMapUrl') ? document.getElementById('adminGroomMapUrl').value.trim() : eventConfig.groomMapUrl
+      };
 
-      await OnlineDB.saveConfig({ eventConfig });
+      const ceremonyTypeInput = document.getElementById('adminCeremonyType');
+      if (ceremonyTypeInput) updated.ceremonyType = ceremonyTypeInput.value.trim();
+      const ceremonyLocInput = document.getElementById('adminCeremonyLocation');
+      if (ceremonyLocInput) updated.ceremonyLocation = ceremonyLocInput.value.trim();
+      const closingFamInput = document.getElementById('adminClosingFamily');
+      if (closingFamInput) updated.closingFamily = closingFamInput.value.trim();
+
+      if (currentWeddingVersion === 'nhagai') {
+        weddingConfigs.nhagai = Object.assign({}, weddingConfigs.nhagai, updated);
+        try { localStorage.setItem('weddingEventConfig_nhagai', JSON.stringify(weddingConfigs.nhagai)); } catch (err) { }
+      } else {
+        weddingConfigs.nhatrai = Object.assign({}, weddingConfigs.nhatrai, updated);
+        try { localStorage.setItem('weddingEventConfig_nhatrai', JSON.stringify(weddingConfigs.nhatrai)); } catch (err) { }
+      }
+
+      eventConfig = Object.assign({}, currentWeddingVersion === 'nhagai' ? weddingConfigs.nhagai : weddingConfigs.nhatrai);
+      try { localStorage.setItem('weddingEventConfig', JSON.stringify(eventConfig)); } catch (err) { }
+
+      await OnlineDB.saveConfig({ eventConfig, weddingConfigs });
       updateEventUI();
-      showToast('🎉 Đã lưu & đồng bộ thông tin đám cưới thành công!');
+      showToast(`🎉 Đã lưu & đồng bộ thông tin thiệp cưới (${currentWeddingVersion === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai'}) thành công!`);
     }
 
     function openInvitation() {
@@ -4489,7 +5093,8 @@
 
     function updateCountdown() {
       const now = new Date().getTime();
-      const distance = weddingDate - now;
+      const targetTime = targetWeddingTimestamp || (currentWeddingVersion === 'nhagai' ? DEFAULT_CONFIG_NHAGAI.targetTimestamp : DEFAULT_CONFIG_NHATRAI.targetTimestamp);
+      const distance = targetTime - now;
 
       if (distance < 0) {
         document.getElementById('countdownDays').textContent = '00';
@@ -4609,10 +5214,20 @@
     }
 
     function addToCalendar() {
-      const title = encodeURIComponent("Tiệc Cưới: Hoài Phước & Diệu Hồng");
-      const details = encodeURIComponent("Kính mời quý khách đến dự tiệc mừng lễ thành hôn của Hoài Phước & Diệu Hồng tại TT Tiệc cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM.");
-      const location = encodeURIComponent("Trung Tâm Sự Kiện Và Tiệc Cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM");
-      const dates = "20261025T040000Z/20261025T070000Z";
+      const isNhagai = currentWeddingVersion === 'nhagai';
+      let title, details, location, dates;
+
+      if (isNhagai) {
+        title = encodeURIComponent("Tiệc Cưới (Lễ Vu Quy): Diệu Hồng & Hoài Phước");
+        details = encodeURIComponent("Kính mời quý khách đến dự tiệc mừng lễ vu quy của Diệu Hồng & Hoài Phước tại Nhà Hàng Công Đoàn, Lầu 1, Số 53 Đường Độc Lập, Phường Tuy Hòa, Đắk Lắk.");
+        location = encodeURIComponent("Nhà Hàng Công Đoàn, 53 Đường Độc Lập, Phường Tuy Hòa, Đắk Lắk");
+        dates = "20261017T040000Z/20261017T070000Z"; // 11:00 - 14:00 (UTC+7) 17/10/2026
+      } else {
+        title = encodeURIComponent("Tiệc Cưới (Lễ Tân Hôn): Hoài Phước & Diệu Hồng");
+        details = encodeURIComponent("Kính mời quý khách đến dự tiệc mừng lễ thành hôn của Hoài Phước & Diệu Hồng tại TT Tiệc cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM.");
+        location = encodeURIComponent("Trung Tâm Sự Kiện Và Tiệc Cưới Thanh Phụng, Ấp Hai Đông, Xã Bàu Lâm, TP. HCM");
+        dates = "20261025T040000Z/20261025T070000Z"; // 11:00 - 14:00 (UTC+7) 25/10/2026
+      }
 
       const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
       window.open(googleCalUrl, '_blank');
