@@ -241,12 +241,20 @@
   </div>
 
   <nav class="fixed top-4 right-4 z-50 flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
-    <!-- Admin Management Button -->
+    <!-- Admin Management Button (Visible when logged in) -->
     <button id="topAdminBtn" onclick="openAdminModal()"
-      class="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold px-3.5 py-2 rounded-full shadow-lg hover:brightness-110 transition-all border border-amber-300 active:scale-95"
+      class="hidden flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold px-3.5 py-2 rounded-full shadow-lg hover:brightness-110 transition-all border border-amber-300 active:scale-95"
       title="Trang Quản Lý Admin & Cấu Hình STK">
       <i class="fa-solid fa-user-gear"></i>
       <span class="text-xs hidden sm:inline">Quản Lý Admin</span>
+    </button>
+
+    <!-- Quick Admin Login Trigger Button (Visible when logged out) -->
+    <button id="adminLoginTriggerBtn" onclick="openAdminLoginDirectly()"
+      class="flex items-center gap-1.5 bg-black/40 hover:bg-black/60 text-amber-200/90 hover:text-amber-100 text-xs px-3 py-2 rounded-full border border-amber-300/30 backdrop-blur-md shadow-md transition-all active:scale-95"
+      title="Đăng nhập Quản trị viên (admin / admin2 - Mật khẩu: admin123)">
+      <i class="fa-solid fa-lock text-amber-300 text-[11px]"></i>
+      <span class="text-xs hidden sm:inline">Quản Trị</span>
     </button>
 
     <!-- Create Card & Link Button -->
@@ -282,7 +290,7 @@
         Hoài Phước <span class="font-script text-3xl sm:text-4xl text-amber-300 mx-1">&</span> Diệu Hồng
       </h1>
       <p class="text-xs sm:text-sm text-amber-200/80 mt-1">
-        Kính mời: <span id="headerGuestName"
+        <span id="headerSalutationPrefix">Kính mời</span>: <span id="headerGuestName"
           class="font-bold text-amber-300 underline decoration-amber-400/50 decoration-wavy underline-offset-4">Quý
           Khách & Gia Đình</span>
       </p>
@@ -1066,6 +1074,11 @@
     <footer class="mt-12 text-center text-xs text-amber-200/60 font-light pb-12 sm:pb-0">
       <p>Hoài Phước ❤ Diệu Hồng • 25.10.2026</p>
       <p class="mt-1">Rất hân hạnh được đón tiếp Quý Khách!</p>
+      <div class="mt-4">
+        <button id="footerAdminLoginBtn" onclick="openAdminLoginDirectly()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 border border-amber-300/25 text-amber-200/60 hover:text-amber-200 hover:border-amber-300/50 text-[11px] transition-all" title="Dành cho Quản trị viên (admin / admin2 - Mật khẩu: admin123)">
+          <i class="fa-solid fa-lock text-[10px] text-amber-400"></i> Đăng nhập Quản trị viên (Admin)
+        </button>
+      </div>
     </footer>
 
     <!-- Mobile Bottom Quick Navigation Bar (Visible on mobile <=640px) -->
@@ -1525,6 +1538,10 @@
             class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 text-slate-950 font-bold py-2.5 rounded-xl transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2 text-xs sm:text-sm border border-amber-300">
             <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập Quản Trị
           </button>
+
+          <p class="text-[11px] text-amber-200/60 text-center pt-1">
+            Gợi ý: Nhà Trai: <b class="text-amber-300 font-mono">admin</b> | Nhà Gái: <b class="text-amber-300 font-mono">admin2</b> (Mật khẩu: <b class="text-amber-300 font-mono">admin123</b>)
+          </p>
         </form>
       </div>
 
@@ -3239,6 +3256,19 @@
       let salutFromUrl = urlParams.get('salutation') || urlParams.get('sung') || urlParams.get('prefix') || urlParams.get('s');
       let guestIdFromUrl = urlParams.get('id');
 
+      // Normalize salutation query parameter
+      if (salutFromUrl) {
+        const sClean = salutFromUrl.trim().toLowerCase();
+        if (sClean === 'thanmoi' || sClean === 'than-moi') salutFromUrl = 'Thân mời';
+        else if (sClean === 'thuongmoi' || sClean === 'thuong-moi') salutFromUrl = 'Thương mời';
+        else if (sClean === 'trantrong' || sClean === 'tran-trong') salutFromUrl = 'Trân trọng kính mời';
+        else if (sClean === 'kinhgui' || sClean === 'kinh-gui') salutFromUrl = 'Kính gửi';
+        else if (sClean === 'cochubac' || sClean === 'co-chu-bac') salutFromUrl = 'Kính mời Cô/Chú/Bác';
+        else {
+          try { salutFromUrl = decodeURIComponent(salutFromUrl); } catch (e) { }
+        }
+      }
+
       // Check default side route (/nhagai, /nhatrai, /vuquy, /tanhon, /thiepgai, /thieptrai)
       const pathClean = decodeURIComponent(window.location.pathname || '')
         .replace(/^\/+/, '')
@@ -3253,11 +3283,11 @@
       if (isDefaultNhagai) {
         currentWeddingVersion = 'nhagai';
         guestFromUrl = 'Quý Khách & Gia Đình';
-        salutFromUrl = 'Trân trọng kính mời';
+        salutFromUrl = salutFromUrl || 'Trân trọng kính mời';
       } else if (isDefaultNhatrai) {
         currentWeddingVersion = 'nhatrai';
         guestFromUrl = 'Quý Khách & Gia Đình';
-        salutFromUrl = 'Trân trọng kính mời';
+        salutFromUrl = salutFromUrl || 'Trân trọng kính mời';
       }
 
       if (b64) {
@@ -3267,7 +3297,7 @@
           const decoded = decodeURIComponent(escape(atob(base64)));
           const parts = decoded.split('|');
           if (parts.length >= 2) {
-            salutFromUrl = parts[0];
+            salutFromUrl = parts[0] || salutFromUrl;
             guestFromUrl = parts[1];
             if (parts[2]) guestIdFromUrl = parts[2];
             if (parts[3]) {
@@ -3280,7 +3310,7 @@
       }
 
       if (!guestFromUrl && !isDefaultNhagai && !isDefaultNhatrai) {
-        if (pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/')) {
+        if (pathClean && pathClean !== 'index' && pathClean !== 'admin' && !isStaticAsset && !pathClean.includes('/')) {
           let localGuests = [];
           try { localGuests = JSON.parse(localStorage.getItem('weddingGuestList') || '[]'); } catch (e) {}
           const cleanSlug = pathClean.toLowerCase().replace(/^(?:phuochongmoi|moi)/i, '');
@@ -3294,7 +3324,7 @@
             if (matched.id) guestIdFromUrl = matched.id;
           } else {
             const rawSlug = pathClean.replace(/^(?:Phuochongmoi|phuochongmoi|moi)/i, '');
-            guestFromUrl = rawSlug.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([a-zA-Z])([0-9])/g, '$1 $2').replace(/Va/g, ' & ').trim();
+            guestFromUrl = rawSlug.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([a-zA-Z])([0-9])/g, '$1 $2').replace(/\bVa\b/gi, '&').trim();
           }
 
           // Always query cloud guests to ensure freshest accented name and side!
@@ -3302,11 +3332,13 @@
             if (!cloudGuests || !cloudGuests.length) return;
             const cloudMatched = findBestGuestMatch(cloudGuests, cleanSlug, pathClean.toLowerCase());
             if (cloudMatched) {
-              updateGuestName(cloudMatched.name, cloudMatched.salut || 'Kính mời');
+              const finalAccentedName = cloudMatched.name || guestFromUrl;
+              const finalAccentedSalut = cloudMatched.salut || salutFromUrl || 'Kính mời';
+              updateGuestName(finalAccentedName, finalAccentedSalut);
               if (cloudMatched.side && cloudMatched.side !== currentWeddingVersion) {
                 switchWeddingVersion(cloudMatched.side, true, true);
               }
-              OnlineDB.trackRead(cloudMatched.id, cloudMatched.name);
+              OnlineDB.trackRead(cloudMatched.id, finalAccentedName);
             }
           }).catch(() => {});
         }
@@ -3322,7 +3354,7 @@
         const decodedSalut = salutFromUrl ? salutFromUrl.trim() : 'Kính mời';
         updateGuestName(decodedName, decodedSalut);
       } else {
-        updateGuestName('Quý Khách & Gia Đình', 'Kính mời');
+        updateGuestName('Quý Khách & Gia Đình', salutFromUrl ? salutFromUrl.trim() : 'Kính mời');
       }
 
       initCouplePhoto();
@@ -3441,9 +3473,8 @@
 
       const words = s.trim().split(/\s+/).filter(Boolean);
       if (words.length === 0) return 'Hoailoc';
-      const first = words[0].charAt(0).toUpperCase() + words[0].slice(1).toLowerCase();
-      const rest = words.slice(1).map(w => w.toLowerCase()).join('');
-      return first + rest;
+      // Capitalize EACH word (PascalCase) so slug "Quy & Người Thương" becomes "QuyVaNguoiThuong" instead of "Quyvanguoithuong"
+      return words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
     }
 
     function hasVietnameseDiacritics(str) {
@@ -3478,10 +3509,21 @@
         return targetSide === 'nhagai' ? `${baseDomain}/nhagai` : `${baseDomain}/nhatrai`;
       }
       const slug = makeGuestSlug(cleanName);
+      const params = [];
       if (targetSide === 'nhagai') {
-        return `${baseDomain}/${slug}?v=nhagai`;
+        params.push('v=nhagai');
       }
-      return `${baseDomain}/${slug}`;
+      if (salut) {
+        const sClean = salut.trim();
+        if (sClean === 'Thân mời') params.push('s=thanmoi');
+        else if (sClean === 'Thương mời') params.push('s=thuongmoi');
+        else if (sClean === 'Trân trọng kính mời') params.push('s=trantrong');
+        else if (sClean === 'Kính gửi') params.push('s=kinhgui');
+        else if (sClean === 'Kính mời Cô/Chú/Bác') params.push('s=cochubac');
+        else if (sClean !== 'Kính mời') params.push(`s=${encodeURIComponent(sClean)}`);
+      }
+      const qs = params.length > 0 ? `?${params.join('&')}` : '';
+      return `${baseDomain}/${slug}${qs}`;
     }
 
     function copyDefaultSideLink(side) {
@@ -3504,6 +3546,18 @@
         .trim();
       const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
       const pathLower = pathClean.toLowerCase();
+
+      const isAdminRoute = pathLower === 'admin' || urlParams.has('admin') || urlParams.has('login');
+      if (isAdminRoute) {
+        isGuestMode = false;
+        const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
+        if (storedAuth === 'true') {
+          isAdminLoggedIn = true;
+          currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
+        }
+        openAdminModal();
+        return;
+      }
 
       const isDefaultNhagai = pathLower === 'nhagai' || pathLower === 'vuquy' || pathLower === 'thiepgai' || verParam === 'nhagai' || verParam === 'gai' || verParam === '2' || verParam === 'vuquy';
       const isDefaultNhatrai = pathLower === 'nhatrai' || pathLower === 'tanhon' || pathLower === 'thieptrai' || verParam === 'nhatrai' || verParam === 'trai' || verParam === '1' || verParam === 'tanhon';
@@ -3552,18 +3606,16 @@
           togglePill.classList.remove('hidden');
         }
 
-        // Hide Admin floating & top nav buttons completely
+        // Hide Admin controls for guests, but keep quick login trigger
         const topAdminBtn = document.getElementById('topAdminBtn');
+        const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
         const topCreateBtn = document.getElementById('topCreateBtn');
         const floatAdminBtn = document.getElementById('floatingAdminBtn');
 
         if (topAdminBtn) topAdminBtn.classList.add('hidden');
+        if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.remove('hidden');
         if (topCreateBtn) topCreateBtn.classList.add('hidden');
         if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
-
-        // Hide admin modal if open
-        const adminModal = document.getElementById('adminModal');
-        if (adminModal) adminModal.classList.add('hidden');
 
         // Background tracking of read status
         const decodedName = guestFromUrl ? decodeURIComponent(guestFromUrl.trim()) : '';
@@ -3583,9 +3635,11 @@
           }
           // Show admin buttons and toggle pill for admin
           const topAdminBtn = document.getElementById('topAdminBtn');
+          const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
           const floatAdminBtn = document.getElementById('floatingAdminBtn');
           const togglePill = document.getElementById('weddingVersionTogglePill');
           if (topAdminBtn) topAdminBtn.classList.remove('hidden');
+          if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.add('hidden');
           if (floatAdminBtn) floatAdminBtn.classList.remove('hidden');
           if (togglePill) togglePill.classList.remove('hidden');
         } else {
@@ -3593,9 +3647,11 @@
           isGuestMode = true;
           switchWeddingVersion(currentWeddingVersion, false, true);
           const topAdminBtn = document.getElementById('topAdminBtn');
+          const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
           const topCreateBtn = document.getElementById('topCreateBtn');
           const floatAdminBtn = document.getElementById('floatingAdminBtn');
           if (topAdminBtn) topAdminBtn.classList.add('hidden');
+          if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.remove('hidden');
           if (topCreateBtn) topCreateBtn.classList.add('hidden');
           if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
           const togglePill = document.getElementById('weddingVersionTogglePill');
@@ -4503,9 +4559,18 @@
 
       const envSalutEl = document.getElementById('envelopeSalutation');
       const cardSalutEl = document.getElementById('cardSalutation');
+      const headerSalutEl = document.getElementById('headerSalutationPrefix');
 
-      if (envSalutEl) envSalutEl.textContent = (finalSalut === 'Kính mời' || finalSalut === 'Trân trọng kính mời') ? 'Kính gửi' : finalSalut;
-      if (cardSalutEl) cardSalutEl.textContent = finalSalut + ':';
+      if (headerSalutEl) headerSalutEl.textContent = finalSalut;
+
+      if (envSalutEl) {
+        if (finalSalut === 'Kính mời' || finalSalut === 'Trân trọng kính mời') {
+          envSalutEl.textContent = 'Kính gửi';
+        } else {
+          envSalutEl.textContent = finalSalut;
+        }
+      }
+      if (cardSalutEl) cardSalutEl.textContent = finalSalut.includes(':') ? finalSalut : (finalSalut + ':');
 
       headerGuestName.textContent = finalName;
       envelopeGuestName.textContent = finalName;
@@ -4541,6 +4606,7 @@
 
       if (newName) {
         updateGuestName(newName, newSalut);
+        saveGuestToListDirectly(newName, newSalut, currentWeddingVersion);
         closePersonalizeModal();
         showToast(`Đã đổi thiệp mời cho: "${newName}"`);
       }
@@ -4554,8 +4620,12 @@
     async function exportCardAsImage(customName, customSalut) {
       showToast('📸 Đang tạo ảnh thiệp cưới hoàng gia chất lượng cao...');
 
-      const targetName = customName || (cardGuestName ? cardGuestName.textContent.trim() : '') || currentGuest || 'Quý Khách & Gia Đình';
-      const targetSalut = customSalut || (typeof getActiveAdminSalutation === 'function' ? getActiveAdminSalutation() : '') || currentSalutation || 'Kính mời';
+      const adminInput = document.getElementById('adminGuestNameInput');
+      const adminName = (adminInput && adminInput.value.trim()) ? adminInput.value.trim() : '';
+      const adminSalut = (typeof getActiveAdminSalutation === 'function') ? getActiveAdminSalutation() : '';
+
+      const targetName = customName || adminName || (cardGuestName ? cardGuestName.textContent.trim() : '') || currentGuest || 'Quý Khách & Gia Đình';
+      const targetSalut = customSalut || (adminName ? adminSalut : '') || (typeof getActiveAdminSalutation === 'function' ? getActiveAdminSalutation() : '') || currentSalutation || 'Kính mời';
 
       const exportContainer = document.getElementById('dedicatedExportCardContainer');
       const exportCard = document.getElementById('dedicatedExportCard');
@@ -4593,7 +4663,7 @@
 
         const image = canvas.toDataURL("image/png");
         const link = document.createElement('a');
-        const safeName = targetName.toLowerCase().replace(/[^a-z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ\s]/gi, '').replace(/\s+/g, '-');
+        const safeName = targetName.toLowerCase().replace(/[^a-z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ\s]/gi, '').replace(/\s+/g, '-');
 
         link.download = `ThiepCuoi-HoaiPhuoc-DieuHong-${safeName}.png`;
         link.href = image;
@@ -4614,9 +4684,12 @@
       window.open(`https://zalo.me/share?url=${encodeURIComponent(link)}`, '_blank');
     }
 
-    function openAdminModal() {
-      if (isGuestMode) return; // Guests cannot open admin modal
+    function openAdminLoginDirectly() {
+      isGuestMode = false;
+      openAdminModal();
+    }
 
+    function openAdminModal() {
       const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
       if (storedAuth === 'true') isAdminLoggedIn = true;
 
@@ -4677,9 +4750,11 @@
         if (mainApp) mainApp.classList.remove('pointer-events-none', 'select-none', 'blur-sm');
 
         const topAdminBtn = document.getElementById('topAdminBtn');
+        const adminTriggerBtn = document.getElementById('adminLoginTriggerBtn');
         const topCreateBtn = document.getElementById('topCreateBtn');
         const floatAdminBtn = document.getElementById('floatingAdminBtn');
         if (topAdminBtn) topAdminBtn.classList.remove('hidden');
+        if (adminTriggerBtn) adminTriggerBtn.classList.add('hidden');
         if (topCreateBtn) topCreateBtn.classList.remove('hidden');
         if (floatAdminBtn) floatAdminBtn.classList.remove('hidden');
         updateAdminUIControls();
@@ -4702,19 +4777,16 @@
       } catch (err) { }
       updateAdminUIControls();
 
+      const topAdminBtn = document.getElementById('topAdminBtn');
+      const adminTriggerBtn = document.getElementById('adminLoginTriggerBtn');
+      if (topAdminBtn) topAdminBtn.classList.add('hidden');
+      if (adminTriggerBtn) adminTriggerBtn.classList.remove('hidden');
+
       showToast('🔒 Đã đăng xuất khỏi tài khoản Admin.');
-      if (!isGuestMode) {
-        lockRootForAdminOnly();
-      } else {
-        document.getElementById('adminModal').classList.add('hidden');
-      }
+      openAdminModal();
     }
 
     function closeAdminModal() {
-      if (!isAdminLoggedIn && !isGuestMode) {
-        showToast('⚠️ Vui lòng đăng nhập Admin để sử dụng hệ thống!');
-        return;
-      }
       document.getElementById('adminModal').classList.add('hidden');
     }
 
@@ -4831,6 +4903,43 @@
       return isNaN(parsed.getTime()) ? null : parsed;
     }
 
+    let adminPreviewDebounceTimer = null;
+
+    function autoSaveGuestData(name, salut, targetSide) {
+      if (!name || name === 'Quý Khách & Gia Đình') return;
+      const guestId = 'guest_' + Date.now();
+      let localGuests = [];
+      try { localGuests = JSON.parse(localStorage.getItem('weddingGuestList') || '[]'); } catch (e) {}
+      const inputSlug = makeGuestSlug(name).toLowerCase();
+      let matched = localGuests.find(g => (g.name && g.name.toLowerCase() === name.toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === inputSlug);
+      if (!matched) {
+        matched = {
+          id: guestId,
+          name: name,
+          salut: salut,
+          side: targetSide,
+          date: new Date().toLocaleDateString('vi-VN'),
+          isRead: false,
+          readCount: 0,
+          firstReadAt: '',
+          lastReadAt: '',
+          rsvp: 'pending',
+          rsvpCount: 1
+        };
+        localGuests.push(matched);
+      } else {
+        matched.name = name;
+        matched.salut = salut;
+        matched.side = targetSide;
+      }
+      try { localStorage.setItem('weddingGuestList', JSON.stringify(localGuests)); } catch (e) {}
+      OnlineDB.saveGuest(matched);
+    }
+
+    function saveGuestToListDirectly(name, salut, targetSide) {
+      autoSaveGuestData(name, salut, targetSide);
+    }
+
     function updateAdminPreview() {
       const nameEl = document.getElementById('adminGuestNameInput');
       if (!nameEl) return;
@@ -4865,6 +4974,14 @@
         linkUrlEl.textContent = liveUrl;
         linkUrlEl.href = liveUrl;
         if (linkOpenBtn) linkOpenBtn.href = liveUrl;
+      }
+
+      // Auto-save to local and Cloud DB in background
+      if (rawName && rawName !== 'Quý Khách & Gia Đình') {
+        clearTimeout(adminPreviewDebounceTimer);
+        adminPreviewDebounceTimer = setTimeout(() => {
+          autoSaveGuestData(rawName, salut, targetSide);
+        }, 400);
       }
     }
 
