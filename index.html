@@ -1474,7 +1474,7 @@
           </div>
         </div>
         <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-          <button id="adminViewCardBtn" onclick="closeAdminModal()"
+          <button id="adminViewCardBtn" onclick="viewCardFromAdmin()"
             class="hidden text-[11px] sm:text-xs bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 px-2 sm:px-3 py-1.5 rounded-lg border border-amber-400/30 transition-all font-medium whitespace-nowrap">
             <i class="fa-solid fa-eye"></i> <span class="hidden sm:inline">Xem Thiệp</span>
           </button>
@@ -3513,9 +3513,7 @@
       }
       const slug = makeGuestSlug(cleanName);
       const params = [];
-      if (targetSide === 'nhagai') {
-        params.push('v=nhagai');
-      }
+      params.push(targetSide === 'nhagai' ? 'v=nhagai' : 'v=nhatrai');
       if (salut) {
         const sClean = salut.trim();
         if (sClean === 'Thân mời') params.push('s=thanmoi');
@@ -4842,6 +4840,7 @@
           btnGai.className = 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 text-amber-200/80 hover:text-white';
         }
       }
+      switchWeddingVersion(tab1SelectedSide, true, true);
       updateAdminPreview();
     }
 
@@ -4972,6 +4971,11 @@
 
       if (prevEnv) prevEnv.textContent = envText;
       if (prevCard) prevCard.textContent = salut + ': ' + name;
+
+      // Luôn đồng bộ phiên bản thiệp bên dưới với bên đang tạo ở Tab 1
+      if (currentWeddingVersion !== targetSide) {
+        switchWeddingVersion(targetSide, true, true);
+      }
 
       // CẬP NHẬT XEM TRƯỚC LINK TẠO TRỰC TIẾP
       const linkUrlEl = document.getElementById('adminPreviewLinkUrl');
@@ -5205,13 +5209,13 @@
             <td class="p-2.5">${readBadge}</td>
             <td class="p-2.5">${rsvpBadge}</td>
             <td class="p-2.5 text-right space-x-1 whitespace-nowrap">
-              <button onclick="applyGuestFromList(decodeURIComponent('${encodeURIComponent(g.name || '')}'), decodeURIComponent('${encodeURIComponent(g.salut || 'Kính mời')}'), '${g.id || ''}')" class="bg-amber-400/20 hover:bg-amber-400/40 text-amber-200 px-2 py-1 rounded text-[11px]" title="Xem thiệp này">
+              <button onclick="applyGuestFromList(decodeURIComponent('${encodeURIComponent(g.name || '')}'), decodeURIComponent('${encodeURIComponent(g.salut || 'Kính mời')}'), '${g.id || ''}', '${g.side || 'nhatrai'}')" class="bg-amber-400/20 hover:bg-amber-400/40 text-amber-200 px-2 py-1 rounded text-[11px]" title="Xem thiệp này">
                 <i class="fa-solid fa-eye"></i> Xem
               </button>
               <button onclick="copyGuestLinkFromList(decodeURIComponent('${encodeURIComponent(g.name || '')}'), decodeURIComponent('${encodeURIComponent(g.salut || 'Kính mời')}'), '${g.id || ''}')" class="bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 px-2 py-1 rounded text-[11px]" title="Chép link">
                 <i class="fa-regular fa-copy"></i>
               </button>
-              <button onclick="exportGuestCardFromList(decodeURIComponent('${encodeURIComponent(g.name || '')}'), decodeURIComponent('${encodeURIComponent(g.salut || 'Kính mời')}'))" class="bg-wedding-red/40 hover:bg-wedding-red text-amber-100 px-2 py-1 rounded text-[11px]" title="Tải ảnh PNG">
+              <button onclick="exportGuestCardFromList(decodeURIComponent('${encodeURIComponent(g.name || '')}'), decodeURIComponent('${encodeURIComponent(g.salut || 'Kính mời')}'), '${g.side || 'nhatrai'}')" class="bg-wedding-red/40 hover:bg-wedding-red text-amber-100 px-2 py-1 rounded text-[11px]" title="Tải ảnh PNG">
                 <i class="fa-solid fa-file-image"></i>
               </button>
               <button onclick="deleteGuestFromList('${g.id || ''}', decodeURIComponent('${encodeURIComponent(g.name || '')}'))" class="bg-red-500/20 hover:bg-red-500/40 text-red-400 px-2 py-1 rounded text-[11px]" title="Xóa khách này">
@@ -5293,23 +5297,39 @@
       `).join('');
     }
 
-    function applyGuestFromList(name, salut, id) {
+    function viewCardFromAdmin() {
+      const name = (document.getElementById('adminGuestNameInput')?.value || '').trim() || 'Quý Khách & Gia Đình';
+      const salut = getActiveAdminSalutation();
+      const targetSide = getActiveTab1CreateSide();
+      switchWeddingVersion(targetSide, true, true);
       updateGuestName(name, salut);
       closeAdminModal();
-      showToast(`Đang xem thiệp cho: ${name}`);
+      const sideLabel = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      showToast(`Đang xem thiệp (${sideLabel}) cho: ${name}`);
+    }
+
+    function applyGuestFromList(name, salut, id, side) {
+      const guestSide = (side === 'nhagai') ? 'nhagai' : 'nhatrai';
+      switchWeddingVersion(guestSide, true, true);
+      updateGuestName(name, salut);
+      closeAdminModal();
+      const sideLabel = guestSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      showToast(`Đang xem thiệp (${sideLabel}) cho: ${name}`);
     }
 
     function copyGuestLinkFromList(name, salut, id) {
-      updateGuestName(name, salut);
       const guestObj = (guestList || []).find(g => g.id === id);
       const guestSide = (guestObj && guestObj.side) ? guestObj.side : (currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion));
+      switchWeddingVersion(guestSide, true, true);
+      updateGuestName(name, salut);
       const url = buildCleanShareUrl(salut || 'Kính mời', name, id, guestSide);
       const sideLabel = guestSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
 
       copyText(url, `Đã sao chép link thiệp ${sideLabel} cho "${name}"!`);
     }
 
-    function exportGuestCardFromList(name, salut) {
+    function exportGuestCardFromList(name, salut, side) {
+      if (side) switchWeddingVersion(side, true, true);
       updateGuestName(name, salut);
       exportCardAsImage();
     }
