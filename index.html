@@ -6,6 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Thiệp Cưới: Hoài Phước & Diệu Hồng - 25.10.2026</title>
 
+  <!-- SPA router URL recovery for clean paths like /Hoailoc -->
+  <script>
+    (function (l) {
+      if (l.search[1] === 'p') {
+        var decoded = l.search.slice(1).split('&').map(function (s) {
+          return s.replace(/~and~/g, '&');
+        });
+        var path = decoded[0].slice(2);
+        var query = decoded.slice(1).join('&');
+        window.history.replaceState(null, null,
+          l.pathname.slice(0, -1) + path + (query ? '?' + query : '') + l.hash
+        );
+      }
+    }(window.location));
+  </script>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -991,6 +1007,19 @@
           <input type="text" id="wishSenderName" required placeholder="Tên của bạn..."
             class="w-full bg-white/10 border border-wedding-gold/40 rounded-lg px-3.5 py-2 text-sm text-white placeholder-amber-200/50 focus:outline-none focus:border-amber-300">
         </div>
+
+        <!-- Tự động nhận diện bên mời: Khách Nhà Trai / Khách Nhà Gái (không cần chọn) -->
+        <div class="flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg border border-wedding-gold/20 bg-white/5">
+          <span class="flex items-center gap-2">
+            <span class="text-[11px] text-amber-200/70">Lời chúc từ:</span>
+            <span id="wishAutoSideBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/25 text-blue-300 border border-blue-500/40 inline-flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-mars text-[10px]"></i> Khách Nhà Trai (Chú rể Hoài Phước)
+            </span>
+          </span>
+          <span class="text-[10px] text-emerald-400/80 inline-flex items-center gap-1">
+            <i class="fa-solid fa-circle-check text-[9px]"></i> Tự động
+          </span>
+        </div>
         <div>
           <textarea id="wishContent" rows="3" required placeholder="Gửi lời chúc phúc trăm năm đến cặp đôi..."
             class="w-full bg-white/10 border border-wedding-gold/40 rounded-lg px-3.5 py-2 text-sm text-white placeholder-amber-200/50 focus:outline-none focus:border-amber-300"></textarea>
@@ -1534,6 +1563,24 @@
                 <p class="text-amber-100"><span class="text-amber-300/80">Trang thiệp tiệc:</span> <span
                     id="adminPreviewCard" class="font-serif font-bold text-amber-200">Trân trọng kính mời: Quý Khách &
                     Gia Đình</span></p>
+
+                <!-- Xem trước link tạo trực tiếp -->
+                <div class="pt-2 mt-2 border-t border-white/10 flex items-center justify-between gap-2 flex-wrap">
+                  <div class="flex items-center gap-1.5 min-w-0 flex-1">
+                    <span class="text-amber-300 font-semibold whitespace-nowrap inline-flex items-center gap-1 text-[11px]">
+                      <i class="fa-solid fa-link text-amber-400"></i> Link tạo:
+                    </span>
+                    <a id="adminPreviewLinkUrl" href="#" target="_blank" class="font-mono text-amber-200 hover:text-white underline truncate text-[11px]" title="Bấm để mở xem thử thiệp">https://ngaycuoi.online/Hoailoc</a>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="copyAdminPreviewLink()" class="px-2.5 py-1 rounded-lg bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 text-[11px] font-medium transition-all border border-amber-300/30 inline-flex items-center gap-1" title="Sao chép link này">
+                      <i class="fa-regular fa-copy"></i> Chép
+                    </button>
+                    <a id="adminPreviewLinkOpenBtn" href="#" target="_blank" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-amber-200 text-[11px] font-medium transition-all border border-white/10 inline-flex items-center gap-1" title="Mở trong tab mới">
+                      <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Mở
+                    </a>
+                  </div>
+                </div>
               </div>
 
               <!-- Action Buttons for generated guest -->
@@ -1582,7 +1629,63 @@
                 </div>
               </div>
 
-              <div class="overflow-x-auto max-h-48 overflow-y-auto rounded-xl border border-white/10">
+              <!-- BỘ LỌC & TÌM KIẾM KHÁCH MỜI -->
+              <div class="bg-black/35 border border-wedding-gold/25 rounded-xl p-3 space-y-2.5">
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                  <!-- Ô tìm kiếm tên -->
+                  <div class="sm:col-span-5 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-amber-200/50 text-xs"></i>
+                    <input type="text" id="guestSearchInput" oninput="applyGuestFilters()" placeholder="Tìm kiếm theo tên khách mời..."
+                      class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300">
+                  </div>
+
+                  <!-- Lọc theo Bên (Nhà Trai / Nhà Gái) -->
+                  <div class="sm:col-span-3">
+                    <select id="guestSideFilter" onchange="applyGuestFilters()"
+                      class="w-full bg-[#240508] border border-wedding-gold/30 rounded-lg px-2.5 py-1.5 text-xs text-amber-100 focus:outline-none focus:border-amber-300">
+                      <option value="all">Tất cả bên (Trai & Gái)</option>
+                      <option value="nhatrai">🤵 Khách Nhà Trai</option>
+                      <option value="nhagai">👰 Khách Nhà Gái</option>
+                    </select>
+                  </div>
+
+                  <!-- Lọc theo Khoảng thời gian (Preset) -->
+                  <div class="sm:col-span-4">
+                    <select id="guestTimePreset" onchange="handleTimePresetChange()"
+                      class="w-full bg-[#240508] border border-wedding-gold/30 rounded-lg px-2.5 py-1.5 text-xs text-amber-100 focus:outline-none focus:border-amber-300">
+                      <option value="all">Toàn bộ thời gian</option>
+                      <option value="today">Hôm nay</option>
+                      <option value="3days">3 ngày gần đây</option>
+                      <option value="7days">7 ngày gần đây</option>
+                      <option value="custom">Tùy chọn khoảng ngày...</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Dòng chọn ngày Tùy chọn (hiện khi chọn 'custom') -->
+                <div id="guestCustomDateRow" class="hidden items-center gap-2 flex-wrap pt-1.5 border-t border-white/5 text-xs text-amber-200/80">
+                  <span class="text-[11px] text-amber-200/60">Từ ngày:</span>
+                  <input type="date" id="guestDateFrom" onchange="applyGuestFilters()"
+                    class="bg-[#240508] border border-wedding-gold/30 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-300">
+                  <span class="text-[11px] text-amber-200/60">Đến ngày:</span>
+                  <input type="date" id="guestDateTo" onchange="applyGuestFilters()"
+                    class="bg-[#240508] border border-wedding-gold/30 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-300">
+                </div>
+
+                <!-- Thống kê kết quả lọc -->
+                <div class="flex items-center justify-between text-[11px] text-amber-200/70 pt-0.5">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span>Hiển thị: <strong id="guestFilterCount" class="text-amber-300">0</strong> khách</span>
+                    <span class="text-amber-200/30">•</span>
+                    <span id="guestFilterSideBreakdown" class="text-amber-200/80"></span>
+                  </div>
+                  <button type="button" onclick="resetGuestFilters()" class="text-amber-300/80 hover:text-amber-300 underline text-[11px] inline-flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-left text-[9px]"></i> Đặt lại bộ lọc
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto max-h-80 sm:max-h-96 overflow-y-auto rounded-xl border border-white/10">
                 <table class="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr class="bg-black/60 text-amber-300 font-serif border-b border-white/10">
@@ -1604,14 +1707,21 @@
 
           <!-- TAB 2: WISHES & RSVP LIST FROM ONLINE DB -->
           <div id="adminTab2" class="space-y-4 hidden">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <h4 class="font-serif text-base font-bold text-amber-300 flex items-center gap-2">
                 <i class="fa-solid fa-comments text-amber-400"></i> Lời Chúc Mừng & Báo Hỷ Trực Tuyến
               </h4>
-              <button onclick="renderAdminWishesTable()"
-                class="text-xs bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 px-3 py-1.5 rounded-lg border border-amber-300/40 font-medium transition-all">
-                <i class="fa-solid fa-rotate"></i> Tải Lại Lời Chúc
-              </button>
+              <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-center bg-black/40 p-0.5 rounded-lg border border-white/10 text-xs" id="adminWishesFilterGroup">
+                  <button type="button" onclick="filterAdminWishes('all')" id="btnWishFilterAll" class="px-2.5 py-1 rounded font-medium transition-all bg-amber-400 text-slate-950 font-semibold">Tất cả</button>
+                  <button type="button" onclick="filterAdminWishes('nhatrai')" id="btnWishFilterNhatrai" class="px-2.5 py-1 rounded font-medium transition-all text-amber-200/70 hover:text-white">Nhà Trai</button>
+                  <button type="button" onclick="filterAdminWishes('nhagai')" id="btnWishFilterNhagai" class="px-2.5 py-1 rounded font-medium transition-all text-amber-200/70 hover:text-white">Nhà Gái</button>
+                </div>
+                <button onclick="renderAdminWishesTable()"
+                  class="text-xs bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 px-3 py-1.5 rounded-lg border border-amber-300/40 font-medium transition-all flex items-center gap-1.5">
+                  <i class="fa-solid fa-rotate"></i> Tải Lại
+                </button>
+              </div>
             </div>
             <div id="adminWishesContainer" class="space-y-3">
               <!-- Rendered dynamically -->
@@ -3020,6 +3130,50 @@
         } catch (e) { }
       }
 
+      if (!guestFromUrl) {
+        const pathClean = decodeURIComponent(window.location.pathname || '')
+          .replace(/^\/+/, '')
+          .replace(/\.html$/i, '')
+          .trim();
+
+        const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico)$/i.test(pathClean);
+
+        if (pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/')) {
+          let localGuests = [];
+          try { localGuests = JSON.parse(localStorage.getItem('weddingGuestList') || '[]'); } catch (e) {}
+          const cleanSlug = pathClean.toLowerCase().replace(/^(?:phuochongmoi|moi)/i, '');
+
+          let matched = localGuests.find(g => {
+            const gSlug = makeGuestSlug(g.name || '').toLowerCase();
+            return gSlug === pathClean.toLowerCase() || gSlug.replace(/^(?:phuochongmoi|moi)/i, '') === cleanSlug;
+          });
+
+          if (matched) {
+            guestFromUrl = matched.name;
+            if (matched.salut) salutFromUrl = matched.salut;
+            if (matched.side) currentWeddingVersion = matched.side;
+            if (matched.id) guestIdFromUrl = matched.id;
+          } else {
+            const rawSlug = pathClean.replace(/^(?:Phuochongmoi|phuochongmoi|moi)/i, '');
+            guestFromUrl = rawSlug.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([a-zA-Z])([0-9])/g, '$1 $2').replace(/Va/g, ' & ').trim();
+            OnlineDB.getGuests().then(cloudGuests => {
+              if (!cloudGuests || !cloudGuests.length) return;
+              const cloudMatched = cloudGuests.find(g => {
+                const gSlug = makeGuestSlug(g.name || '').toLowerCase();
+                return gSlug === pathClean.toLowerCase() || gSlug.replace(/^(?:phuochongmoi|moi)/i, '') === cleanSlug;
+              });
+              if (cloudMatched) {
+                updateGuestName(cloudMatched.name, cloudMatched.salut || 'Kính mời');
+                if (cloudMatched.side && cloudMatched.side !== currentWeddingVersion) {
+                  switchWeddingVersion(cloudMatched.side, true, true);
+                }
+                OnlineDB.trackRead(cloudMatched.id, cloudMatched.name);
+              }
+            }).catch(() => {});
+          }
+        }
+      }
+
       loadAndSyncConfig();
       switchWeddingVersion(currentWeddingVersion, false);
       initMusic();
@@ -3043,7 +3197,21 @@
       document.getElementById('closedEnvelope').addEventListener('click', openInvitation);
       updateShareUrl();
       renderWishesListOnCard();
+      updateWishSideIndicator(currentWeddingVersion);
     });
+
+    function updateWishSideIndicator(side = currentWeddingVersion) {
+      const badge = document.getElementById('wishAutoSideBadge');
+      if (!badge) return;
+      const isNhagai = side === 'nhagai';
+      if (isNhagai) {
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/25 text-rose-300 border border-rose-500/40 inline-flex items-center gap-1.5 shadow-sm';
+        badge.innerHTML = '<i class="fa-solid fa-venus text-[10px]"></i> Khách Nhà Gái (Cô dâu Diệu Hồng)';
+      } else {
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/25 text-blue-300 border border-blue-500/40 inline-flex items-center gap-1.5 shadow-sm';
+        badge.innerHTML = '<i class="fa-solid fa-mars text-[10px]"></i> Khách Nhà Trai (Chú rể Hoài Phước)';
+      }
+    }
 
     function switchWeddingVersion(ver, updateUi = true, force = false) {
       if (isGuestMode && !force) {
@@ -3053,6 +3221,8 @@
       if (ver !== 'nhagai' && ver !== 'nhatrai') ver = 'nhatrai';
       currentWeddingVersion = ver;
       try { localStorage.setItem('weddingCurrentVersion', ver); } catch (e) { }
+
+      updateWishSideIndicator(ver);
 
       eventConfig = Object.assign({}, weddingConfigs[ver] || weddingConfigs.nhatrai);
       targetWeddingTimestamp = eventConfig.targetTimestamp || (ver === 'nhagai' ? DEFAULT_CONFIG_NHAGAI.targetTimestamp : DEFAULT_CONFIG_NHATRAI.targetTimestamp);
@@ -3093,6 +3263,18 @@
 
       updateCouplePhotoUI();
 
+      // Update wish auto side indicator
+      const wishSideBadge = document.getElementById('wishAutoSideBadge');
+      if (wishSideBadge) {
+        if (ver === 'nhagai') {
+          wishSideBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/25 text-rose-300 border border-rose-500/40 inline-flex items-center gap-1.5 shadow-sm';
+          wishSideBadge.innerHTML = '<i class="fa-solid fa-venus text-[10px]"></i> Khách Nhà Gái (Cô dâu Diệu Hồng)';
+        } else {
+          wishSideBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/25 text-blue-300 border border-blue-500/40 inline-flex items-center gap-1.5 shadow-sm';
+          wishSideBadge.innerHTML = '<i class="fa-solid fa-mars text-[10px]"></i> Khách Nhà Trai (Chú rể Hoài Phước)';
+        }
+      }
+
       if (updateUi) {
         updateEventUI();
         renderGiftModal();
@@ -3102,37 +3284,41 @@
       }
     }
 
-    function buildCleanShareUrl(salut, name, id, verOverride) {
-      const baseUrl = window.location.origin + window.location.pathname;
-      const url = new URL(baseUrl);
+    function makeGuestSlug(name) {
+      if (!name || !name.trim() || name.trim() === 'Quý Khách & Gia Đình') {
+        return 'Hoailoc';
+      }
+      let s = name.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      s = s.replace(/[đĐ]/g, m => (m === 'đ' ? 'd' : 'D'));
+      s = s.replace(/&|\+/g, ' Va ');
+      s = s.replace(/[^a-zA-Z0-9\s]/g, '');
 
-      const cleanSalut = (salut || 'Kính mời').trim();
+      // Tách bỏ từ xưng hô / vai vế nếu có ở đầu tên để link ngắn gọn, chuyên nghiệp (VD: "Em trai Hoài Lộc" -> "Hoailoc")
+      const prefixRegex = /^(kinh\s+moi|than\s+moi|tran\s+trong\s+kinh\s+moi|thuong\s+moi|kinh\s+gui|em\s+trai|anh\s+trai|em\s+gai|chi\s+gai|anh\s+chi|anh|chi|em|ban|chau|co\s+chu|co|chu|bac|di|thim|cau|mo|ong\s+ba|ong|ba|gia\s+dinh|gd|vo\s+chong)\s+/i;
+      let prev = '';
+      while (s !== prev) {
+        prev = s;
+        s = s.replace(prefixRegex, '').trim();
+      }
+
+      const words = s.trim().split(/\s+/).filter(Boolean);
+      if (words.length === 0) return 'Hoailoc';
+      const first = words[0].charAt(0).toUpperCase() + words[0].slice(1).toLowerCase();
+      const rest = words.slice(1).map(w => w.toLowerCase()).join('');
+      return first + rest;
+    }
+
+    function getShareBaseDomain() {
+      if (window.location.protocol === 'file:') return 'https://ngaycuoi.online';
+      if (window.location.hostname.includes('ngaycuoi.online')) return 'https://ngaycuoi.online';
+      return 'https://ngaycuoi.online';
+    }
+
+    function buildCleanShareUrl(salut, name, id, verOverride, preferLocal = false) {
+      const baseDomain = preferLocal ? window.location.origin : getShareBaseDomain();
       const cleanName = (name || 'Quý Khách & Gia Đình').trim();
-      const cleanId = (id || '').trim();
-
-      let ver = verOverride;
-      if (!ver) {
-        if (currentAdminRole === 'admin2') ver = 'nhagai';
-        else if (currentAdminRole === 'admin') ver = 'nhatrai';
-        else ver = currentWeddingVersion || 'nhatrai';
-      }
-
-      try {
-        const payload = `${cleanSalut}|${cleanName}|${cleanId}|${ver}`;
-        const b64 = btoa(unescape(encodeURIComponent(payload)))
-          .replace(/\+/g, '-')
-          .replace(/\//g, '_')
-          .replace(/=+$/, '');
-        url.searchParams.set('b', b64);
-        url.searchParams.set('v', ver);
-        return url.toString();
-      } catch (e) {
-        url.searchParams.set('to', cleanName);
-        url.searchParams.set('salutation', cleanSalut);
-        if (cleanId) url.searchParams.set('id', cleanId);
-        url.searchParams.set('v', ver);
-        return url.toString();
-      }
+      const slug = makeGuestSlug(cleanName);
+      return `${baseDomain}/${slug}`;
     }
 
     function checkInitialAccessMode() {
@@ -3140,6 +3326,13 @@
       let guestFromUrl = urlParams.get('to') || urlParams.get('guest') || urlParams.get('khach') || urlParams.get('n');
       let guestIdFromUrl = urlParams.get('id');
       const b64 = urlParams.get('b');
+
+      const pathClean = decodeURIComponent(window.location.pathname || '')
+        .replace(/^\/+/, '')
+        .replace(/\.html$/i, '')
+        .trim();
+      const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico)$/i.test(pathClean);
+      const isCustomSlug = pathClean && pathClean !== 'index' && !isStaticAsset && !pathClean.includes('/');
 
       if (b64) {
         try {
@@ -3154,7 +3347,7 @@
         } catch (e) { }
       }
 
-      if (guestFromUrl || guestIdFromUrl || b64) {
+      if (guestFromUrl || guestIdFromUrl || b64 || isCustomSlug) {
         // GUEST MODE: Visitor accessed with custom invitation link
         isGuestMode = true;
 
@@ -4170,6 +4363,7 @@
         if (closeBtn) closeBtn.classList.remove('hidden');
         if (viewCardBtn) viewCardBtn.classList.remove('hidden');
         populateAdminForm();
+        updateAdminPreview();
       } else {
         if (loginView) loginView.classList.remove('hidden');
         if (mainView) mainView.classList.add('hidden');
@@ -4324,12 +4518,33 @@
       return select.value;
     }
 
+    function normalizeSearchStr(str) {
+      if (!str) return '';
+      return str.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[đĐ]/g, m => (m === 'đ' ? 'd' : 'D')).toLowerCase().trim();
+    }
+
+    function parseGuestDate(dStr) {
+      if (!dStr) return null;
+      if (typeof dStr === 'number') return new Date(dStr);
+      const parts = dStr.split(/[\/\-]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        } else {
+          return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+      }
+      const parsed = new Date(dStr);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
     function updateAdminPreview() {
       const nameEl = document.getElementById('adminGuestNameInput');
       if (!nameEl) return;
 
       const salut = getActiveAdminSalutation();
-      const name = nameEl.value.trim() || 'Quý Khách & Gia Đình';
+      const rawName = nameEl.value.trim();
+      const name = rawName || 'Quý Khách & Gia Đình';
 
       const prevEnv = document.getElementById('adminPreviewEnvelope');
       const prevCard = document.getElementById('adminPreviewCard');
@@ -4341,6 +4556,54 @@
 
       if (prevEnv) prevEnv.textContent = envText;
       if (prevCard) prevCard.textContent = salut + ': ' + name;
+
+      // CẬP NHẬT XEM TRƯỚC LINK TẠO KHI NHẬP TÊN TRỰC TIẾP
+      const linkUrlEl = document.getElementById('adminPreviewLinkUrl');
+      const linkOpenBtn = document.getElementById('adminPreviewLinkOpenBtn');
+      if (linkUrlEl) {
+        const targetSide = currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion);
+        const liveUrl = buildCleanShareUrl(salut, name, '', targetSide);
+        linkUrlEl.textContent = liveUrl;
+        linkUrlEl.href = liveUrl;
+        if (linkOpenBtn) linkOpenBtn.href = liveUrl;
+      }
+    }
+
+    async function copyAdminPreviewLink() {
+      const name = (document.getElementById('adminGuestNameInput')?.value || '').trim() || 'Quý Khách & Gia Đình';
+      const salut = getActiveAdminSalutation();
+      const guestId = 'guest_' + Date.now();
+      const targetSide = currentAdminRole === 'admin2' ? 'nhagai' : (currentAdminRole === 'admin' ? 'nhatrai' : currentWeddingVersion);
+
+      const guests = await OnlineDB.getGuests();
+      let matched = guests.find(g => g.name.toLowerCase() === name.toLowerCase() || makeGuestSlug(g.name).toLowerCase() === makeGuestSlug(name).toLowerCase());
+      if (!matched) {
+        matched = {
+          id: guestId,
+          name: name,
+          salut: salut,
+          side: targetSide,
+          date: new Date().toLocaleDateString('vi-VN'),
+          isRead: false,
+          readCount: 0,
+          firstReadAt: '',
+          lastReadAt: '',
+          rsvp: 'pending',
+          rsvpCount: 1
+        };
+        await OnlineDB.saveGuest(matched);
+      } else {
+        let dirty = false;
+        if (matched.salut !== salut) { matched.salut = salut; dirty = true; }
+        if (!matched.side) { matched.side = targetSide; dirty = true; }
+        if (dirty) await OnlineDB.saveGuest(matched);
+      }
+
+      updateGuestName(name, salut);
+      const url = buildCleanShareUrl(salut, name, matched.id, matched.side || targetSide);
+      const sideName = (matched.side || targetSide) === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
+      copyText(url, `Đã sao chép link gọn (${sideName}) cho "${name}"!`);
+      renderGuestTable();
     }
 
     async function copyAdminGuestLink() {
@@ -4408,20 +4671,117 @@
       return newGuest;
     }
 
+    function handleTimePresetChange() {
+      const preset = document.getElementById('guestTimePreset')?.value;
+      const customRow = document.getElementById('guestCustomDateRow');
+      if (customRow) {
+        if (preset === 'custom') {
+          customRow.classList.remove('hidden');
+          customRow.classList.add('flex');
+        } else {
+          customRow.classList.add('hidden');
+          customRow.classList.remove('flex');
+        }
+      }
+      applyGuestFilters();
+    }
+
+    function resetGuestFilters() {
+      const search = document.getElementById('guestSearchInput');
+      const side = document.getElementById('guestSideFilter');
+      const preset = document.getElementById('guestTimePreset');
+      const customRow = document.getElementById('guestCustomDateRow');
+      const dFrom = document.getElementById('guestDateFrom');
+      const dTo = document.getElementById('guestDateTo');
+
+      if (search) search.value = '';
+      if (side) side.value = 'all';
+      if (preset) preset.value = 'all';
+      if (dFrom) dFrom.value = '';
+      if (dTo) dTo.value = '';
+      if (customRow) {
+        customRow.classList.add('hidden');
+        customRow.classList.remove('flex');
+      }
+      renderGuestTable();
+    }
+
+    function applyGuestFilters() {
+      renderGuestTable();
+    }
+
     async function renderGuestTable() {
       const tbody = document.getElementById('adminGuestTableBody');
       if (!tbody) return;
 
-      tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-amber-200/50 italic"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách từ Cloud Database...</td></tr>`;
-
       const list = await OnlineDB.getGuests();
 
-      if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-amber-200/50 italic">Chưa có khách mời nào trong danh sách. Hãy nhập tên ở trên và bấm "Sao Chép Link Online".</td></tr>`;
+      // Read filter values
+      const searchQuery = normalizeSearchStr(document.getElementById('guestSearchInput')?.value || '');
+      const sideFilter = document.getElementById('guestSideFilter')?.value || 'all';
+      const timePreset = document.getElementById('guestTimePreset')?.value || 'all';
+      const dateFromVal = document.getElementById('guestDateFrom')?.value;
+      const dateToVal = document.getElementById('guestDateTo')?.value;
+
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      const filtered = list.filter(g => {
+        // 1. Name search
+        if (searchQuery) {
+          const gName = normalizeSearchStr(g.name || '');
+          const gSalut = normalizeSearchStr(g.salut || '');
+          if (!gName.includes(searchQuery) && !gSalut.includes(searchQuery)) return false;
+        }
+
+        // 2. Side filter
+        if (sideFilter !== 'all') {
+          const gSide = g.side || 'nhatrai';
+          if (gSide !== sideFilter) return false;
+        }
+
+        // 3. Time filter
+        if (timePreset !== 'all') {
+          const gDate = parseGuestDate(g.date || g.createdAt);
+          if (timePreset === 'today') {
+            if (!gDate || gDate < todayStart) return false;
+          } else if (timePreset === '3days') {
+            const threeDaysAgo = new Date(todayStart.getTime() - 2 * 24 * 60 * 60 * 1000);
+            if (!gDate || gDate < threeDaysAgo) return false;
+          } else if (timePreset === '7days') {
+            const sevenDaysAgo = new Date(todayStart.getTime() - 6 * 24 * 60 * 60 * 1000);
+            if (!gDate || gDate < sevenDaysAgo) return false;
+          } else if (timePreset === 'custom') {
+            if (dateFromVal) {
+              const fDate = new Date(dateFromVal + 'T00:00:00');
+              if (gDate && gDate < fDate) return false;
+            }
+            if (dateToVal) {
+              const tDate = new Date(dateToVal + 'T23:59:59');
+              if (gDate && gDate > tDate) return false;
+            }
+          }
+        }
+
+        return true;
+      });
+
+      // Update count & side breakdown
+      const countEl = document.getElementById('guestFilterCount');
+      const breakdownEl = document.getElementById('guestFilterSideBreakdown');
+      if (countEl) countEl.textContent = filtered.length;
+      if (breakdownEl) {
+        const traiCount = filtered.filter(g => (g.side || 'nhatrai') === 'nhatrai').length;
+        const gaiCount = filtered.filter(g => g.side === 'nhagai').length;
+        breakdownEl.textContent = `Nhà Trai: ${traiCount} | Nhà Gái: ${gaiCount}`;
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-amber-200/50 italic">Không tìm thấy khách mời nào phù hợp với bộ lọc hiện tại.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map((g, idx) => {
+      tbody.innerHTML = filtered.map((g, idx) => {
         let readBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-amber-200/60 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20"><i class="fa-regular fa-clock"></i> Chưa xem</span>`;
         if (g.isRead) {
           readBadge = `
@@ -4484,8 +4844,11 @@
       container.innerHTML = list.map(w => `
         <div class="bg-white/5 border border-wedding-gold/30 rounded-2xl p-4 space-y-2 relative group hover:bg-white/10 transition-all">
           <div class="flex items-center justify-between text-xs border-b border-white/10 pb-2">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
               <span class="font-serif font-bold text-amber-300 text-sm">${escapeHTML(w.sender)}</span>
+              ${w.side === 'nhagai'
+                ? '<span class="text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded-full font-semibold">👰 Khách Nhà Gái</span>'
+                : '<span class="text-[10px] bg-sky-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded-full font-semibold">🤵 Khách Nhà Trai</span>'}
               ${w.attendance === 'yes' ? '<span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">🎉 Báo có tham dự</span>' : '<span class="text-[10px] bg-red-500/20 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-full">🥺 Cáo lỗi vắng mặt</span>'}
             </div>
             <span class="text-[11px] text-amber-200/60 font-mono">${escapeHTML(w.createdAt || '')}</span>
@@ -4522,8 +4885,11 @@
       wishesList.innerHTML = wishes.map(w => `
         <div class="bg-white/5 rounded-xl p-3 border border-white/10 text-xs sm:text-sm animate-fade-in">
           <div class="flex items-center justify-between text-wedding-gold font-semibold mb-1">
-            <span class="flex items-center gap-1.5">
+            <span class="flex items-center gap-1.5 flex-wrap">
               <span>${escapeHTML(w.sender)}</span>
+              ${w.side === 'nhagai'
+                ? '<span class="text-[9px] bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded font-normal border border-rose-500/30">Nhà Gái</span>'
+                : (w.side === 'nhatrai' ? '<span class="text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded font-normal border border-sky-500/30">Nhà Trai</span>' : '')}
               ${w.attendance === 'yes' ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-normal border border-emerald-500/30">Sẽ tới dự</span>' : ''}
             </span>
             <span class="text-[10px] text-amber-200/50 font-mono">${escapeHTML(w.createdAt || '')}</span>
@@ -5156,7 +5522,8 @@
       const wishObj = {
         sender: name,
         message: content,
-        attendance: 'yes'
+        attendance: 'yes',
+        side: currentWeddingVersion || 'nhatrai'
       };
 
       await OnlineDB.sendWish(wishObj);
