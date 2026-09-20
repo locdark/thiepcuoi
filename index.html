@@ -249,9 +249,9 @@
       <span class="text-xs hidden sm:inline">Quản Lý Admin</span>
     </button>
 
-    <!-- Quick Admin Login Trigger Button (Visible when logged out) -->
+    <!-- Quick Admin Login Trigger Button (Hidden for guests, accessible via /admin) -->
     <button id="adminLoginTriggerBtn" onclick="openAdminLoginDirectly()"
-      class="flex items-center gap-1.5 bg-black/40 hover:bg-black/60 text-amber-200/90 hover:text-amber-100 text-xs px-3 py-2 rounded-full border border-amber-300/30 backdrop-blur-md shadow-md transition-all active:scale-95"
+      class="hidden flex items-center gap-1.5 bg-black/40 hover:bg-black/60 text-amber-200/90 hover:text-amber-100 text-xs px-3 py-2 rounded-full border border-amber-300/30 backdrop-blur-md shadow-md transition-all active:scale-95"
       title="Đăng nhập Quản trị viên (admin / admin2 - Mật khẩu: admin123)">
       <i class="fa-solid fa-lock text-amber-300 text-[11px]"></i>
       <span class="text-xs hidden sm:inline">Quản Trị</span>
@@ -259,7 +259,7 @@
 
     <!-- Create Card & Link Button -->
     <button id="topCreateBtn" onclick="openPersonalizeModal()"
-      class="flex items-center gap-2 bg-wedding-red text-amber-100 px-3.5 py-2 rounded-full shadow-lg hover:bg-wedding-darkred transition-all border border-amber-300/30 active:scale-95"
+      class="hidden flex items-center gap-2 bg-wedding-red text-amber-100 px-3.5 py-2 rounded-full shadow-lg hover:bg-wedding-darkred transition-all border border-amber-300/30 active:scale-95"
       title="Tạo link & Ảnh thiệp cho khách">
       <i class="fa-solid fa-wand-magic-sparkles"></i>
       <span class="text-xs font-medium hidden sm:inline">Tạo Thiệp Mời</span>
@@ -1077,7 +1077,7 @@
       <p>Hoài Phước ❤ Diệu Hồng • 25.10.2026</p>
       <p class="mt-1">Rất hân hạnh được đón tiếp Quý Khách!</p>
       <div class="mt-4">
-        <button id="footerAdminLoginBtn" onclick="openAdminLoginDirectly()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 border border-amber-300/25 text-amber-200/60 hover:text-amber-200 hover:border-amber-300/50 text-[11px] transition-all" title="Dành cho Quản trị viên (admin / admin2 - Mật khẩu: admin123)">
+        <button id="footerAdminLoginBtn" onclick="openAdminLoginDirectly()" class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 border border-amber-300/25 text-amber-200/60 hover:text-amber-200 hover:border-amber-300/50 text-[11px] transition-all" title="Dành cho Quản trị viên (admin / admin2 - Mật khẩu: admin123)">
           <i class="fa-solid fa-lock text-[10px] text-amber-400"></i> Đăng nhập Quản trị viên (Admin)
         </button>
       </div>
@@ -1111,7 +1111,7 @@
       </button>
 
       <button id="floatingAdminBtn" onclick="openAdminModal()"
-        class="flex flex-col items-center justify-center p-1 text-amber-200 hover:text-amber-100 active:scale-95 transition-all">
+        class="hidden flex-col items-center justify-center p-1 text-amber-200 hover:text-amber-100 active:scale-95 transition-all">
         <i class="fa-solid fa-user-gear text-base text-amber-300"></i>
         <span class="text-[10px] font-semibold mt-0.5">Admin</span>
       </button>
@@ -3608,16 +3608,18 @@
           }
         }
 
-        // Hide Admin controls for guests, but keep quick login trigger
+        // ẨN HOÀN TOÀN TẤT CẢ NÚT QUẢN TRỊ KHI KHÁCH MỞ THIỆP:
         const topAdminBtn = document.getElementById('topAdminBtn');
         const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
         const topCreateBtn = document.getElementById('topCreateBtn');
         const floatAdminBtn = document.getElementById('floatingAdminBtn');
+        const footerAdminBtn = document.getElementById('footerAdminLoginBtn');
 
         if (topAdminBtn) topAdminBtn.classList.add('hidden');
-        if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.remove('hidden');
+        if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.add('hidden');
         if (topCreateBtn) topCreateBtn.classList.add('hidden');
         if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
+        if (footerAdminBtn) footerAdminBtn.classList.add('hidden');
 
         // Background tracking of read status
         const decodedName = guestFromUrl ? decodeURIComponent(guestFromUrl.trim()) : '';
@@ -3645,17 +3647,19 @@
           if (floatAdminBtn) floatAdminBtn.classList.remove('hidden');
           if (togglePill) togglePill.classList.remove('hidden');
         } else {
-          // GUEST ACCESS ON ROOT: Normal guest browsing root domain (no toggle pill for guest)
+          // GUEST ACCESS ON ROOT: Normal guest browsing root domain (no admin controls visible)
           isGuestMode = true;
           switchWeddingVersion(currentWeddingVersion, false, true);
           const topAdminBtn = document.getElementById('topAdminBtn');
           const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
           const topCreateBtn = document.getElementById('topCreateBtn');
           const floatAdminBtn = document.getElementById('floatingAdminBtn');
+          const footerAdminBtn = document.getElementById('footerAdminLoginBtn');
           if (topAdminBtn) topAdminBtn.classList.add('hidden');
-          if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.remove('hidden');
+          if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.add('hidden');
           if (topCreateBtn) topCreateBtn.classList.add('hidden');
           if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
+          if (footerAdminBtn) footerAdminBtn.classList.add('hidden');
           const togglePill = document.getElementById('weddingVersionTogglePill');
           if (togglePill) togglePill.classList.add('hidden');
         }
@@ -5543,6 +5547,12 @@
       const cardChangeBtn = document.getElementById('cardChangePhotoBtn');
       const overlayBtn = document.getElementById('cardOverlayPhotoBtn');
       const togglePill = document.getElementById('weddingVersionTogglePill');
+      const topAdminBtn = document.getElementById('topAdminBtn');
+      const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
+      const topCreateBtn = document.getElementById('topCreateBtn');
+      const floatAdminBtn = document.getElementById('floatingAdminBtn');
+      const footerAdminBtn = document.getElementById('footerAdminLoginBtn');
+
       if (isAdminLoggedIn && !isGuestMode) {
         if (cardChangeBtn) cardChangeBtn.classList.remove('hidden');
         if (overlayBtn) {
@@ -5550,6 +5560,11 @@
           overlayBtn.classList.add('flex');
         }
         if (togglePill) togglePill.classList.remove('hidden');
+        if (topAdminBtn) topAdminBtn.classList.remove('hidden');
+        if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.add('hidden');
+        if (topCreateBtn) topCreateBtn.classList.remove('hidden');
+        if (floatAdminBtn) floatAdminBtn.classList.remove('hidden');
+        if (footerAdminBtn) footerAdminBtn.classList.remove('hidden');
       } else {
         if (cardChangeBtn) cardChangeBtn.classList.add('hidden');
         if (overlayBtn) {
@@ -5557,6 +5572,11 @@
           overlayBtn.classList.remove('flex');
         }
         if (togglePill) togglePill.classList.add('hidden');
+        if (topAdminBtn) topAdminBtn.classList.add('hidden');
+        if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.add('hidden');
+        if (topCreateBtn) topCreateBtn.classList.add('hidden');
+        if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
+        if (footerAdminBtn) footerAdminBtn.classList.add('hidden');
       }
     }
 
@@ -6192,6 +6212,33 @@
         closeAdminModal();
       }
     });
+
+    // Phím tắt bí mật mở Quản Trị: Ctrl + Alt + A
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {
+        e.preventDefault();
+        openAdminLoginDirectly();
+      }
+    });
+
+    // Chạm/Click 3 lần liên tiếp vào con dấu sáp P&H trên bao thư để mở Quản Trị
+    let sealClickCount = 0;
+    let sealClickTimer = null;
+    const envelopeSealEl = document.getElementById('closedEnvelope');
+    if (envelopeSealEl) {
+      envelopeSealEl.addEventListener('click', (e) => {
+        if (e.target.closest('.rounded-full') || (e.target.textContent && (e.target.textContent.includes('P') || e.target.textContent.includes('H')))) {
+          sealClickCount++;
+          clearTimeout(sealClickTimer);
+          if (sealClickCount >= 3) {
+            sealClickCount = 0;
+            openAdminLoginDirectly();
+            return;
+          }
+          sealClickTimer = setTimeout(() => { sealClickCount = 0; }, 700);
+        }
+      });
+    }
 
     function copyText(text, successMsg) {
       if (!text) return;
