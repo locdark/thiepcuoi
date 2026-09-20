@@ -785,11 +785,13 @@
                 (Nhằm ngày 11 tháng 09 năm Bính Ngọ)
               </p>
 
-              <!-- Map Button for Groom House / Lễ Tân Hôn -->
+              <!-- Map Button for Ceremony House (Nhà Trai / Nhà Gái) -->
               <div class="pt-2">
                 <a id="cardGroomMapBtn" href="https://maps.app.goo.gl/t42Q1hFoLxjDwT4B6" target="_blank"
-                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-wedding-red/10 text-wedding-red hover:bg-wedding-red hover:text-white border border-wedding-red/30 transition-all shadow-sm">
-                  <i class="fa-solid fa-location-dot"></i> <span id="cardGroomMapBtnText">Bản đồ Google Maps chỉ đường đến Nhà Trai</span>
+                  class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-serif font-semibold bg-gradient-to-r from-[#FAF6F0] via-white to-[#F5ECE0] hover:from-wedding-red hover:to-[#6B0D19] text-[#7A1220] hover:text-white border border-[#D8A24A]/40 hover:border-wedding-red transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 group">
+                  <i class="fa-solid fa-location-dot text-[#D8A24A] group-hover:text-amber-200 transition-colors"></i>
+                  <span id="cardGroomMapBtnText" class="tracking-wide">Chỉ đường đến Nhà Trai</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[9px] opacity-50 group-hover:opacity-100 transition-opacity"></i>
                 </a>
               </div>
             </div>
@@ -3894,7 +3896,7 @@
       }
       const cardGroomMapBtnText = document.getElementById('cardGroomMapBtnText');
       if (cardGroomMapBtnText) {
-        cardGroomMapBtnText.textContent = isNhagai ? 'Bản đồ Google Maps chỉ đường đến Nhà Gái' : 'Bản đồ Google Maps chỉ đường đến Nhà Trai';
+        cardGroomMapBtnText.textContent = isNhagai ? 'Chỉ đường đến Nhà Gái' : 'Chỉ đường đến Nhà Trai';
       }
 
       // Section 3: Mini Calendar
