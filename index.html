@@ -321,7 +321,7 @@
         <div class="text-center pt-4 z-10">
           <p class="text-wedding-gold text-xs uppercase tracking-[0.25em] font-cinzel">Save The Date</p>
           <div class="w-16 h-[1px] bg-wedding-gold/50 mx-auto my-2"></div>
-          <p class="text-amber-200/90 text-sm font-serif italic">Hôn Lễ Thành Đôi</p>
+          <p id="envelopeCeremonySub" class="text-amber-200/90 text-sm font-serif italic">Hôn Lễ Thành Đôi</p>
         </div>
 
         <!-- Center Seal & Monogram -->
@@ -994,7 +994,7 @@
       <h3 class="text-xs uppercase tracking-[0.25em] text-wedding-gold font-cinzel mb-1">
         Cùng Đếm Ngược Đến Giờ Lễ Cưới
       </h3>
-      <p class="font-serif text-lg text-amber-200 font-semibold mb-4">
+      <p id="countdownEventDateDisplay" class="font-serif text-lg text-amber-200 font-semibold mb-4">
         11:00 Chủ Nhật • 25 Tháng 10, 2026
       </p>
 
@@ -1692,7 +1692,7 @@
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                 <button onclick="copyAdminGuestLink()"
                   class="bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 text-slate-950 font-bold py-2.5 px-3 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-1.5 shadow-md">
-                  <i class="fa-regular fa-copy"></i> Sao Chép Link Online
+                  <i class="fa-solid fa-link"></i> Tạo Và Chép Link
                 </button>
 
                 <button onclick="exportCardAsImage()"
@@ -3216,7 +3216,7 @@
       partyTime: '11:00 • Thứ Bảy, 17/10/2026',
       partyDateDisplay: '17 . 10 . 2026',
       partyLunar: 'Nhằm ngày 08 tháng 09 năm Bính Ngọ',
-      closingFamily: 'Bà: NGUYỄN THỊ TÍN',
+      closingFamily: 'Gia Đình',
       mapUrl: 'https://maps.app.goo.gl/i6VipoGVxYzVsvfT6',
       groomMapUrl: 'https://www.google.com/maps/search/?api=1&query=Tuy+H%C3%B2a,+%C4%90%E1%BA%AFk+L%E1%BA%AFk',
       targetTimestamp: new Date("2026-10-17T11:00:00+07:00").getTime(),
@@ -3826,11 +3826,21 @@
         }
       }
 
+      // Envelope ceremony subtitle
+      const envCeremonySub = document.getElementById('envelopeCeremonySub');
+      if (envCeremonySub) {
+        envCeremonySub.textContent = isNhagai ? 'Lễ Vu Quy' : 'Hôn Lễ Thành Đôi';
+      }
+
       // Wax Seal initials & date
       const waxInitials = document.getElementById('waxSealInitials');
-      if (waxInitials) waxInitials.textContent = eventConfig.waxSealInitials || (isNhagai ? 'H & P' : 'P & H');
+      if (waxInitials) {
+        waxInitials.textContent = isNhagai ? (weddingConfigs.nhagai?.waxSealInitials || 'H & P') : (weddingConfigs.nhatrai?.waxSealInitials || 'P & H');
+      }
       const waxDate = document.getElementById('waxSealDate');
-      if (waxDate) waxDate.textContent = eventConfig.waxSealDate || (isNhagai ? '17.10.2026' : '25.10.2026');
+      if (waxDate) {
+        waxDate.textContent = isNhagai ? (weddingConfigs.nhagai?.waxSealDate || '17.10.2026') : (weddingConfigs.nhatrai?.waxSealDate || '25.10.2026');
+      }
 
       // Parents format
       function formatParentsHTML(title, rawText) {
@@ -4071,15 +4081,38 @@
       }
 
       const cardClosingFamily = document.getElementById('cardClosingFamily');
+      const cardClosingKinhMoi = document.getElementById('cardClosingKinhMoi');
       if (cardClosingFamily) {
-        const rawFam = (eventConfig.closingFamily || (isNhagai ? 'Bà: NGUYỄN THỊ TÍN' : 'Gia Đình Hoa Diễm')).trim();
-        const match = rawFam.match(/^(Bà|Ông|Ông Bà|Gia đình|Gia Đình)\s*:\s*(.+)$/i);
-        if (match) {
-          cardClosingFamily.innerHTML = `<span class="font-serif font-normal italic text-xs text-wedding-subtext">${escapeHTML(match[1])}: </span><span class="font-serif font-bold text-sm sm:text-base text-wedding-red uppercase tracking-wider">${escapeHTML(match[2])}</span>`;
-        } else {
+        let rawFam = (eventConfig.closingFamily || (isNhagai ? 'Gia Đình' : 'Gia Đình Hoa Diễm')).trim();
+        // Tự động chuyển đổi nếu là cấu hình cũ "Bà: NGUYỄN THỊ TÍN"
+        if (isNhagai && (rawFam === 'Bà: NGUYỄN THỊ TÍN' || !rawFam)) {
+          rawFam = 'Gia Đình';
+        }
+
+        const hasKinhMoi = /kính\s*mời/i.test(rawFam);
+        if (hasKinhMoi) {
           cardClosingFamily.innerHTML = `<span class="font-serif font-bold text-sm sm:text-base text-wedding-red uppercase tracking-wider">${escapeHTML(rawFam)}</span>`;
+          if (cardClosingKinhMoi) cardClosingKinhMoi.classList.add('hidden');
+        } else {
+          if (cardClosingKinhMoi) cardClosingKinhMoi.classList.remove('hidden');
+          const match = rawFam.match(/^(Bà|Ông|Ông Bà|Gia đình|Gia Đình)\s*:\s*(.+)$/i);
+          if (match) {
+            cardClosingFamily.innerHTML = `<span class="font-serif font-normal italic text-xs text-wedding-subtext">${escapeHTML(match[1])}: </span><span class="font-serif font-bold text-sm sm:text-base text-wedding-red uppercase tracking-wider">${escapeHTML(match[2])}</span>`;
+          } else {
+            cardClosingFamily.innerHTML = `<span class="font-serif font-bold text-sm sm:text-base text-wedding-red uppercase tracking-wider">${escapeHTML(rawFam)}</span>`;
+          }
         }
       }
+
+      // Countdown ceremony date and timestamp
+      const countdownDateEl = document.getElementById('countdownEventDateDisplay');
+      if (countdownDateEl) {
+        countdownDateEl.textContent = isNhagai ? '11:00 Thứ Bảy • 17 Tháng 10, 2026' : '11:00 Chủ Nhật • 25 Tháng 10, 2026';
+      }
+      targetWeddingTimestamp = isNhagai
+        ? (weddingConfigs.nhagai?.targetTimestamp || DEFAULT_CONFIG_NHAGAI.targetTimestamp)
+        : (weddingConfigs.nhatrai?.targetTimestamp || DEFAULT_CONFIG_NHATRAI.targetTimestamp);
+      if (typeof updateCountdown === 'function') updateCountdown();
 
       // Map Modal contents
       const modalPartyVenue = document.getElementById('modalPartyVenueName');
@@ -5142,7 +5175,7 @@
 
       updateGuestName(name, salut);
       const url = buildCleanShareUrl(salut, name, '', targetSide);
-      copyText(url, `Đã sao chép link online (${sideName}) cho "${name}"!`);
+      copyText(url, `Đã tạo & chép link online (${sideName}) cho "${name}"!`);
 
       // Lưu vào danh sách và đồng bộ máy chủ chạy ngầm (không làm chậm hay lỗi clipboard)
       saveCurrentGuestToList(false);
@@ -5621,7 +5654,7 @@
       const ceremonyLocInput = document.getElementById('adminCeremonyLocation');
       if (ceremonyLocInput) ceremonyLocInput.value = curCfg.ceremonyLocation || (currentWeddingVersion === 'nhagai' ? 'TƯ GIA NHÀ GÁI' : 'TƯ GIA NHÀ TRAI');
       const closingFamInput = document.getElementById('adminClosingFamily');
-      if (closingFamInput) closingFamInput.value = curCfg.closingFamily || (currentWeddingVersion === 'nhagai' ? 'Bà: NGUYỄN THỊ TÍN' : 'Gia Đình Hoa Diễm');
+      if (closingFamInput) closingFamInput.value = (currentWeddingVersion === 'nhagai' && curCfg.closingFamily === 'Bà: NGUYỄN THỊ TÍN') ? 'Gia Đình' : (curCfg.closingFamily || (currentWeddingVersion === 'nhagai' ? 'Gia Đình' : 'Gia Đình Hoa Diễm'));
 
       // Update Tab 4 badge
       const tab4Badge = document.getElementById('tab4ActiveVersionBadge');
