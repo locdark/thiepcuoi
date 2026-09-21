@@ -961,28 +961,22 @@
 
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-6 px-1">
-        <button onclick="openRSVPModal()"
-          class="flex flex-col items-center justify-center p-3 rounded-xl bg-gradient-to-b from-wedding-crimson to-wedding-red text-amber-100 shadow-md hover:brightness-110 active:scale-95 transition-all border border-amber-300/30">
-          <i class="fa-solid fa-envelope-circle-check text-lg mb-1 text-amber-300"></i>
-          <span class="text-xs font-semibold">Xác Nhận Đi</span>
-        </button>
-
+      <div class="grid grid-cols-3 gap-2.5 sm:gap-3.5 mt-6 px-1">
         <button onclick="openMapModal()"
-          class="flex flex-col items-center justify-center p-3 rounded-xl bg-[#2A080C] text-amber-100 shadow-md hover:bg-[#380B10] active:scale-95 transition-all border border-wedding-gold/40">
-          <i class="fa-solid fa-map-location-dot text-lg mb-1 text-amber-300"></i>
+          class="flex flex-col items-center justify-center p-3 rounded-xl bg-[#2A080C] text-amber-100 shadow-md hover:bg-[#380B10] active:scale-95 transition-all border border-wedding-gold/40 group">
+          <i class="fa-solid fa-map-location-dot text-lg mb-1 text-amber-300 group-hover:scale-110 transition-transform"></i>
           <span class="text-xs font-semibold">Chỉ Đường</span>
         </button>
 
         <button onclick="openGiftModal()"
-          class="flex flex-col items-center justify-center p-3 rounded-xl bg-[#2A080C] text-amber-100 shadow-md hover:bg-[#380B10] active:scale-95 transition-all border border-wedding-gold/40">
-          <i class="fa-solid fa-gift text-lg mb-1 text-amber-300"></i>
+          class="flex flex-col items-center justify-center p-3 rounded-xl bg-gradient-to-b from-wedding-crimson to-wedding-red text-amber-100 shadow-md hover:brightness-110 active:scale-95 transition-all border border-amber-300/40 group">
+          <i class="fa-solid fa-gift text-lg mb-1 text-amber-300 group-hover:scale-110 transition-transform"></i>
           <span class="text-xs font-semibold">Mừng Cưới</span>
         </button>
 
         <button onclick="addToCalendar()"
-          class="flex flex-col items-center justify-center p-3 rounded-xl bg-[#2A080C] text-amber-100 shadow-md hover:bg-[#380B10] active:scale-95 transition-all border border-wedding-gold/40">
-          <i class="fa-regular fa-calendar-plus text-lg mb-1 text-amber-300"></i>
+          class="flex flex-col items-center justify-center p-3 rounded-xl bg-[#2A080C] text-amber-100 shadow-md hover:bg-[#380B10] active:scale-95 transition-all border border-wedding-gold/40 group">
+          <i class="fa-regular fa-calendar-plus text-lg mb-1 text-amber-300 group-hover:scale-110 transition-transform"></i>
           <span class="text-xs font-semibold">Lưu Lịch</span>
         </button>
       </div>
@@ -1098,10 +1092,10 @@
         <span class="text-[10px] font-semibold mt-0.5">Mở/Đóng</span>
       </button>
 
-      <button onclick="openRSVPModal()"
+      <button onclick="openMapModal()"
         class="flex flex-col items-center justify-center p-1 text-amber-200 hover:text-amber-100 active:scale-95 transition-all">
-        <i class="fa-solid fa-envelope-circle-check text-base text-amber-300"></i>
-        <span class="text-[10px] font-semibold mt-0.5">Xác Nhận</span>
+        <i class="fa-solid fa-map-location-dot text-base text-amber-300"></i>
+        <span class="text-[10px] font-semibold mt-0.5">Chỉ Đường</span>
       </button>
 
       <button onclick="openGiftModal()"
@@ -1110,10 +1104,10 @@
         <span class="text-[10px] font-semibold mt-0.5">Mừng Cưới</span>
       </button>
 
-      <button onclick="openMapModal()"
+      <button onclick="addToCalendar()"
         class="flex flex-col items-center justify-center p-1 text-amber-200 hover:text-amber-100 active:scale-95 transition-all">
-        <i class="fa-solid fa-map-location-dot text-base text-amber-300"></i>
-        <span class="text-[10px] font-semibold mt-0.5">Chỉ Đường</span>
+        <i class="fa-regular fa-calendar-plus text-base text-amber-300"></i>
+        <span class="text-[10px] font-semibold mt-0.5">Lưu Lịch</span>
       </button>
 
       <button id="floatingAdminBtn" onclick="openAdminModal()"
@@ -3248,6 +3242,8 @@
     const cardGuestName = document.getElementById('cardGuestName');
     const customGuestInput = document.getElementById('customGuestInput');
     const generatedShareUrl = document.getElementById('generatedShareUrl');
+    let currentIdentifiedGuestId = '';
+    let currentIdentifiedGuestName = '';
 
     window.addEventListener('DOMContentLoaded', () => {
       // 1. Parse URL parameters first to know version
@@ -3337,9 +3333,12 @@
             if (matched.salut && !salutFromUrl) salutFromUrl = matched.salut;
             if (matched.side && !hasExplicitUrlVer) currentWeddingVersion = matched.side;
             if (matched.id) guestIdFromUrl = matched.id;
+            currentIdentifiedGuestId = matched.id || '';
+            currentIdentifiedGuestName = matched.name || '';
           } else {
             const rawSlug = pathClean.replace(/^(?:Phuochongmoi|phuochongmoi|moi)/i, '');
             guestFromUrl = rawSlug.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([a-zA-Z])([0-9])/g, '$1 $2').replace(/\bVa\b/gi, '&').trim();
+            currentIdentifiedGuestName = guestFromUrl;
           }
 
           // Always query cloud guests to ensure freshest accented name and side!
@@ -3349,6 +3348,8 @@
             if (cloudMatched) {
               const finalAccentedName = cloudMatched.name || guestFromUrl;
               const finalAccentedSalut = salutFromUrl || cloudMatched.salut || 'Kính mời';
+              currentIdentifiedGuestId = cloudMatched.id || currentIdentifiedGuestId;
+              currentIdentifiedGuestName = finalAccentedName;
               updateGuestName(finalAccentedName, finalAccentedSalut);
               if (!hasExplicitUrlVer && cloudMatched.side && cloudMatched.side !== currentWeddingVersion) {
                 switchWeddingVersion(cloudMatched.side, true, true);
@@ -3367,6 +3368,8 @@
       if (guestFromUrl && guestFromUrl.trim() !== '') {
         const decodedName = guestFromUrl.trim();
         const decodedSalut = salutFromUrl ? salutFromUrl.trim() : 'Kính mời';
+        currentIdentifiedGuestName = currentIdentifiedGuestName || decodedName;
+        currentIdentifiedGuestId = currentIdentifiedGuestId || guestIdFromUrl || '';
         updateGuestName(decodedName, decodedSalut);
       } else {
         updateGuestName('Quý Khách & Gia Đình', salutFromUrl ? salutFromUrl.trim() : 'Kính mời');
@@ -5144,13 +5147,6 @@
         if (linkOpenBtn) linkOpenBtn.href = liveUrl;
       }
 
-      // Auto-save to local and Cloud DB in background
-      if (rawName && rawName !== 'Quý Khách & Gia Đình') {
-        clearTimeout(adminPreviewDebounceTimer);
-        adminPreviewDebounceTimer = setTimeout(() => {
-          autoSaveGuestData(rawName, salut, targetSide);
-        }, 400);
-      }
     }
 
     function copyAdminPreviewLink() {
@@ -5163,7 +5159,7 @@
       const url = buildCleanShareUrl(salut, name, '', targetSide);
       copyText(url, `Đã sao chép link gọn (${sideName}) cho "${name}"!`);
 
-      // Lưu vào danh sách và đồng bộ máy chủ chạy ngầm (không làm chậm hay lỗi clipboard)
+      // Lưu vào danh sách và đồng bộ máy chủ chạy ngầm
       saveCurrentGuestToList(false);
     }
 
@@ -5177,19 +5173,26 @@
       const url = buildCleanShareUrl(salut, name, '', targetSide);
       copyText(url, `Đã tạo & chép link online (${sideName}) cho "${name}"!`);
 
-      // Lưu vào danh sách và đồng bộ máy chủ chạy ngầm (không làm chậm hay lỗi clipboard)
+      // Lưu vào danh sách và đồng bộ máy chủ chạy ngầm
       saveCurrentGuestToList(false);
     }
 
     async function saveCurrentGuestToList(showToastMsg = true) {
+      if (adminPreviewDebounceTimer) clearTimeout(adminPreviewDebounceTimer);
       const salut = getActiveAdminSalutation();
-      const name = (document.getElementById('adminGuestNameInput')?.value || '').trim() || 'Quý Khách & Gia Đình';
-      const guestId = 'guest_' + Date.now();
+      const rawName = (document.getElementById('adminGuestNameInput')?.value || '').trim();
+      if (!rawName || rawName === 'Quý Khách & Gia Đình') return null;
+      const name = rawName;
       const targetSide = getActiveTab1CreateSide();
-
-      const guests = await OnlineDB.getGuests();
       const inputSlug = makeGuestSlug(name).toLowerCase();
-      let matched = guests.find(g => (g.name && g.name.toLowerCase() === name.toLowerCase()) || makeGuestSlug(g.name || '').toLowerCase() === inputSlug);
+
+      // Kiểm tra cả local và cloud để tìm khách đã có, tránh tạo 2 dòng/link trùng lặp
+      let localList = [];
+      try { localList = JSON.parse(localStorage.getItem('weddingGuestList') || '[]'); } catch (e) {}
+      const cloudList = (await OnlineDB.getGuests()) || [];
+
+      let matched = localList.find(g => (g.name && g.name.trim().toLowerCase() === name.toLowerCase()) || (g.name && makeGuestSlug(g.name).toLowerCase() === inputSlug))
+        || cloudList.find(g => (g.name && g.name.trim().toLowerCase() === name.toLowerCase()) || (g.name && makeGuestSlug(g.name).toLowerCase() === inputSlug));
 
       if (matched) {
         matched.name = name;
@@ -5198,7 +5201,7 @@
         await OnlineDB.saveGuest(matched);
       } else {
         matched = {
-          id: guestId,
+          id: 'guest_' + Date.now(),
           name: name,
           salut: salut,
           side: targetSide,
@@ -5213,7 +5216,7 @@
         await OnlineDB.saveGuest(matched);
       }
 
-      renderGuestTable();
+      await renderGuestTable();
       const sideName = targetSide === 'nhagai' ? 'Nhà Gái' : 'Nhà Trai';
       if (showToastMsg) {
         showToast(`Đã lưu "${name}" (${sideName}) vào danh sách thiệp!`);
@@ -5341,11 +5344,13 @@
             </span>`;
         }
 
-        let rsvpBadge = `<span class="text-[10px] text-amber-200/40 italic">Chưa báo</span>`;
+        let rsvpBadge = `<span class="text-[10px] text-amber-200/40 italic">Chưa rõ</span>`;
         if (g.rsvp === 'yes') {
-          rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-green-300 bg-green-500/20 px-2 py-0.5 rounded border border-green-500/30 font-semibold"><i class="fa-solid fa-circle-check"></i> Có đi (${g.rsvpCount || 1} người)</span>`;
+          rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30 font-semibold" title="Khách đã bấm Lưu Lịch hôn lễ (Sẽ đi)${g.rsvpTime ? ' - ' + g.rsvpTime : ''}"><i class="fa-solid fa-calendar-check text-emerald-400"></i> Lưu lịch (Sẽ đi)</span>`;
+        } else if (g.rsvp === 'gift') {
+          rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30 font-semibold" title="Khách đã bấm Mừng Cưới (Thường gửi từ xa)${g.rsvpTime ? ' - ' + g.rsvpTime : ''}"><i class="fa-solid fa-gift text-amber-400"></i> Mừng cưới (Ko đi)</span>`;
         } else if (g.rsvp === 'no') {
-          rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-red-300 bg-red-500/20 px-2 py-0.5 rounded border border-red-500/30"><i class="fa-solid fa-circle-xmark"></i> Vắng</span>`;
+          rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30"><i class="fa-solid fa-circle-xmark text-rose-400"></i> Vắng</span>`;
         }
 
         return `
@@ -5543,11 +5548,13 @@
       }
 
       if (current && current.rsvp === 'yes') {
-        rsvpEl.innerHTML = `<span class="text-green-300 font-bold"><i class="fa-solid fa-circle-check"></i> Có đi (${current.rsvpCount || 1} người)</span>`;
+        rsvpEl.innerHTML = `<span class="text-emerald-300 font-bold"><i class="fa-solid fa-calendar-check text-emerald-400"></i> Đã bấm Lưu Lịch (Sẽ đi)</span>`;
+      } else if (current && current.rsvp === 'gift') {
+        rsvpEl.innerHTML = `<span class="text-amber-300 font-bold"><i class="fa-solid fa-gift text-amber-400"></i> Đã bấm Mừng Cưới (Thường gửi mừng từ xa)</span>`;
       } else if (current && current.rsvp === 'no') {
-        rsvpEl.innerHTML = `<span class="text-red-300 font-bold"><i class="fa-solid fa-circle-xmark"></i> Cáo lỗi vắng mặt</span>`;
+        rsvpEl.innerHTML = `<span class="text-rose-300 font-bold"><i class="fa-solid fa-circle-xmark text-rose-400"></i> Cáo lỗi vắng mặt</span>`;
       } else {
-        rsvpEl.innerHTML = `<span class="text-amber-200/50 italic">Chưa báo</span>`;
+        rsvpEl.innerHTML = `<span class="text-amber-200/50 italic">Chưa rõ</span>`;
       }
 
       const presetSaluts = ['Kính mời', 'Thân mời', 'Thương mời'];
@@ -6207,7 +6214,80 @@
       if (modal) modal.classList.add('hidden');
     }
 
+    async function recordPsychologicalRSVP(action) {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestId = currentIdentifiedGuestId || urlParams.get('id') || '';
+        let targetName = currentIdentifiedGuestName || (document.getElementById('cardGuestName')?.textContent || '').trim();
+        if (targetName === 'Quý Khách & Gia Đình' && typeof guestFromUrl !== 'undefined' && guestFromUrl) {
+          targetName = guestFromUrl.trim();
+        }
+
+        // Nếu là khách ẩn danh hoặc chưa có tên cụ thể thì bỏ qua
+        if (!guestId && (!targetName || targetName === 'Quý Khách & Gia Đình')) {
+          return;
+        }
+
+        const now = new Date();
+        const nowStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+        const targetSlug = makeGuestSlug(targetName || '').toLowerCase();
+
+        const guests = await OnlineDB.getGuests();
+        let matched = guests.find(g =>
+          (guestId && g.id === guestId) ||
+          (targetName && g.name && g.name.trim().toLowerCase() === targetName.toLowerCase()) ||
+          (targetSlug && g.name && makeGuestSlug(g.name).toLowerCase() === targetSlug)
+        );
+
+        if (matched) {
+          if (action === 'calendar') {
+            // Khách bấm Lưu Lịch -> Ngầm định là Sẽ Đi
+            matched.rsvp = 'yes';
+            matched.rsvpAction = 'calendar';
+            matched.rsvpTime = nowStr;
+            matched.rsvpCount = matched.rsvpCount || 1;
+          } else if (action === 'gift') {
+            // Khách bấm Mừng Cưới -> Tâm lý thường là không đến dự được và gửi mừng từ xa
+            // Nếu chưa từng bấm Lưu Lịch thì ghi nhận là Mừng Cưới (Ko đi)
+            if (matched.rsvp !== 'yes') {
+              matched.rsvp = 'gift';
+              matched.rsvpAction = 'gift';
+              matched.rsvpTime = nowStr;
+            }
+            matched.giftClicked = true;
+            matched.giftClickedAt = nowStr;
+          }
+          matched.isRead = true;
+          await OnlineDB.saveGuest(matched);
+        } else if (targetName && targetName !== 'Quý Khách & Gia Đình') {
+          const newGuest = {
+            id: guestId || ('guest_' + Date.now()),
+            name: targetName,
+            salut: (typeof salutFromUrl !== 'undefined' && salutFromUrl) ? salutFromUrl : 'Kính mời',
+            side: currentWeddingVersion || 'nhatrai',
+            date: now.toLocaleDateString('vi-VN'),
+            isRead: true,
+            readCount: 1,
+            firstReadAt: nowStr,
+            lastReadAt: nowStr,
+            rsvp: action === 'calendar' ? 'yes' : 'gift',
+            rsvpAction: action,
+            rsvpTime: nowStr,
+            rsvpCount: 1
+          };
+          if (action === 'gift') {
+            newGuest.giftClicked = true;
+            newGuest.giftClickedAt = nowStr;
+          }
+          await OnlineDB.saveGuest(newGuest);
+        }
+      } catch (e) {
+        console.warn('Psychological RSVP tracking error:', e);
+      }
+    }
+
     function addToCalendar() {
+      recordPsychologicalRSVP('calendar');
       // Tự động nhận diện thiết bị và nhảy thẳng tới Lịch tương ứng
       if (isIOSDevice()) {
         saveToAppleCalendar();
@@ -6262,6 +6342,7 @@
     }
 
     function saveToAppleCalendar() {
+      recordPsychologicalRSVP('calendar');
       const isNhagai = currentWeddingVersion === 'nhagai';
       const fileName = isNhagai ? 'wedding-nhagai.ics' : 'wedding-nhatrai.ics';
       const icsData = getIcsDataString();
@@ -6287,6 +6368,7 @@
     }
 
     function saveToGoogleCalendar() {
+      recordPsychologicalRSVP('calendar');
       const isNhagai = currentWeddingVersion === 'nhagai';
       const title = encodeURIComponent(isNhagai
         ? 'Tiệc Cưới (Lễ Vu Quy): Diệu Hồng & Hoài Phước'
@@ -6309,6 +6391,7 @@
     }
 
     function downloadIcsFile() {
+      recordPsychologicalRSVP('calendar');
       saveToAppleCalendar();
     }
 
@@ -6319,6 +6402,7 @@
     function closeMapModal() { document.getElementById('mapModal').classList.add('hidden'); }
 
     function openGiftModal() {
+      recordPsychologicalRSVP('gift');
       renderGiftModal();
       document.getElementById('giftModal').classList.remove('hidden');
     }
