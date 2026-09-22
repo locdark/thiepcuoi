@@ -1012,6 +1012,90 @@
       </div>
     </section>
 
+    <!-- RSVP Section (Xác nhận tham dự - Tế nhị phía cuối, 1 chạm không cần điền form) -->
+    <section id="rsvpSection"
+      class="mt-10 max-w-xl mx-auto bg-black/40 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-wedding-gold/30 text-center text-amber-100 shadow-xl relative overflow-hidden transition-all duration-300">
+      
+      <!-- Decorative corner ornaments -->
+      <div class="absolute -top-6 -right-6 w-16 h-16 bg-wedding-red/20 rounded-full blur-xl pointer-events-none"></div>
+      <div class="absolute -bottom-6 -left-6 w-16 h-16 bg-wedding-gold/10 rounded-full blur-xl pointer-events-none"></div>
+
+      <div class="text-center mb-4">
+        <div class="w-11 h-11 rounded-full bg-wedding-red/60 text-amber-300 flex items-center justify-center mx-auto mb-2 text-lg border border-wedding-gold/30 shadow-md">
+          <i class="fa-solid fa-envelope-open-text"></i>
+        </div>
+        <span class="text-xs uppercase tracking-[0.25em] text-wedding-gold font-cinzel">Xác Nhận Tham Dự</span>
+        <h3 class="font-serif text-xl sm:text-2xl font-bold text-amber-200 mt-1">Sự Hiện Diện Của Bạn Là Niềm Vui Trọn Vẹn</h3>
+        <p class="text-xs text-amber-200/80 mt-1.5 max-w-md mx-auto leading-relaxed">
+          Để gia đình chuẩn bị đón tiếp chu đáo và sắp xếp bàn tiệc trọn vẹn nhất, xin vui lòng cho chúng mình biết sự hiện diện của <span id="rsvpGuestNameHighlight" class="text-amber-300 font-semibold">Quý Khách</span> nhé! ❤
+        </p>
+      </div>
+
+      <!-- Khối thao tác chính (Mặc định khi chưa xác nhận) -->
+      <div id="rsvpActionBox" class="mt-4 space-y-3">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button id="btnConfirmRSVPYes" onclick="submitQuickRSVP('yes')"
+            class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-wedding-red via-wedding-crimson to-wedding-darkred hover:brightness-110 text-amber-100 font-semibold text-sm shadow-lg border border-amber-300/40 active:scale-95 transition-all flex items-center justify-center gap-2 group cursor-pointer">
+            <i class="fa-solid fa-heart-circle-check text-amber-300 group-hover:scale-110 transition-transform"></i>
+            <span>Xác Nhận Tham Dự</span>
+          </button>
+          
+          <button id="btnConfirmRSVPNo" onclick="submitQuickRSVP('no')"
+            class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-amber-200/70 hover:text-amber-200 font-medium text-xs border border-white/10 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-regular fa-face-smile text-amber-300/60"></i>
+            <span>Rất tiếc mình bận rồi</span>
+          </button>
+        </div>
+        <p class="text-[11px] text-amber-200/60 flex items-center justify-center gap-1.5 pt-1">
+          <i class="fa-solid fa-circle-check text-[10px] text-emerald-400"></i>
+          <span>Chỉ cần bấm 1 chạm, không cần điền thêm thông tin</span>
+        </p>
+      </div>
+
+      <!-- Khối nhập tên bổ sung (chỉ hiện khi link chưa có tên khách) -->
+      <div id="rsvpNameInputBox" class="hidden mt-4 max-w-sm mx-auto p-3.5 bg-black/40 border border-wedding-gold/30 rounded-xl space-y-2.5 text-left">
+        <p class="text-xs text-amber-200">Cho gia đình xin tên của bạn để ghi nhận đặt bàn nhé:</p>
+        <div class="flex gap-2">
+          <input type="text" id="quickRSVPNameInput" placeholder="Tên của bạn (VD: Anh Nam, Chị Lan)..."
+            class="flex-1 bg-white/10 border border-wedding-gold/40 rounded-lg px-3 py-1.5 text-xs text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300"
+            onkeydown="if(event.key==='Enter') submitQuickRSVPWithName()">
+          <button type="button" onclick="submitQuickRSVPWithName()"
+            class="px-3.5 py-1.5 bg-gradient-to-r from-wedding-red to-wedding-crimson hover:brightness-110 text-amber-100 rounded-lg text-xs font-semibold border border-amber-300/30 whitespace-nowrap active:scale-95 cursor-pointer">
+            Đồng Ý
+          </button>
+        </div>
+      </div>
+
+      <!-- Khối đã xác nhận tham dự thành công -->
+      <div id="rsvpConfirmedBox" class="hidden mt-4 bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-4 text-center space-y-2">
+        <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-300 mx-auto flex items-center justify-center text-lg border border-emerald-500/40 shadow-sm">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h4 class="font-serif text-lg font-bold text-emerald-200">Đã Xác Nhận Tham Dự!</h4>
+        <p id="rsvpConfirmedMessage" class="text-xs text-emerald-100/90 leading-relaxed max-w-md mx-auto">
+          Gia đình chân thành cảm ơn bạn. Rất mong chờ được đón tiếp bạn trong ngày vui trọng đại!
+        </p>
+        <div class="pt-1">
+          <button type="button" onclick="changeRSVPOption()" class="text-[11px] text-amber-200/60 hover:text-amber-200 underline transition-all cursor-pointer">
+            (Bấm vào đây nếu bạn muốn thay đổi lựa chọn)
+          </button>
+        </div>
+      </div>
+
+      <!-- Khối đã báo vắng mặt -->
+      <div id="rsvpDeclinedBox" class="hidden mt-4 bg-white/5 border border-white/15 rounded-xl p-4 text-center space-y-2">
+        <p id="rsvpDeclinedMessage" class="text-xs text-amber-200/80 leading-relaxed max-w-md mx-auto">
+          Đã ghi nhận lời cáo lỗi của bạn. Cảm ơn bạn rất nhiều vì đã luôn dõi theo và chúc phúc cho hai vợ chồng!
+        </p>
+        <div class="pt-1">
+          <button type="button" onclick="submitQuickRSVP('yes')" class="text-[11px] text-amber-300 hover:text-amber-200 underline transition-all cursor-pointer">
+            (Nếu sau đó thu xếp được, bấm vào đây để xác nhận tham dự nhé)
+          </button>
+        </div>
+      </div>
+
+    </section>
+
     <section
       class="mt-10 max-w-xl mx-auto bg-black/40 backdrop-blur-md rounded-2xl p-5 sm:p-6 border border-wedding-gold/30 text-amber-100 shadow-xl">
       <div class="text-center mb-5">
@@ -1119,73 +1203,6 @@
 
   </main>
 
-  <div id="rsvpModal"
-    class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div
-      class="bg-[#240508] border border-wedding-gold/40 rounded-2xl w-full max-w-md p-6 text-amber-100 shadow-2xl relative">
-      <button onclick="closeRSVPModal()" class="absolute top-4 right-4 text-amber-300 hover:text-white text-lg">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <div class="text-center mb-5">
-        <div
-          class="w-12 h-12 rounded-full bg-wedding-red/60 text-amber-300 flex items-center justify-center mx-auto mb-2 text-xl border border-wedding-gold/30">
-          <i class="fa-solid fa-calendar-check"></i>
-        </div>
-        <h3 class="font-serif text-xl font-bold text-amber-200">Xác Nhận Tham Dự</h3>
-        <p class="text-xs text-amber-200/70 mt-0.5">Giúp gia đình chuẩn bị đón tiếp chu đáo nhất</p>
-      </div>
-
-      <form onsubmit="handleRSVPSubmit(event)" class="space-y-3.5 text-xs sm:text-sm">
-        <div>
-          <label class="block mb-1 text-amber-200/90 font-medium">Họ và tên của bạn:</label>
-          <input type="text" id="rsvpName" required
-            class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3.5 py-2 text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300"
-            placeholder="Nguyễn Văn A...">
-        </div>
-
-        <div>
-          <label class="block mb-1 text-amber-200/90 font-medium">Số điện thoại liên hệ:</label>
-          <input type="tel" id="rsvpPhone" required
-            class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg px-3.5 py-2 text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300"
-            placeholder="09xxxxxxxx">
-        </div>
-
-        <div>
-          <label class="block mb-1 text-amber-200/90 font-medium">Bạn sẽ tham dự chứ?</label>
-          <div class="grid grid-cols-2 gap-2">
-            <label
-              class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-wedding-gold/30 cursor-pointer hover:bg-white/10">
-              <input type="radio" name="rsvpAttendance" value="yes" checked class="accent-wedding-red">
-              <span class="text-amber-100 font-medium">Chắc chắn đi</span>
-            </label>
-            <label
-              class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-wedding-gold/30 cursor-pointer hover:bg-white/10">
-              <input type="radio" name="rsvpAttendance" value="no" class="accent-wedding-red">
-              <span class="text-amber-100/70">Rất tiếc bận rồi</span>
-            </label>
-          </div>
-        </div>
-
-        <div>
-          <label class="block mb-1 text-amber-200/90 font-medium">Số người cùng tham dự:</label>
-          <select id="rsvpGuestCount"
-            class="w-full bg-[#35090E] border border-wedding-gold/30 rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-amber-300">
-            <option value="1">1 người (Đi một mình)</option>
-            <option value="2" selected>2 người (Cùng người thương)</option>
-            <option value="3">3 người</option>
-            <option value="4">Cả gia đình (4+ người)</option>
-          </select>
-        </div>
-
-        <button type="submit"
-          class="w-full mt-2 bg-gradient-to-r from-wedding-red to-wedding-crimson hover:brightness-110 text-amber-100 font-semibold py-2.5 rounded-lg transition-all active:scale-95 border border-wedding-gold/40">
-          Gửi Xác Nhận
-        </button>
-      </form>
-    </div>
-  </div>
-
   <div id="mapModal"
     class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div
@@ -1249,6 +1266,22 @@
         </div>
         <h3 class="font-serif text-xl font-bold text-amber-200">Hộp Mừng Cưới</h3>
         <p class="text-xs text-amber-200/70 mt-0.5">Dành cho quý khách ở xa muốn gửi lời chúc mừng</p>
+      </div>
+
+      <!-- Tabs Lọc Chú Rể / Cô Dâu trong Hộp Mừng Cưới -->
+      <div class="flex items-center justify-center gap-1.5 p-1 bg-white/5 border border-wedding-gold/20 rounded-xl mb-4 text-xs" id="giftModalTabs">
+        <button type="button" onclick="filterGiftModalView('all')" id="giftTabAll"
+          class="flex-1 py-1.5 px-2 rounded-lg font-medium transition-all text-amber-200 bg-wedding-red border border-wedding-gold/40 shadow cursor-pointer">
+          Tất Cả (2)
+        </button>
+        <button type="button" onclick="filterGiftModalView('groom')" id="giftTabGroom"
+          class="flex-1 py-1.5 px-2 rounded-lg font-medium transition-all text-amber-200/70 hover:text-amber-200 cursor-pointer">
+          Chú Rể (Nhà Trai)
+        </button>
+        <button type="button" onclick="filterGiftModalView('bride')" id="giftTabBride"
+          class="flex-1 py-1.5 px-2 rounded-lg font-medium transition-all text-amber-200/70 hover:text-amber-200 cursor-pointer">
+          Cô Dâu (Nhà Gái)
+        </button>
       </div>
 
       <!-- Dynamic Bank Details & VietQR Code Container -->
@@ -1780,31 +1813,45 @@
               <div class="bg-black/35 border border-wedding-gold/25 rounded-xl p-3 space-y-2.5">
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
                   <!-- Ô tìm kiếm tên -->
-                  <div class="sm:col-span-5 relative">
+                  <div class="sm:col-span-4 relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-amber-200/50 text-xs"></i>
                     <input type="text" id="guestSearchInput" oninput="applyGuestFilters()" placeholder="Tìm kiếm theo tên khách mời..."
                       class="w-full bg-white/10 border border-wedding-gold/30 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300">
                   </div>
 
                   <!-- Lọc theo Bên (Nhà Trai / Nhà Gái) -->
-                  <div class="sm:col-span-3">
+                  <div class="sm:col-span-2">
                     <select id="guestSideFilter" onchange="applyGuestFilters()"
                       class="w-full bg-[#240508] border border-wedding-gold/30 rounded-lg px-2.5 py-1.5 text-xs text-amber-100 focus:outline-none focus:border-amber-300">
-                      <option value="all">Tất cả bên (Trai & Gái)</option>
-                      <option value="nhatrai">🤵 Khách Nhà Trai</option>
-                      <option value="nhagai">👰 Khách Nhà Gái</option>
+                      <option value="all">Tất cả bên</option>
+                      <option value="nhatrai">🤵 Nhà Trai</option>
+                      <option value="nhagai">👰 Nhà Gái</option>
+                    </select>
+                  </div>
+
+                  <!-- Lọc theo Báo Hỷ / RSVP (Đặt bàn) -->
+                  <div class="sm:col-span-3">
+                    <select id="guestRsvpFilter" onchange="applyGuestFilters()"
+                      class="w-full bg-[#240508] border border-wedding-gold/30 rounded-lg px-2.5 py-1.5 text-xs text-amber-100 focus:outline-none focus:border-amber-300 font-medium">
+                      <option value="all">Tất cả báo hỷ</option>
+                      <option value="yes">✨ Sẽ tham dự (Đặt bàn)</option>
+                      <option value="confirm">✓ Xác nhận trực tiếp</option>
+                      <option value="calendar">📅 Đã lưu lịch</option>
+                      <option value="gift">🎁 Mừng cưới (Ko đi)</option>
+                      <option value="no">❌ Báo vắng mặt</option>
+                      <option value="pending">⏳ Chưa phản hồi</option>
                     </select>
                   </div>
 
                   <!-- Lọc theo Khoảng thời gian (Preset) -->
-                  <div class="sm:col-span-4">
+                  <div class="sm:col-span-3">
                     <select id="guestTimePreset" onchange="handleTimePresetChange()"
                       class="w-full bg-[#240508] border border-wedding-gold/30 rounded-lg px-2.5 py-1.5 text-xs text-amber-100 focus:outline-none focus:border-amber-300">
                       <option value="all">Toàn bộ thời gian</option>
                       <option value="today">Hôm nay</option>
                       <option value="3days">3 ngày gần đây</option>
                       <option value="7days">7 ngày gần đây</option>
-                      <option value="custom">Tùy chọn khoảng ngày...</option>
+                      <option value="custom">Tùy chọn ngày...</option>
                     </select>
                   </div>
                 </div>
@@ -3386,6 +3433,7 @@
       updateShareUrl();
       renderWishesListOnCard();
       updateWishSideIndicator(currentWeddingVersion);
+      checkAndRenderRSVPStatus(currentIdentifiedGuestName);
     });
 
     function updateWishSideIndicator(side = currentWeddingVersion) {
@@ -4373,6 +4421,38 @@
       return `https://img.vietqr.io/image/${bank}-${accountNo}-compact2.png?addInfo=${addInfo}&accountName=${name}`;
     }
 
+    let currentGiftModalFilter = 'all';
+
+    function filterGiftModalView(filter) {
+      currentGiftModalFilter = filter;
+      renderGiftModal();
+
+      const tabAll = document.getElementById('giftTabAll');
+      const tabGroom = document.getElementById('giftTabGroom');
+      const tabBride = document.getElementById('giftTabBride');
+
+      if (tabAll && tabGroom && tabBride) {
+        const activeClasses = ['text-amber-200', 'bg-wedding-red', 'border', 'border-wedding-gold/40', 'shadow'];
+        const inactiveClasses = ['text-amber-200/70', 'hover:text-amber-200'];
+
+        [tabAll, tabGroom, tabBride].forEach(t => {
+          t.classList.remove(...activeClasses);
+          t.classList.add(...inactiveClasses);
+        });
+
+        if (filter === 'groom') {
+          tabGroom.classList.add(...activeClasses);
+          tabGroom.classList.remove(...inactiveClasses);
+        } else if (filter === 'bride') {
+          tabBride.classList.add(...activeClasses);
+          tabBride.classList.remove(...inactiveClasses);
+        } else {
+          tabAll.classList.add(...activeClasses);
+          tabAll.classList.remove(...inactiveClasses);
+        }
+      }
+    }
+
     function renderGiftModal() {
       const container = document.getElementById('giftAccountsContainer');
       if (!container) return;
@@ -4385,22 +4465,27 @@
 
       const groomCardHtml = `
         <!-- Groom Bank Card -->
-        <div class="bg-white/5 border border-wedding-gold/30 rounded-xl p-3.5 sm:p-4 flex items-center gap-3 sm:gap-4">
+        <div class="bg-white/5 border border-wedding-gold/30 rounded-xl p-3.5 sm:p-4 flex items-center gap-3 sm:gap-4 relative overflow-hidden transition-all hover:bg-white/10">
           <div class="w-24 h-24 bg-white p-1 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md overflow-hidden cursor-pointer" onclick="window.open('${groomQr}', '_blank')" title="Bấm để phóng to mã QR">
             <img src="${groomQr}" alt="QR Chú Rể" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='${getVietQRUrl('TPB', bankConfig.groom.stk, bankConfig.groom.holder, defaultMemo)}';">
           </div>
           <div class="text-xs space-y-1 flex-1 min-w-0">
-            <p class="font-bold text-amber-300 uppercase tracking-wide truncate">CHÚ RỂ: ${escapeHTML(bankConfig.groom.holder)}</p>
+            <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
+              <span class="text-[10px] uppercase font-bold text-sky-300 bg-sky-500/20 px-2 py-0.5 rounded border border-sky-500/30 inline-flex items-center gap-1">
+                <i class="fa-solid fa-mars"></i> Chú Rể • Nhà Trai
+              </span>
+            </div>
+            <p class="font-bold text-amber-300 uppercase tracking-wide truncate">${escapeHTML(bankConfig.groom.holder)}</p>
             <p class="text-amber-100/90 truncate">Ngân hàng: <strong>${escapeHTML(bankConfig.groom.bank)}</strong></p>
             <p class="text-amber-100/90 font-mono flex items-center justify-between">
               <span class="truncate">STK: <strong class="text-amber-200">${escapeHTML(bankConfig.groom.stk)}</strong></span>
-              <button onclick="copyText('${escapeHTML(bankConfig.groom.stk)}', 'Đã sao chép STK Chú Rể!')" class="bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 px-2 py-0.5 rounded text-[11px] ml-1 transition-all flex-shrink-0">
+              <button onclick="copyText('${escapeHTML(bankConfig.groom.stk)}', 'Đã sao chép STK Chú Rể!')" class="bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 px-2 py-0.5 rounded text-[11px] ml-1 transition-all flex-shrink-0 cursor-pointer">
                 <i class="fa-regular fa-copy"></i> Chép
               </button>
             </p>
             <div class="text-[11px] text-amber-200/80 font-mono flex items-center justify-between pt-1 border-t border-white/10">
               <span class="truncate">Nội dung: <strong class="text-amber-300">${escapeHTML(defaultMemo)}</strong></span>
-              <button onclick="copyText('${escapeHTML(defaultMemo)}', 'Đã sao chép nội dung chuyển khoản!')" class="bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 px-1.5 py-0.5 rounded text-[10px] ml-1 transition-all flex-shrink-0" title="Sao chép nội dung">
+              <button onclick="copyText('${escapeHTML(defaultMemo)}', 'Đã sao chép nội dung chuyển khoản!')" class="bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 px-1.5 py-0.5 rounded text-[10px] ml-1 transition-all flex-shrink-0 cursor-pointer" title="Sao chép nội dung">
                 <i class="fa-regular fa-copy"></i>
               </button>
             </div>
@@ -4410,22 +4495,27 @@
 
       const brideCardHtml = `
         <!-- Bride Bank Card -->
-        <div class="bg-white/5 border border-wedding-gold/30 rounded-xl p-3.5 sm:p-4 flex items-center gap-3 sm:gap-4">
+        <div class="bg-white/5 border border-wedding-gold/30 rounded-xl p-3.5 sm:p-4 flex items-center gap-3 sm:gap-4 relative overflow-hidden transition-all hover:bg-white/10">
           <div class="w-24 h-24 bg-white p-1 rounded-xl flex-shrink-0 flex items-center justify-center shadow-md overflow-hidden cursor-pointer" onclick="window.open('${brideQr}', '_blank')" title="Bấm để phóng to mã QR">
             <img src="${brideQr}" alt="QR Cô Dâu" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='${getVietQRUrl('VIB', bankConfig.bride.stk, bankConfig.bride.holder, defaultMemo)}';">
           </div>
           <div class="text-xs space-y-1 flex-1 min-w-0">
-            <p class="font-bold text-amber-300 uppercase tracking-wide truncate">CÔ DÂU: ${escapeHTML(bankConfig.bride.holder)}</p>
+            <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
+              <span class="text-[10px] uppercase font-bold text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30 inline-flex items-center gap-1">
+                <i class="fa-solid fa-venus"></i> Cô Dâu • Nhà Gái
+              </span>
+            </div>
+            <p class="font-bold text-amber-300 uppercase tracking-wide truncate">${escapeHTML(bankConfig.bride.holder)}</p>
             <p class="text-amber-100/90 truncate">Ngân hàng: <strong>${escapeHTML(bankConfig.bride.bank)}</strong></p>
             <p class="text-amber-100/90 font-mono flex items-center justify-between">
               <span class="truncate">STK: <strong class="text-amber-200">${escapeHTML(bankConfig.bride.stk)}</strong></span>
-              <button onclick="copyText('${escapeHTML(bankConfig.bride.stk)}', 'Đã sao chép STK Cô Dâu!')" class="bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 px-2 py-0.5 rounded text-[11px] ml-1 transition-all flex-shrink-0">
+              <button onclick="copyText('${escapeHTML(bankConfig.bride.stk)}', 'Đã sao chép STK Cô Dâu!')" class="bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 px-2 py-0.5 rounded text-[11px] ml-1 transition-all flex-shrink-0 cursor-pointer">
                 <i class="fa-regular fa-copy"></i> Chép
               </button>
             </p>
             <div class="text-[11px] text-amber-200/80 font-mono flex items-center justify-between pt-1 border-t border-white/10">
               <span class="truncate">Nội dung: <strong class="text-amber-300">${escapeHTML(defaultMemo)}</strong></span>
-              <button onclick="copyText('${escapeHTML(defaultMemo)}', 'Đã sao chép nội dung chuyển khoản!')" class="bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 px-1.5 py-0.5 rounded text-[10px] ml-1 transition-all flex-shrink-0" title="Sao chép nội dung">
+              <button onclick="copyText('${escapeHTML(defaultMemo)}', 'Đã sao chép nội dung chuyển khoản!')" class="bg-amber-300/20 hover:bg-amber-300/30 text-amber-300 px-1.5 py-0.5 rounded text-[10px] ml-1 transition-all flex-shrink-0 cursor-pointer" title="Sao chép nội dung">
                 <i class="fa-regular fa-copy"></i>
               </button>
             </div>
@@ -4433,11 +4523,14 @@
         </div>
       `;
 
-      if (isGuestMode) {
-        // In Guest Mode: strictly show only the bank account corresponding to the version the guest was invited to!
-        container.innerHTML = (currentWeddingVersion === 'nhagai') ? brideCardHtml : groomCardHtml;
+      if (currentGiftModalFilter === 'groom') {
+        container.innerHTML = groomCardHtml;
+      } else if (currentGiftModalFilter === 'bride') {
+        container.innerHTML = brideCardHtml;
       } else {
-        // In Admin / Preview Mode: show both cards, with active version first
+        // 'all': Luôn hiển thị cả 2 tài khoản, ưu tiên bên chủ tiệc trước:
+        // Nhà Trai: Chú Rể trước, Cô Dâu sau (để khách nhà gái ở xa đến nhà trai vẫn chuyển tiền mừng cô dâu được)
+        // Nhà Gái: Cô Dâu trước, Chú Rể sau
         container.innerHTML = isBrideFirst ? (brideCardHtml + groomCardHtml) : (groomCardHtml + brideCardHtml);
       }
     }
@@ -4744,6 +4837,7 @@
 
       updateShareUrl();
       renderGiftModal();
+      checkAndRenderRSVPStatus(finalName);
     }
 
     function updateShareUrl() {
@@ -5242,6 +5336,7 @@
     function resetGuestFilters() {
       const search = document.getElementById('guestSearchInput');
       const side = document.getElementById('guestSideFilter');
+      const rsvp = document.getElementById('guestRsvpFilter');
       const preset = document.getElementById('guestTimePreset');
       const customRow = document.getElementById('guestCustomDateRow');
       const dFrom = document.getElementById('guestDateFrom');
@@ -5249,6 +5344,7 @@
 
       if (search) search.value = '';
       if (side) side.value = 'all';
+      if (rsvp) rsvp.value = 'all';
       if (preset) preset.value = 'all';
       if (dFrom) dFrom.value = '';
       if (dTo) dTo.value = '';
@@ -5272,6 +5368,7 @@
       // Read filter values
       const searchQuery = normalizeSearchStr(document.getElementById('guestSearchInput')?.value || '');
       const sideFilter = document.getElementById('guestSideFilter')?.value || 'all';
+      const rsvpFilter = document.getElementById('guestRsvpFilter')?.value || 'all';
       const timePreset = document.getElementById('guestTimePreset')?.value || 'all';
       const dateFromVal = document.getElementById('guestDateFrom')?.value;
       const dateToVal = document.getElementById('guestDateTo')?.value;
@@ -5293,7 +5390,17 @@
           if (gSide !== sideFilter) return false;
         }
 
-        // 3. Time filter
+        // 3. RSVP / Báo Hỷ Filter
+        if (rsvpFilter !== 'all') {
+          if (rsvpFilter === 'yes' && g.rsvp !== 'yes') return false;
+          if (rsvpFilter === 'confirm' && (g.rsvp !== 'yes' || g.rsvpAction !== 'confirm')) return false;
+          if (rsvpFilter === 'calendar' && (g.rsvp !== 'yes' || g.rsvpAction !== 'calendar')) return false;
+          if (rsvpFilter === 'gift' && g.rsvp !== 'gift') return false;
+          if (rsvpFilter === 'no' && g.rsvp !== 'no') return false;
+          if (rsvpFilter === 'pending' && (g.rsvp === 'yes' || g.rsvp === 'gift' || g.rsvp === 'no')) return false;
+        }
+
+        // 4. Time filter
         if (timePreset !== 'all') {
           const gDate = parseGuestDate(g.date || g.createdAt);
           if (timePreset === 'today') {
@@ -5319,14 +5426,16 @@
         return true;
       });
 
-      // Update count & side breakdown
+      // Update count & side breakdown & RSVP stats
       const countEl = document.getElementById('guestFilterCount');
       const breakdownEl = document.getElementById('guestFilterSideBreakdown');
       if (countEl) countEl.textContent = filtered.length;
       if (breakdownEl) {
         const traiCount = filtered.filter(g => (g.side || 'nhatrai') === 'nhatrai').length;
         const gaiCount = filtered.filter(g => g.side === 'nhagai').length;
-        breakdownEl.textContent = `Nhà Trai: ${traiCount} | Nhà Gái: ${gaiCount}`;
+        const attendingCount = filtered.filter(g => g.rsvp === 'yes').length;
+        const confirmedDirectCount = filtered.filter(g => g.rsvp === 'yes' && g.rsvpAction === 'confirm').length;
+        breakdownEl.innerHTML = `Nhà Trai: <strong>${traiCount}</strong> | Nhà Gái: <strong>${gaiCount}</strong> | <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check text-[10px]"></i> Sẽ tham dự: <strong>${attendingCount}</strong></span>${confirmedDirectCount > 0 ? ` <span class="text-emerald-300/80 text-[10px]">(Xác nhận: ${confirmedDirectCount})</span>` : ''}`;
       }
 
       if (filtered.length === 0) {
@@ -5346,11 +5455,15 @@
 
         let rsvpBadge = `<span class="text-[10px] text-amber-200/40 italic">Chưa rõ</span>`;
         if (g.rsvp === 'yes') {
-          rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30 font-semibold" title="Khách đã bấm Lưu Lịch hôn lễ (Sẽ đi)${g.rsvpTime ? ' - ' + g.rsvpTime : ''}"><i class="fa-solid fa-calendar-check text-emerald-400"></i> Lưu lịch (Sẽ đi)</span>`;
+          if (g.rsvpAction === 'confirm') {
+            rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-500/25 px-2 py-0.5 rounded border border-emerald-500/40 font-bold" title="Khách đã bấm Xác Nhận Tham Dự trực tiếp${g.rsvpTime ? ' - ' + g.rsvpTime : ''}"><i class="fa-solid fa-circle-check text-emerald-400"></i> Xác nhận đi</span>`;
+          } else {
+            rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30 font-semibold" title="Khách đã bấm Lưu Lịch hôn lễ (Sẽ đi)${g.rsvpTime ? ' - ' + g.rsvpTime : ''}"><i class="fa-solid fa-calendar-check text-emerald-400"></i> Lưu lịch (Sẽ đi)</span>`;
+          }
         } else if (g.rsvp === 'gift') {
           rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30 font-semibold" title="Khách đã bấm Mừng Cưới (Thường gửi từ xa)${g.rsvpTime ? ' - ' + g.rsvpTime : ''}"><i class="fa-solid fa-gift text-amber-400"></i> Mừng cưới (Ko đi)</span>`;
         } else if (g.rsvp === 'no') {
-          rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30"><i class="fa-solid fa-circle-xmark text-rose-400"></i> Vắng</span>`;
+          rsvpBadge = `<span class="inline-flex items-center gap-1 text-[10px] text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30" title="Khách đã báo bận / vắng mặt${g.rsvpTime ? ' - ' + g.rsvpTime : ''}"><i class="fa-solid fa-circle-xmark text-rose-400"></i> Báo vắng</span>`;
         }
 
         return `
@@ -6125,44 +6238,193 @@
       showToast('💖 Cảm ơn bạn đã gửi lời chúc phúc trăm năm!');
     }
 
-    async function handleRSVPSubmit(e) {
-      e.preventDefault();
-      const name = document.getElementById('rsvpName').value.trim();
-      const attending = document.querySelector('input[name="rsvpAttendance"]:checked').value === 'yes';
-      const count = parseInt(document.getElementById('rsvpGuestCount').value) || 1;
+    async function submitQuickRSVP(choice) {
+      if (choice === 'change') {
+        changeRSVPOption();
+        return;
+      }
 
+      let targetName = currentIdentifiedGuestName || (document.getElementById('cardGuestName')?.textContent || '').trim();
+      if (targetName === 'Quý Khách & Gia Đình' && typeof guestFromUrl !== 'undefined' && guestFromUrl) {
+        targetName = guestFromUrl.trim();
+      }
+
+      // Nếu chưa có tên cụ thể (link gốc chung)
+      if (!targetName || targetName === 'Quý Khách & Gia Đình') {
+        if (choice === 'yes') {
+          const nameBox = document.getElementById('rsvpNameInputBox');
+          if (nameBox) {
+            nameBox.classList.remove('hidden');
+            document.getElementById('quickRSVPNameInput')?.focus();
+          }
+          return;
+        } else {
+          targetName = 'Bạn';
+        }
+      }
+
+      await executeQuickRSVPSave(targetName, choice);
+    }
+
+    async function submitQuickRSVPWithName() {
+      const input = document.getElementById('quickRSVPNameInput');
+      const val = (input?.value || '').trim();
+      if (!val) {
+        showToast('Vui lòng nhập tên của bạn nhé!');
+        return;
+      }
+      currentIdentifiedGuestName = val;
+      const salut = (typeof salutFromUrl !== 'undefined' && salutFromUrl) ? salutFromUrl : 'Kính mời';
+      updateGuestName(val, salut);
+      document.getElementById('rsvpNameInputBox')?.classList.add('hidden');
+      await executeQuickRSVPSave(val, 'yes');
+    }
+
+    async function executeQuickRSVPSave(targetName, choice) {
+      const now = new Date();
+      const nowStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+      const targetSlug = makeGuestSlug(targetName || '').toLowerCase();
       const urlParams = new URLSearchParams(window.location.search);
-      const guestId = urlParams.get('id');
+      const guestId = currentIdentifiedGuestId || urlParams.get('id') || '';
 
-      const guests = await OnlineDB.getGuests();
-      let matched = guests.find(g => (guestId && g.id === guestId) || g.name.toLowerCase() === name.toLowerCase());
+      try {
+        const guests = await OnlineDB.getGuests();
+        let matched = guests.find(g =>
+          (guestId && g.id === guestId) ||
+          (targetName && g.name && g.name.trim().toLowerCase() === targetName.toLowerCase()) ||
+          (targetSlug && g.name && makeGuestSlug(g.name).toLowerCase() === targetSlug)
+        );
 
-      if (matched) {
-        matched.rsvp = attending ? 'yes' : 'no';
-        matched.rsvpCount = count;
-        await OnlineDB.saveGuest(matched);
-      } else {
-        const newG = {
-          id: guestId || 'guest_' + Date.now(),
-          name: name,
-          salut: 'Kính mời',
-          date: new Date().toLocaleDateString('vi-VN'),
-          isRead: true,
-          readCount: 1,
-          rsvp: attending ? 'yes' : 'no',
-          rsvpCount: count
-        };
-        await OnlineDB.saveGuest(newG);
+        if (matched) {
+          matched.rsvp = choice;
+          matched.rsvpAction = (choice === 'yes') ? 'confirm' : 'decline';
+          matched.rsvpTime = nowStr;
+          matched.rsvpCount = matched.rsvpCount || 1;
+          matched.isRead = true;
+          await OnlineDB.saveGuest(matched);
+        } else {
+          const newGuest = {
+            id: guestId || ('guest_' + Date.now()),
+            name: targetName,
+            salut: (typeof salutFromUrl !== 'undefined' && salutFromUrl) ? salutFromUrl : 'Kính mời',
+            side: currentWeddingVersion || 'nhatrai',
+            date: now.toLocaleDateString('vi-VN'),
+            isRead: true,
+            readCount: 1,
+            firstReadAt: nowStr,
+            lastReadAt: nowStr,
+            rsvp: choice,
+            rsvpAction: (choice === 'yes') ? 'confirm' : 'decline',
+            rsvpTime: nowStr,
+            rsvpCount: 1
+          };
+          await OnlineDB.saveGuest(newGuest);
+        }
+
+        // Lưu trạng thái vào localStorage theo slug khách để mở lại vẫn thấy đã xác nhận
+        localStorage.setItem('weddingRSVP_' + targetSlug, JSON.stringify({ rsvp: choice, time: nowStr, name: targetName }));
+      } catch (e) {
+        console.warn('Quick RSVP save error:', e);
       }
 
-      closeRSVPModal();
-      if (attending) {
+      // Cập nhật giao diện
+      applyRSVPViewStatus(choice, targetName);
+
+      if (choice === 'yes') {
         triggerConfetti();
-        showToast(`Cảm ơn ${name}! Gia đình rất mong chờ được đón tiếp bạn (${count} người)!`);
+        showToast(`Cảm ơn ${targetName}! Gia đình rất mong chờ được đón tiếp bạn!`);
       } else {
-        showToast(`Cảm ơn ${name} đã gửi lời hồi âm chu đáo đến gia đình!`);
+        showToast(`Đã ghi nhận phản hồi của ${targetName}. Cảm ơn bạn rất nhiều!`);
       }
-      renderGuestTable();
+
+      await renderGuestTable();
+    }
+
+    function changeRSVPOption() {
+      const actionBox = document.getElementById('rsvpActionBox');
+      const confirmedBox = document.getElementById('rsvpConfirmedBox');
+      const declinedBox = document.getElementById('rsvpDeclinedBox');
+      const nameBox = document.getElementById('rsvpNameInputBox');
+
+      if (actionBox) actionBox.classList.remove('hidden');
+      if (confirmedBox) confirmedBox.classList.add('hidden');
+      if (declinedBox) declinedBox.classList.add('hidden');
+      if (nameBox) nameBox.classList.add('hidden');
+    }
+
+    function applyRSVPViewStatus(choice, guestName) {
+      const actionBox = document.getElementById('rsvpActionBox');
+      const confirmedBox = document.getElementById('rsvpConfirmedBox');
+      const declinedBox = document.getElementById('rsvpDeclinedBox');
+      const nameBox = document.getElementById('rsvpNameInputBox');
+      const highlightEl = document.getElementById('rsvpGuestNameHighlight');
+      const confirmedMsg = document.getElementById('rsvpConfirmedMessage');
+      const declinedMsg = document.getElementById('rsvpDeclinedMessage');
+
+      const displayName = (guestName && guestName !== 'Quý Khách & Gia Đình') ? guestName : 'bạn';
+      if (highlightEl) highlightEl.textContent = displayName;
+
+      if (choice === 'yes') {
+        if (actionBox) actionBox.classList.add('hidden');
+        if (declinedBox) declinedBox.classList.add('hidden');
+        if (nameBox) nameBox.classList.add('hidden');
+        if (confirmedBox) confirmedBox.classList.remove('hidden');
+        if (confirmedMsg) {
+          confirmedMsg.innerHTML = `Gia đình chân thành cảm ơn <strong>${escapeHTML(displayName)}</strong>. Rất mong chờ được đón tiếp bạn trong ngày vui trọng đại!`;
+        }
+      } else if (choice === 'no') {
+        if (actionBox) actionBox.classList.add('hidden');
+        if (confirmedBox) confirmedBox.classList.add('hidden');
+        if (nameBox) nameBox.classList.add('hidden');
+        if (declinedBox) declinedBox.classList.remove('hidden');
+        if (declinedMsg) {
+          declinedMsg.innerHTML = `Đã ghi nhận lời cáo lỗi của <strong>${escapeHTML(displayName)}</strong>. Cảm ơn bạn rất nhiều vì đã luôn chúc phúc cho hai vợ chồng!`;
+        }
+      } else {
+        if (actionBox) actionBox.classList.remove('hidden');
+        if (confirmedBox) confirmedBox.classList.add('hidden');
+        if (declinedBox) declinedBox.classList.add('hidden');
+        if (nameBox) nameBox.classList.add('hidden');
+      }
+    }
+
+    async function checkAndRenderRSVPStatus(guestName) {
+      const name = guestName || currentIdentifiedGuestName || (document.getElementById('cardGuestName')?.textContent || '').trim();
+      const highlightEl = document.getElementById('rsvpGuestNameHighlight');
+      if (highlightEl && name && name !== 'Quý Khách & Gia Đình') {
+        highlightEl.textContent = name;
+      }
+
+      if (!name || name === 'Quý Khách & Gia Đình') {
+        applyRSVPViewStatus('pending', '');
+        return;
+      }
+
+      const slug = makeGuestSlug(name).toLowerCase();
+      // 1. Kiểm tra localStorage trước để hiện ngay tức thì không lag
+      try {
+        const localSaved = JSON.parse(localStorage.getItem('weddingRSVP_' + slug) || 'null');
+        if (localSaved && (localSaved.rsvp === 'yes' || localSaved.rsvp === 'no')) {
+          applyRSVPViewStatus(localSaved.rsvp, name);
+          return;
+        }
+      } catch (e) {}
+
+      // 2. Kiểm tra OnlineDB
+      try {
+        const guests = await OnlineDB.getGuests();
+        const matched = guests.find(g =>
+          (g.name && g.name.trim().toLowerCase() === name.toLowerCase()) ||
+          (g.name && makeGuestSlug(g.name).toLowerCase() === slug)
+        );
+        if (matched && (matched.rsvp === 'yes' || matched.rsvp === 'no')) {
+          applyRSVPViewStatus(matched.rsvp, name);
+        } else {
+          applyRSVPViewStatus('pending', name);
+        }
+      } catch (e) {
+        applyRSVPViewStatus('pending', name);
+      }
     }
 
     function escapeHTML(str) {
@@ -6395,15 +6657,24 @@
       saveToAppleCalendar();
     }
 
-    function openRSVPModal() { document.getElementById('rsvpModal').classList.remove('hidden'); }
-    function closeRSVPModal() { document.getElementById('rsvpModal').classList.add('hidden'); }
+    function openRSVPModal() {
+      const el = document.getElementById('rsvpSection');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    function closeRSVPModal() {
+      const modal = document.getElementById('rsvpModal');
+      if (modal) modal.classList.add('hidden');
+    }
 
     function openMapModal() { document.getElementById('mapModal').classList.remove('hidden'); }
     function closeMapModal() { document.getElementById('mapModal').classList.add('hidden'); }
 
     function openGiftModal() {
       recordPsychologicalRSVP('gift');
-      renderGiftModal();
+      currentGiftModalFilter = 'all';
+      filterGiftModalView('all');
       document.getElementById('giftModal').classList.remove('hidden');
     }
     function closeGiftModal() { document.getElementById('giftModal').classList.add('hidden'); }
