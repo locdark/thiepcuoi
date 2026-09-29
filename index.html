@@ -1475,14 +1475,18 @@
 
       <!-- Khối nhập tên bổ sung (chỉ hiện khi link chưa có tên khách) -->
       <div id="rsvpNameInputBox" class="hidden mt-4 max-w-sm mx-auto p-3.5 bg-black/40 border border-wedding-gold/30 rounded-xl space-y-2.5 text-left">
-        <p class="text-xs text-amber-200">Cho gia đình xin tên của bạn để ghi nhận đặt bàn nhé:</p>
+        <p id="rsvpNameInputPrompt" class="text-xs text-amber-200">Cho gia đình xin tên của bạn để ghi nhận nhé:</p>
         <div class="flex gap-2">
           <input type="text" id="quickRSVPNameInput" placeholder="Tên của bạn (VD: Anh Nam, Chị Lan)..."
             class="flex-1 bg-white/10 border border-wedding-gold/40 rounded-lg px-3 py-1.5 text-xs text-white placeholder-amber-200/40 focus:outline-none focus:border-amber-300"
             onkeydown="if(event.key==='Enter') submitQuickRSVPWithName()">
-          <button type="button" onclick="submitQuickRSVPWithName()"
+          <button type="button" id="rsvpNameSubmitBtn" onclick="submitQuickRSVPWithName()"
             class="px-3.5 py-1.5 bg-gradient-to-r from-wedding-red to-wedding-crimson hover:brightness-110 text-amber-100 rounded-lg text-xs font-semibold border border-amber-300/30 whitespace-nowrap active:scale-95 cursor-pointer">
             Đồng Ý
+          </button>
+          <button type="button" onclick="cancelQuickRSVPName()"
+            class="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-amber-200/80 hover:text-white rounded-lg text-xs border border-white/15 whitespace-nowrap active:scale-95 cursor-pointer" title="Đóng">
+            ✕
           </button>
         </div>
       </div>
@@ -1581,11 +1585,6 @@
     <footer class="mt-12 text-center text-xs text-amber-200/60 font-light pb-12 sm:pb-0">
       <p>Hoài Phước ❤ Diệu Hồng • 25.10.2026</p>
       <p class="mt-1">Rất hân hạnh được đón tiếp Quý Khách!</p>
-      <div class="mt-4">
-        <button id="footerAdminLoginBtn" onclick="openAdminLoginDirectly()" class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 border border-amber-300/25 text-amber-200/60 hover:text-amber-200 hover:border-amber-300/50 text-[11px] transition-all" title="Dành cho Quản trị viên (admin / admin2 - Mật khẩu: admin123)">
-          <i class="fa-solid fa-lock text-[10px] text-amber-400"></i> Đăng nhập Quản trị viên (Admin)
-        </button>
-      </div>
     </footer>
 
     <!-- Mobile Bottom Quick Navigation Bar (Visible on mobile <=640px) -->
@@ -4018,6 +4017,18 @@
       copyText(url, `Đã sao chép link mặc định ${sideName}! Bạn có thể dán vào Zalo/Facebook gửi ngay.`);
     }
 
+    function isCurrentAdminRoute() {
+      const pathClean = decodeURIComponent(window.location.pathname || '')
+        .replace(/^\/+/, '')
+        .replace(/\.html$/i, '')
+        .trim()
+        .toLowerCase();
+      const rawSearch = (window.location.search || '').replace(/^[?&]+/, '');
+      const urlParams = new URLSearchParams(rawSearch ? '?' + rawSearch : '');
+      const pParam = (urlParams.get('p') || '').replace(/^\/+/, '').toLowerCase();
+      return pathClean === 'admin' || pParam === 'admin' || urlParams.has('admin') || urlParams.has('login');
+    }
+
     function checkInitialAccessMode() {
       let rawSearch = (window.location.search || '').replace(/^[?&]+/, '').replace(/^(?:q=)+/, '').replace(/&(?:q=)+/g, '&');
       const urlParams = new URLSearchParams(rawSearch ? '?' + rawSearch : '');
@@ -4035,7 +4046,7 @@
       const isStaticAsset = /\.(m4a|mp3|jpg|jpeg|png|gif|svg|webp|css|js|json|ico|ics)$/i.test(pathClean);
       const pathLower = pathClean.toLowerCase();
 
-      const isAdminRoute = pathLower === 'admin' || urlParams.has('admin') || urlParams.has('login');
+      const isAdminRoute = isCurrentAdminRoute();
       if (isAdminRoute) {
         isGuestMode = false;
         const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
@@ -4112,44 +4123,26 @@
         const decodedName = guestFromUrl ? decodeURIComponent(guestFromUrl.trim()) : '';
         OnlineDB.trackRead(guestIdFromUrl, decodedName);
       } else {
-        // DIRECT ROOT ACCESS
-        const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
-        if (storedAuth === 'true') {
-          isAdminLoggedIn = true;
-          isGuestMode = false;
-          currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
-          // Auto switch to role's version
-          if (currentAdminRole === 'admin2' && currentWeddingVersion !== 'nhagai') {
-            switchWeddingVersion('nhagai', false, true);
-          } else if (currentAdminRole === 'admin' && currentWeddingVersion !== 'nhatrai') {
-            switchWeddingVersion('nhatrai', false, true);
-          }
-          // Show admin buttons and toggle pill for admin
-          const topAdminBtn = document.getElementById('topAdminBtn');
-          const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
-          const floatAdminBtn = document.getElementById('floatingAdminBtn');
-          const togglePill = document.getElementById('weddingVersionTogglePill');
-          if (topAdminBtn) topAdminBtn.classList.remove('hidden');
-          if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.add('hidden');
-          if (floatAdminBtn) floatAdminBtn.classList.remove('hidden');
-          if (togglePill) togglePill.classList.remove('hidden');
-        } else {
-          // GUEST ACCESS ON ROOT: Normal guest browsing root domain (no admin controls visible)
-          isGuestMode = true;
-          switchWeddingVersion(currentWeddingVersion, false, true);
-          const topAdminBtn = document.getElementById('topAdminBtn');
-          const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
-          const topCreateBtn = document.getElementById('topCreateBtn');
-          const floatAdminBtn = document.getElementById('floatingAdminBtn');
-          const footerAdminBtn = document.getElementById('footerAdminLoginBtn');
-          if (topAdminBtn) topAdminBtn.classList.add('hidden');
-          if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.add('hidden');
-          if (topCreateBtn) topCreateBtn.classList.add('hidden');
-          if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
-          if (footerAdminBtn) footerAdminBtn.classList.add('hidden');
-          const togglePill = document.getElementById('weddingVersionTogglePill');
-          if (togglePill) togglePill.classList.add('hidden');
-        }
+        // DIRECT ROOT ACCESS (e.g. ngaycuoi.online default link)
+        // Luôn ở chế độ khách (Guest Mode) trên link default, tuyệt đối không tự kích hoạt admin
+        // Truy cập quản trị chỉ qua /admin
+        isGuestMode = true;
+        isAdminLoggedIn = false;
+        switchWeddingVersion(currentWeddingVersion, false, true);
+
+        const topAdminBtn = document.getElementById('topAdminBtn');
+        const adminLoginTriggerBtn = document.getElementById('adminLoginTriggerBtn');
+        const topCreateBtn = document.getElementById('topCreateBtn');
+        const floatAdminBtn = document.getElementById('floatingAdminBtn');
+        const footerAdminBtn = document.getElementById('footerAdminLoginBtn');
+        const togglePill = document.getElementById('weddingVersionTogglePill');
+
+        if (topAdminBtn) topAdminBtn.classList.add('hidden');
+        if (adminLoginTriggerBtn) adminLoginTriggerBtn.classList.add('hidden');
+        if (topCreateBtn) topCreateBtn.classList.add('hidden');
+        if (floatAdminBtn) floatAdminBtn.classList.add('hidden');
+        if (footerAdminBtn) footerAdminBtn.classList.add('hidden');
+        if (togglePill) togglePill.classList.add('hidden');
       }
     }
 
@@ -4187,10 +4180,14 @@
 
     function loadStoredConfig() {
       try {
-        const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
-        if (storedAuth === 'true') {
-          isAdminLoggedIn = true;
-          currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
+        if (isCurrentAdminRoute()) {
+          const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
+          if (storedAuth === 'true') {
+            isAdminLoggedIn = true;
+            currentAdminRole = localStorage.getItem('weddingAdminRole') || 'admin';
+          }
+        } else {
+          isAdminLoggedIn = false;
         }
 
         let rawSearch = (window.location.search || '').replace(/^[?&]+/, '').replace(/^(?:q=)+/, '').replace(/&(?:q=)+/g, '&');
@@ -5366,11 +5363,20 @@
     }
 
     function openAdminLoginDirectly() {
+      if (!isCurrentAdminRoute()) {
+        window.location.href = '/admin';
+        return;
+      }
       isGuestMode = false;
       openAdminModal();
     }
 
     function openAdminModal() {
+      if (!isCurrentAdminRoute()) {
+        window.location.href = '/admin';
+        return;
+      }
+
       const storedAuth = localStorage.getItem('weddingAdminLoggedIn');
       if (storedAuth === 'true') isAdminLoggedIn = true;
 
@@ -5468,11 +5474,19 @@
       const adminTriggerBtn = document.getElementById('adminLoginTriggerBtn');
       const togglePill = document.getElementById('weddingVersionTogglePill');
       if (topAdminBtn) topAdminBtn.classList.add('hidden');
-      if (adminTriggerBtn) adminTriggerBtn.classList.remove('hidden');
+      if (adminTriggerBtn) {
+        if (isCurrentAdminRoute()) {
+          adminTriggerBtn.classList.remove('hidden');
+        } else {
+          adminTriggerBtn.classList.add('hidden');
+        }
+      }
       if (togglePill) togglePill.classList.add('hidden');
 
       showToast('🔒 Đã đăng xuất khỏi tài khoản Admin.');
-      openAdminModal();
+      if (isCurrentAdminRoute()) {
+        openAdminModal();
+      }
     }
 
     function closeAdminModal() {
@@ -5866,7 +5880,8 @@
         const gaiCount = filtered.filter(g => g.side === 'nhagai').length;
         const attendingCount = filtered.filter(g => g.rsvp === 'yes').length;
         const confirmedDirectCount = filtered.filter(g => g.rsvp === 'yes' && g.rsvpAction === 'confirm').length;
-        breakdownEl.innerHTML = `Nhà Trai: <strong>${traiCount}</strong> | Nhà Gái: <strong>${gaiCount}</strong> | <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check text-[10px]"></i> Sẽ tham dự: <strong>${attendingCount}</strong></span>${confirmedDirectCount > 0 ? ` <span class="text-emerald-300/80 text-[10px]">(Xác nhận: ${confirmedDirectCount})</span>` : ''}`;
+        const declinedCount = filtered.filter(g => g.rsvp === 'no').length;
+        breakdownEl.innerHTML = `Nhà Trai: <strong>${traiCount}</strong> | Nhà Gái: <strong>${gaiCount}</strong> | <span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check text-[10px]"></i> Sẽ tham dự: <strong>${attendingCount}</strong></span>${confirmedDirectCount > 0 ? ` <span class="text-emerald-300/80 text-[10px]">(Xác nhận: ${confirmedDirectCount})</span>` : ''} | <span class="text-rose-400 font-semibold"><i class="fa-solid fa-circle-xmark text-[10px]"></i> Báo vắng: <strong>${declinedCount}</strong></span>`;
       }
 
       if (filtered.length === 0) {
@@ -6738,29 +6753,44 @@
       showToast('💖 Cảm ơn bạn đã gửi lời chúc phúc trăm năm!');
     }
 
+    let pendingRSVPChoice = 'yes';
+
     async function submitQuickRSVP(choice) {
       if (choice === 'change') {
         changeRSVPOption();
         return;
       }
 
+      pendingRSVPChoice = choice;
+
       let targetName = currentIdentifiedGuestName || (document.getElementById('cardGuestName')?.textContent || '').trim();
       if (targetName === 'Quý Khách & Gia Đình' && typeof guestFromUrl !== 'undefined' && guestFromUrl) {
         targetName = guestFromUrl.trim();
       }
 
-      // Nếu chưa có tên cụ thể (link gốc chung)
-      if (!targetName || targetName === 'Quý Khách & Gia Đình') {
-        if (choice === 'yes') {
-          const nameBox = document.getElementById('rsvpNameInputBox');
-          if (nameBox) {
-            nameBox.classList.remove('hidden');
-            document.getElementById('quickRSVPNameInput')?.focus();
+      // Nếu chưa có tên cụ thể (link gốc chung như ngaycuoi.online)
+      if (!targetName || targetName === 'Quý Khách & Gia Đình' || targetName === 'Bạn') {
+        const nameBox = document.getElementById('rsvpNameInputBox');
+        const promptEl = document.getElementById('rsvpNameInputPrompt');
+        const submitBtn = document.getElementById('rsvpNameSubmitBtn');
+        const inputEl = document.getElementById('quickRSVPNameInput');
+
+        if (promptEl) {
+          if (choice === 'yes') {
+            promptEl.textContent = 'Cho gia đình xin tên của bạn để ghi nhận đón tiếp và sắp xếp bàn tiệc nhé:';
+          } else {
+            promptEl.textContent = 'Cho gia đình xin tên của bạn để lưu lại và gửi lời cảm ơn nhé:';
           }
-          return;
-        } else {
-          targetName = 'Bạn';
         }
+        if (submitBtn) {
+          submitBtn.textContent = choice === 'yes' ? 'Xác Nhận Đi' : 'Xác Nhận';
+        }
+
+        if (nameBox) {
+          nameBox.classList.remove('hidden');
+          inputEl?.focus();
+        }
+        return;
       }
 
       await executeQuickRSVPSave(targetName, choice);
@@ -6777,7 +6807,12 @@
       const salut = (typeof salutFromUrl !== 'undefined' && salutFromUrl) ? salutFromUrl : 'Kính mời';
       updateGuestName(val, salut);
       document.getElementById('rsvpNameInputBox')?.classList.add('hidden');
-      await executeQuickRSVPSave(val, 'yes');
+      const choiceToSave = pendingRSVPChoice || 'yes';
+      await executeQuickRSVPSave(val, choiceToSave);
+    }
+
+    function cancelQuickRSVPName() {
+      document.getElementById('rsvpNameInputBox')?.classList.add('hidden');
     }
 
     async function executeQuickRSVPSave(targetName, choice) {
